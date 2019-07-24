@@ -6,6 +6,13 @@ edition = "2018"
 
 [dependencies]
 toml = "^0.5.1"
-serde = "^1.0.97"
 git2 = "^0.9.1"
-serde_derive = "^1.0.97"
+serde = { version = "^1.0", features = ["derive"] }
+graphql_client = "0.8.0"
+structopt = "0.2.18"
+serde_json = "1.0.40"
+
+[dependencies.reqwest]
+version = "^0.9"
+default-features = false
+features = ["rustls-tls"]

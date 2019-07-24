@@ -1,0 +1,7 @@
+[github]
+provider = "github"
+user = "orf"
+
+[onfido]
+provider = "gitlab"
+namespace = ""

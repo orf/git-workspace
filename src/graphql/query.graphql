@@ -1,0 +1,17 @@
+query AllProjectsQuery {
+  group(fullPath: "gitlab-org") {
+    id,
+    projects(includeSubgroups: true) {
+      edges {
+        node {
+          id,
+          fullPath,
+          sshUrlToRepo,
+          repository {
+            rootRef
+          }
+        }
+      }
+    }
+  }
+}
