@@ -1,5 +1,5 @@
-query AllProjectsQuery {
-  group(fullPath: "gitlab-org") {
+query AllProjectsQuery($group: ID!) {
+  group(fullPath: $group) {
     id,
     projects(includeSubgroups: true) {
       edges {

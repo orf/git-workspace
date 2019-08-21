@@ -4,7 +4,7 @@ use std::collections::HashMap;
 #[serde(untagged)]
 pub enum GitlabIdentity {
     User { user: String },
-    Namespace { namespace: String },
+    Group { group: String },
 }
 
 #[derive(Deserialize, Debug)]
@@ -23,13 +23,18 @@ pub enum Workspace {
         identity: GithubIdentity,
     },
     Gitlab {
-        url: Option<String>,
+        #[serde(default = "default_gitlab_url")]
+        url: String,
         #[serde(flatten)]
         identity: GitlabIdentity,
     },
 }
 
+fn default_gitlab_url() -> String {
+    "https://gitlab.com/".to_string()
+}
+
 pub fn get_config() -> HashMap<String, Workspace> {
-    let config_str = include_str!("../workspace/workspace.toml");
+    let config_str = include_str!("../../workspace/workspace.toml");
     return toml::from_str(config_str).unwrap();
 }

@@ -1,17 +1,20 @@
-#[macro_use]
-extern crate serde;
-extern crate toml;
+extern crate git2;
 
-mod config;
-mod github;
-mod gitlab;
-mod lockfile;
+#[macro_use]
+extern crate lazy_static;
+
+use crate::repository::Repository;
+use std::path::Path;
+
+mod repository;
 
 fn main() {
-    let config = config::get_config();
-    for (name, workspace) in config {
-        println!("Name: {}, provider: {:?}", name, workspace)
-    }
-
-    gitlab::get_projects();
+    let workspace = Path::new("workspace");
+    let repo = Repository::new(
+        "test-repo".to_string(),
+        "git@github.com:orf/dotfiles.git".to_string(),
+        "master".to_string(),
+    );
+    println!("{}", repo.exists(workspace));
+    println!("{:?}", repo.clone(workspace));
 }
