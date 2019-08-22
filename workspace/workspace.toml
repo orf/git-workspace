@@ -4,4 +4,4 @@ user = "orf"
 
 [onfido]
 provider = "gitlab"
-group = ""
+group = "gitlab-org"

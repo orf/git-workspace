@@ -1,10 +1,11 @@
 use git2::Repository as Git2Repo;
+use serde::{Deserialize, Serialize};
 use std::path::Path;
 use std::process::Command;
 
 pub struct CloneError {}
 
-//#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Repository {
     path: String,
     url: String,
