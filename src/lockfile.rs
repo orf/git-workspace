@@ -1,4 +1,5 @@
 use crate::repository::Repository;
+use failure::Error;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
@@ -18,17 +19,21 @@ impl Lockfile {
         Lockfile { path }
     }
 
-    pub fn read(&self) -> Vec<Repository> {
-        let config_data = fs::read_to_string(&self.path).unwrap();
-        let config: LockfileContents = toml::from_str(config_data.as_str()).unwrap();
-        config.repos
+    pub fn read(&self) -> Result<Vec<Repository>, Error> {
+        let config_data = fs::read_to_string(&self.path)?;
+        let config: LockfileContents = toml::from_str(config_data.as_str())?;
+        Ok(config.repos)
     }
 
-    pub fn write(&self, repositories: Vec<Repository>) {
+    pub fn write(&self, repositories: Vec<Repository>) -> Result<(), Error> {
+        let mut sorted_repositories = repositories.clone();
+        sorted_repositories.sort();
+
         let toml = toml::to_string(&LockfileContents {
-            repos: repositories,
-        })
-        .unwrap();
-        fs::write(&self.path, toml);
+            repos: sorted_repositories,
+        })?;
+        fs::write(&self.path, toml)?;
+
+        Ok(())
     }
 }
