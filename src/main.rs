@@ -1,7 +1,9 @@
 extern crate failure;
 extern crate git2;
+extern crate reqwest;
 extern crate serde;
 extern crate structopt;
+extern crate rayon;
 
 use crate::config::Config;
 use crate::lockfile::Lockfile;
@@ -9,6 +11,7 @@ use crate::repository::Repository;
 use failure::Error;
 use std::path::PathBuf;
 use structopt::StructOpt;
+use rayon::prelude::*;
 
 mod config;
 mod lockfile;
@@ -44,28 +47,26 @@ fn main(args: Args) -> Result<(), Error> {
 }
 
 fn update(workspace: &PathBuf) -> Result<(), Error> {
-    let config = Config::new(workspace.join("workspace.toml"));
-    let sources = config.read()?;
-    for source in sources.values() {
-        source.fetch_repositories()?;
-        //providers::fetch_repositories(&source);
-    }
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read()?;
+    repositories.par_iter().for_each(|repo| {
+        println!("{}", repo.full_path(workspace).to_string_lossy());
+        if !repo.exists(workspace) {
+            repo.clone(workspace);
+        }
+    });
     Ok(())
 }
 
 fn lock(workspace: &PathBuf) -> Result<(), Error> {
-    let repo = Repository::new(
-        "test-repo".to_string(),
-        "git@github.com:orf/dotfiles.git".to_string(),
-        "master".to_string(),
-    );
-    let repo2 = Repository::new(
-        "test-repo".to_string(),
-        "git@github.com:orf/dotfiles.git".to_string(),
-        "master".to_string(),
-    );
+    let config = Config::new(workspace.join("workspace.toml"));
+    let sources = config.read()?;
+    let mut all_repositories = vec![];
+    for source in sources.values() {
+        all_repositories.extend(source.fetch_repositories()?);
+    }
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    lockfile.write(vec![repo, repo2])?;
+    lockfile.write(all_repositories)?;
     Ok(())
 }
 
@@ -77,18 +78,3 @@ fn list(workspace: &PathBuf) -> Result<(), Error> {
     }
     Ok(())
 }
-
-/*
-
-    let workspace = Path::new("workspace");
-
-
-
-
-    println!("Lock read: {:?}", lockfile.read());
-
-    println!("Exists: {}", repo.exists(workspace));
-    println!("Clone: {:?}", repo.clone(workspace));
-
-    println!("Lock read 2: {:?}", lockfile.read());
-*/

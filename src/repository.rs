@@ -11,12 +11,18 @@ pub struct CloneError {}
 pub struct Repository {
     path: String,
     url: String,
+    upstream: Option<String>,
     branch: String,
 }
 
 impl Repository {
-    pub fn new(path: String, url: String, branch: String) -> Repository {
-        Repository { path, url, branch }
+    pub fn new(path: String, url: String, branch: String, upstream: Option<String>) -> Repository {
+        Repository {
+            path,
+            url,
+            branch,
+            upstream,
+        }
     }
     pub fn exists(&self, root: &PathBuf) -> bool {
         match Git2Repo::open(root.join(&self.path)) {
