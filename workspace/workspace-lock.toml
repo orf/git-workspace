@@ -1,9 +1,9 @@
 [[repo]]
 path = "test-repo"
-url = "git@github.com:orf/dotfiles2.git"
+url = "git@github.com:orf/dotfiles.git"
 branch = "master"
 
 [[repo]]
-path = "test-repo3"
-url = "git@github.com:orf/dotfiles.git3"
+path = "test-repo"
+url = "git@github.com:orf/dotfiles.git"
 branch = "master"

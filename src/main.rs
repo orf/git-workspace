@@ -1,24 +1,23 @@
 extern crate git2;
 extern crate serde;
-#[macro_use]
 extern crate failure;
-#[macro_use]
 extern crate structopt;
 
 use crate::config::Config;
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use failure::Error;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use structopt::StructOpt;
 
 mod config;
 mod lockfile;
+mod providers;
 mod repository;
 
 #[derive(StructOpt)]
-#[structopt(name = "git-workspace", about = "Manage your git repositories")]
-struct Opt {
+#[structopt(name = "git-workspace", author, about)]
+struct Args {
     #[structopt(short = "w", long = "workspace", parse(from_os_str))]
     workspace: PathBuf,
     #[structopt(subcommand)]
@@ -27,19 +26,16 @@ struct Opt {
 
 #[derive(StructOpt)]
 enum Command {
-    #[structopt(name = "update")]
     Update {},
-    #[structopt(name = "lock")]
     Lock {},
-    #[structopt(name = "list")]
     List {},
 }
 
-fn main() -> Result<(), Error> {
-    let opt = Opt::from_args();
-    let workspace_path = opt.workspace.canonicalize()?;
+#[paw::main]
+fn main(args: Args) -> Result<(), Error> {
+    let workspace_path = args.workspace.canonicalize()?;
 
-    match opt.command {
+    match args.command {
         Command::List {} => list(&workspace_path)?,
         Command::Update {} => update(&workspace_path)?,
         Command::Lock {} => lock(&workspace_path)?,
@@ -48,6 +44,11 @@ fn main() -> Result<(), Error> {
 }
 
 fn update(workspace: &PathBuf) -> Result<(), Error> {
+    let config = Config::new(workspace.join("workspace.toml"));
+    let sources = config.read()?;
+    for source in sources.values() {
+        //providers::fetch_repositories(&source);
+    }
     Ok(())
 }
 
@@ -80,9 +81,9 @@ fn list(workspace: &PathBuf) -> Result<(), Error> {
 
     let workspace = Path::new("workspace");
 
-    let config = Config::new(workspace.join("workspace.toml"));
 
-    println!("Config read: {:?}", config.read());
+
+
     println!("Lock read: {:?}", lockfile.read());
 
     println!("Exists: {}", repo.exists(workspace));
