@@ -1,6 +1,6 @@
+extern crate failure;
 extern crate git2;
 extern crate serde;
-extern crate failure;
 extern crate structopt;
 
 use crate::config::Config;
@@ -47,6 +47,7 @@ fn update(workspace: &PathBuf) -> Result<(), Error> {
     let config = Config::new(workspace.join("workspace.toml"));
     let sources = config.read()?;
     for source in sources.values() {
+        source.fetch_repositories()?;
         //providers::fetch_repositories(&source);
     }
     Ok(())

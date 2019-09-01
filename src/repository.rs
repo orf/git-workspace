@@ -2,7 +2,7 @@ use failure::Error;
 use git2::Repository as Git2Repo;
 use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
-use std::process::{Command};
+use std::process::Command;
 
 pub struct CloneError {}
 
