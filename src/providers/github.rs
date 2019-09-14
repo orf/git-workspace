@@ -43,7 +43,8 @@ struct GithubForkRepo {
 impl Provider for GithubProvider {
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let mut headers = header::HeaderMap::new();
-        headers.insert(header::AUTHORIZATION, header::HeaderValue::from_static("token a9e25d33a505bdf4f559226a9d42d95311cf2e47"));
+        let header = format!("token {}", env!("GITHUB_TOKEN"));
+        headers.insert(header::AUTHORIZATION, header::HeaderValue::from_str(header.as_str())?);
         headers.insert(header::ACCEPT, header::HeaderValue::from_static("application/vnd.github.v3+json"));
         let client = reqwest::Client::builder()
             .default_headers(headers).build()?;
