@@ -38,7 +38,7 @@ impl ProviderSource {
         }
     }
 
-    pub fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
-        Ok(self.provider().fetch_repositories()?)
+    pub fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
+        Ok(self.provider().fetch_repositories(root)?)
     }
 }

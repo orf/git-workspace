@@ -1,0 +1,26 @@
+query UserRepositories($after: String) {
+    viewer {
+        repositories(first: 100, after: $after) {
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+            nodes {
+                nameWithOwner,
+                sshUrl,
+                isArchived,
+                defaultBranchRef {
+                    name
+                },
+                parent {
+                    sshUrl,
+                }
+            }
+        }
+    }
+    rateLimit {
+        limit
+        cost
+        remaining
+    }
+}

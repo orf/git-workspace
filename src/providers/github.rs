@@ -1,13 +1,15 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
 use failure::Error;
-use reqwest;
 use serde::Deserialize;
-use reqwest::header;
+use graphql_client::{GraphQLQuery, Response};
+use std::env;
+
 
 fn default_as_false() -> bool {
     false
 }
+
 
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "lowercase", untagged)]
@@ -34,46 +36,58 @@ struct GithubRepo {
     full_name: String,
 }
 
-// Needed to avoid self-referencial structures
-#[derive(Deserialize, Debug)]
-struct GithubForkRepo {
-    parent: GithubRepo,
+// See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
+type GitSSHRemote = String;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+schema_path = "src/graphql/github/schema.graphql",
+query_path = "src/graphql/github/projects.graphql",
+response_derives = "Debug"
+)]
+pub struct UserRepositories;
+
+impl GithubProvider {
+    fn parse_repo(&self, root: &String, repo: &user_repositories::UserRepositoriesViewerRepositoriesNodes) -> Repository {
+        let default_branch = repo.default_branch_ref.as_ref().and_then(|branch| Some(branch.name.clone()));
+        let upstream = repo.parent.as_ref().and_then(|parent| Some(parent.ssh_url.clone()));
+
+        Repository::new(
+            format!("{}/{}", root, repo.name_with_owner.clone()),
+            repo.ssh_url.clone(),
+            default_branch,
+            upstream,
+        )
+    }
 }
 
 impl Provider for GithubProvider {
-    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
-        let mut headers = header::HeaderMap::new();
-        let header = format!("token {}", env!("GITHUB_TOKEN"));
-        headers.insert(header::AUTHORIZATION, header::HeaderValue::from_str(header.as_str())?);
-        headers.insert(header::ACCEPT, header::HeaderValue::from_static("application/vnd.github.v3+json"));
-        let client = reqwest::Client::builder()
-            .default_headers(headers).build()?;
-
+    fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
+        let github_token = env::var("GITHUB_TOKEN")?;
+        let client = reqwest::Client::new();
         let mut repositories = vec![];
-        let mut gh_resp =
-            client.get("https://api.github.com/users/orf/repos?per_page=100")
-                .send()?;
-        let next_page = gh_resp.headers().get(header::LINK).unwrap();
-        println!("{:?}", next_page);
 
-        let gh_repositories: Vec<GithubRepo> = gh_resp.json()?;
-        for repo in gh_repositories {
-            let mut upstream_url = None;
-            if repo.fork {
-                let upstream_api_url =
-                    format!("https://api.github.com/repos/{name}", name = repo.full_name);
-                let upstream_api_response: GithubForkRepo =
-                    client.get(upstream_api_url.as_str()).send()?.json()?;
-                upstream_url = Some(upstream_api_response.parent.ssh_url);
+        let mut after = None;
+
+        loop {
+            let q = UserRepositories::build_query(user_repositories::Variables {
+                after,
+            });
+            let mut res = client
+                .post("https://api.github.com/graphql")
+                .bearer_auth(github_token.as_str())
+                .json(&q)
+                .send()?;
+            let response_body: Response<user_repositories::ResponseData> = res.json()?;
+            let response_data: user_repositories::ResponseData = response_body.data.expect("missing response data");
+            for repo in response_data.viewer.repositories.nodes.unwrap().iter() {
+                repositories.push(self.parse_repo(root,repo.as_ref().unwrap()))
             }
-            repositories.push(
-                Repository::new(
-                    repo.full_name,
-                    repo.ssh_url,
-                    repo.default_branch,
-                    upstream_url,
-                )
-            )
+
+            if !response_data.viewer.repositories.page_info.has_next_page {
+                break
+            }
+            after = response_data.viewer.repositories.page_info.end_cursor;
         }
 
         Ok(repositories)

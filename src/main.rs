@@ -1,9 +1,9 @@
 extern crate failure;
 extern crate git2;
-extern crate reqwest;
 extern crate serde;
 extern crate structopt;
-extern crate rayon;
+extern crate graphql_client;
+extern crate reqwest;
 
 use crate::config::Config;
 use crate::lockfile::Lockfile;
@@ -62,8 +62,8 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
     let config = Config::new(workspace.join("workspace.toml"));
     let sources = config.read()?;
     let mut all_repositories = vec![];
-    for source in sources.values() {
-        all_repositories.extend(source.fetch_repositories()?);
+    for (name, source) in sources.iter() {
+        all_repositories.extend(source.fetch_repositories(name)?);
     }
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     lockfile.write(all_repositories)?;

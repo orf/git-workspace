@@ -12,11 +12,11 @@ pub struct Repository {
     path: String,
     url: String,
     upstream: Option<String>,
-    branch: String,
+    branch: Option<String>,
 }
 
 impl Repository {
-    pub fn new(path: String, url: String, branch: String, upstream: Option<String>) -> Repository {
+    pub fn new(path: String, url: String, branch: Option<String>, upstream: Option<String>) -> Repository {
         Repository {
             path,
             url,

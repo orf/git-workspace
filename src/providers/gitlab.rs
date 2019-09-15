@@ -12,7 +12,7 @@ pub enum GitlabProvider {
 }
 
 impl Provider for GitlabProvider {
-    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
+    fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
         Ok(vec![])
     }
 }
