@@ -1,15 +1,4 @@
 [[repo]]
-path = "github/0xshyam/sid-ctf"
-url = "git@github.com:0xshyam/sid-ctf.git"
-upstream = "git@github.com:orf/sid-ctf.git"
-branch = "master"
-
-[[repo]]
-path = "github/MissHighwater/wine-world"
-url = "git@github.com:MissHighwater/wine-world.git"
-branch = "master"
-
-[[repo]]
 path = "github/TheZ3ro/apk2java-linux"
 url = "git@github.com:TheZ3ro/apk2java-linux.git"
 branch = "master"
@@ -18,16 +7,6 @@ branch = "master"
 path = "github/django/django-docker-box"
 url = "git@github.com:django/django-docker-box.git"
 upstream = "git@github.com:orf/django-docker-box.git"
-branch = "master"
-
-[[repo]]
-path = "github/hellerbarde/massive"
-url = "git@github.com:hellerbarde/massive.git"
-branch = "master"
-
-[[repo]]
-path = "github/netduma/eagle"
-url = "git@github.com:netduma/eagle.git"
 branch = "master"
 
 [[repo]]
@@ -72,12 +51,6 @@ url = "git@github.com:orf/Gmail-dumper.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/HAP-python"
-url = "git@github.com:orf/HAP-python.git"
-upstream = "git@github.com:ikalchev/HAP-python.git"
-branch = "dev"
-
-[[repo]]
 path = "github/orf/HtmlToWord"
 url = "git@github.com:orf/HtmlToWord.git"
 branch = "master"
@@ -91,12 +64,6 @@ branch = "master"
 path = "github/orf/NoPriv"
 url = "git@github.com:orf/NoPriv.git"
 upstream = "git@github.com:RaymiiOrg/NoPriv.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/RustPython"
-url = "git@github.com:orf/RustPython.git"
-upstream = "git@github.com:RustPython/RustPython.git"
 branch = "master"
 
 [[repo]]
@@ -160,6 +127,17 @@ url = "git@github.com:orf/apple-features.git"
 branch = "master"
 
 [[repo]]
+path = "github/orf/bare-hugo-theme"
+url = "git@github.com:orf/bare-hugo-theme.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/blackfriday"
+url = "git@github.com:orf/blackfriday.git"
+upstream = "git@github.com:russross/blackfriday.git"
+branch = "master"
+
+[[repo]]
 path = "github/orf/blog"
 url = "git@github.com:orf/blog.git"
 branch = "master"
@@ -175,20 +153,9 @@ url = "git@github.com:orf/blog-hugo.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/botocore"
-url = "git@github.com:orf/botocore.git"
-upstream = "git@github.com:boto/botocore.git"
-branch = "develop"
-
-[[repo]]
 path = "github/orf/broccoli-templater"
 url = "git@github.com:orf/broccoli-templater.git"
 upstream = "git@github.com:stefanpenner/broccoli-templater.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/buggy-ember-cli-app"
-url = "git@github.com:orf/buggy-ember-cli-app.git"
 branch = "master"
 
 [[repo]]
@@ -239,12 +206,6 @@ url = "git@github.com:orf/cyborg.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/data"
-url = "git@github.com:orf/data.git"
-upstream = "git@github.com:emberjs/data.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/datatables"
 url = "git@github.com:orf/datatables.git"
 branch = "master"
@@ -253,12 +214,6 @@ branch = "master"
 path = "github/orf/dd-trace-py"
 url = "git@github.com:orf/dd-trace-py.git"
 upstream = "git@github.com:DataDog/dd-trace-py.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/deploy.now"
-url = "git@github.com:orf/deploy.now.git"
-upstream = "git@github.com:zpnk/deploy.now.git"
 branch = "master"
 
 [[repo]]
@@ -273,37 +228,8 @@ upstream = "git@github.com:django/django.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/django-activeurl"
-url = "git@github.com:orf/django-activeurl.git"
-upstream = "git@github.com:hellysmile/django-activeurl.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-babel"
-url = "git@github.com:orf/django-babel.git"
-upstream = "git@github.com:python-babel/django-babel.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-breadcrumb-trail"
-url = "git@github.com:orf/django-breadcrumb-trail.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/django-choice-object"
 url = "git@github.com:orf/django-choice-object.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-compressor"
-url = "git@github.com:orf/django-compressor.git"
-upstream = "git@github.com:django-compressor/django-compressor.git"
-branch = "develop"
-
-[[repo]]
-path = "github/orf/django-debug-toolbar"
-url = "git@github.com:orf/django-debug-toolbar.git"
-upstream = "git@github.com:jazzband/django-debug-toolbar.git"
 branch = "master"
 
 [[repo]]
@@ -312,74 +238,8 @@ url = "git@github.com:orf/django-debug-toolbar-template-timings.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/django-defender"
-url = "git@github.com:orf/django-defender.git"
-upstream = "git@github.com:kencochrane/django-defender.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/django-docker-box"
 url = "git@github.com:orf/django-docker-box.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-enumfields"
-url = "git@github.com:orf/django-enumfields.git"
-upstream = "git@github.com:hzdg/django-enumfields.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-fsm-log"
-url = "git@github.com:orf/django-fsm-log.git"
-upstream = "git@github.com:gizmag/django-fsm-log.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-haystack"
-url = "git@github.com:orf/django-haystack.git"
-upstream = "git@github.com:django-haystack/django-haystack.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-hvad"
-url = "git@github.com:orf/django-hvad.git"
-upstream = "git@github.com:KristianOellegaard/django-hvad.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-influxdb-metrics"
-url = "git@github.com:orf/django-influxdb-metrics.git"
-upstream = "git@github.com:bitlabstudio/django-influxdb-metrics.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-localflavor"
-url = "git@github.com:orf/django-localflavor.git"
-upstream = "git@github.com:django/django-localflavor.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-mail-queue"
-url = "git@github.com:orf/django-mail-queue.git"
-upstream = "git@github.com:dstegelman/django-mail-queue.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-mock-queries"
-url = "git@github.com:orf/django-mock-queries.git"
-upstream = "git@github.com:stphivos/django-mock-queries.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-mptt"
-url = "git@github.com:orf/django-mptt.git"
-upstream = "git@github.com:django-mptt/django-mptt.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-oauth-toolkit"
-url = "git@github.com:orf/django-oauth-toolkit.git"
-upstream = "git@github.com:jazzband/django-oauth-toolkit.git"
 branch = "master"
 
 [[repo]]
@@ -388,212 +248,8 @@ url = "git@github.com:orf/django-performance-metrics.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/django-postgresql-netfields"
-url = "git@github.com:orf/django-postgresql-netfields.git"
-upstream = "git@github.com:jimfunk/django-postgresql-netfields.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-queryinspect"
-url = "git@github.com:orf/django-queryinspect.git"
-upstream = "git@github.com:dobarkod/django-queryinspect.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-ratelimit"
-url = "git@github.com:orf/django-ratelimit.git"
-upstream = "git@github.com:jsocol/django-ratelimit.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-rest-framework"
-url = "git@github.com:orf/django-rest-framework.git"
-upstream = "git@github.com:encode/django-rest-framework.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-rest-framework-json-api"
-url = "git@github.com:orf/django-rest-framework-json-api.git"
-upstream = "git@github.com:django-json-api/django-rest-framework-json-api.git"
-branch = "develop"
-
-[[repo]]
-path = "github/orf/django-rest-framework-jwt"
-url = "git@github.com:orf/django-rest-framework-jwt.git"
-upstream = "git@github.com:jpadilla/django-rest-framework-jwt.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-rules"
-url = "git@github.com:orf/django-rules.git"
-upstream = "git@github.com:dfunckt/django-rules.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-watson"
-url = "git@github.com:orf/django-watson.git"
-upstream = "git@github.com:etianen/django-watson.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/djangosaml2"
-url = "git@github.com:orf/djangosaml2.git"
-upstream = "git@github.com:knaperek/djangosaml2.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/dotfiles"
 url = "git@github.com:orf/dotfiles.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/elasticsearch-py"
-url = "git@github.com:orf/elasticsearch-py.git"
-upstream = "git@github.com:elastic/elasticsearch-py.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-autoresize"
-url = "git@github.com:orf/ember-autoresize.git"
-upstream = "git@github.com:adopted-ember-addons/ember-autoresize.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-breadcrumbs"
-url = "git@github.com:orf/ember-breadcrumbs.git"
-upstream = "git@github.com:chrisfarber/ember-breadcrumbs.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-autoprefixer"
-url = "git@github.com:orf/ember-cli-autoprefixer.git"
-upstream = "git@github.com:kimroen/ember-cli-autoprefixer.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-clipboard"
-url = "git@github.com:orf/ember-cli-clipboard.git"
-upstream = "git@github.com:jkusa/ember-cli-clipboard.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-css-preprocess"
-url = "git@github.com:orf/ember-cli-css-preprocess.git"
-upstream = "git@github.com:n1ru4l/ember-cli-css-preprocess.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-dependency-checker"
-url = "git@github.com:orf/ember-cli-dependency-checker.git"
-upstream = "git@github.com:quaertym/ember-cli-dependency-checker.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-deploy"
-url = "git@github.com:orf/ember-cli-deploy.git"
-upstream = "git@github.com:ember-cli-deploy/ember-cli-deploy.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-deploy-sentry"
-url = "git@github.com:orf/ember-cli-deploy-sentry.git"
-upstream = "git@github.com:dschmidt/ember-cli-deploy-sentry.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-legacy-blueprints"
-url = "git@github.com:orf/ember-cli-legacy-blueprints.git"
-upstream = "git@github.com:ember-cli/ember-cli-legacy-blueprints.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-mirage"
-url = "git@github.com:orf/ember-cli-mirage.git"
-upstream = "git@github.com:samselikoff/ember-cli-mirage.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-postcss-fixed"
-url = "git@github.com:orf/ember-cli-postcss-fixed.git"
-upstream = "git@github.com:n1ru4l/ember-cli-postcss-fixed.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-sass"
-url = "git@github.com:orf/ember-cli-sass.git"
-upstream = "git@github.com:aexmachina/ember-cli-sass.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-sentry"
-url = "git@github.com:orf/ember-cli-sentry.git"
-upstream = "git@github.com:ember-cli-sentry/ember-cli-sentry.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-cli-tinymce"
-url = "git@github.com:orf/ember-cli-tinymce.git"
-upstream = "git@github.com:marucjmar/ember-cli-tinymce.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-component-css"
-url = "git@github.com:orf/ember-component-css.git"
-upstream = "git@github.com:ebryn/ember-component-css.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-computed-change-gate"
-url = "git@github.com:orf/ember-computed-change-gate.git"
-upstream = "git@github.com:GavinJoyce/ember-computed-change-gate.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-computed-indirect"
-url = "git@github.com:orf/ember-computed-indirect.git"
-upstream = "git@github.com:gordonkristan/ember-computed-indirect.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-concurrency"
-url = "git@github.com:orf/ember-concurrency.git"
-upstream = "git@github.com:machty/ember-concurrency.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-content-editable"
-url = "git@github.com:orf/ember-content-editable.git"
-upstream = "git@github.com:st-h/ember-content-editable.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-data-factory-guy"
-url = "git@github.com:orf/ember-data-factory-guy.git"
-upstream = "git@github.com:danielspaniel/ember-data-factory-guy.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-font-awesome"
-url = "git@github.com:orf/ember-font-awesome.git"
-upstream = "git@github.com:martndemus/ember-font-awesome.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-power-select"
-url = "git@github.com:orf/ember-power-select.git"
-upstream = "git@github.com:cibernox/ember-power-select.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-sanitize"
-url = "git@github.com:orf/ember-sanitize.git"
-upstream = "git@github.com:minutebase/ember-sanitize.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/ember-simple-auth"
-url = "git@github.com:orf/ember-simple-auth.git"
-upstream = "git@github.com:simplabs/ember-simple-auth.git"
 branch = "master"
 
 [[repo]]
@@ -675,12 +331,6 @@ branch = "master"
 [[repo]]
 path = "github/orf/hnewssimulator"
 url = "git@github.com:orf/hnewssimulator.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/homebrew-core"
-url = "git@github.com:orf/homebrew-core.git"
-upstream = "git@github.com:Homebrew/homebrew-core.git"
 branch = "master"
 
 [[repo]]
@@ -790,12 +440,6 @@ upstream = "git@github.com:berinhard/model_mommy.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/mrpython"
-url = "git@github.com:orf/mrpython.git"
-upstream = "git@github.com:petermelias/mrpython.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/node_exporter"
 url = "git@github.com:orf/node_exporter.git"
 upstream = "git@github.com:prometheus/node_exporter.git"
@@ -808,19 +452,9 @@ upstream = "git@github.com:nushell/nushell.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/orf-homebrew"
-url = "git@github.com:orf/orf-homebrew.git"
-
-[[repo]]
 path = "github/orf/orf.github.io"
 url = "git@github.com:orf/orf.github.io.git"
 upstream = "git@github.com:mmistakes/minimal-mistakes.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/origin"
-url = "git@github.com:orf/origin.git"
-upstream = "git@github.com:openshift/origin.git"
 branch = "master"
 
 [[repo]]
@@ -858,25 +492,8 @@ url = "git@github.com:orf/presentations.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/puppeteer"
-url = "git@github.com:orf/puppeteer.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/pyelasticsearch"
-url = "git@github.com:orf/pyelasticsearch.git"
-upstream = "git@github.com:pyelasticsearch/pyelasticsearch.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/pypaper"
 url = "git@github.com:orf/pypaper.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/pyramid_debugtoolbar"
-url = "git@github.com:orf/pyramid_debugtoolbar.git"
-upstream = "git@github.com:Pylons/pyramid_debugtoolbar.git"
 branch = "master"
 
 [[repo]]
@@ -889,42 +506,6 @@ branch = "master"
 path = "github/orf/pysaml2"
 url = "git@github.com:orf/pysaml2.git"
 upstream = "git@github.com:IdentityPython/pysaml2.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/pytest-asyncio"
-url = "git@github.com:orf/pytest-asyncio.git"
-upstream = "git@github.com:pytest-dev/pytest-asyncio.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/pytest-black"
-url = "git@github.com:orf/pytest-black.git"
-upstream = "git@github.com:shopkeep/pytest-black.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/pytest-pylint"
-url = "git@github.com:orf/pytest-pylint.git"
-upstream = "git@github.com:carsongee/pytest-pylint.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/python-gitlab"
-url = "git@github.com:orf/python-gitlab.git"
-upstream = "git@github.com:python-gitlab/python-gitlab.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/python-libnmap"
-url = "git@github.com:orf/python-libnmap.git"
-upstream = "git@github.com:savon-noir/python-libnmap.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/python-prompt-toolkit"
-url = "git@github.com:orf/python-prompt-toolkit.git"
-upstream = "git@github.com:prompt-toolkit/python-prompt-toolkit.git"
 branch = "master"
 
 [[repo]]
@@ -970,24 +551,6 @@ url = "git@github.com:orf/spam.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/sqlalchemy-datatables"
-url = "git@github.com:orf/sqlalchemy-datatables.git"
-upstream = "git@github.com:Pegase745/sqlalchemy-datatables.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/sqlalchemy-searchable"
-url = "git@github.com:orf/sqlalchemy-searchable.git"
-upstream = "git@github.com:kvesteri/sqlalchemy-searchable.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/sqlalchemy-utils"
-url = "git@github.com:orf/sqlalchemy-utils.git"
-upstream = "git@github.com:kvesteri/sqlalchemy-utils.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/stellar"
 url = "git@github.com:orf/stellar.git"
 upstream = "git@github.com:fastmonkeys/stellar.git"
@@ -1006,39 +569,9 @@ upstream = "git@github.com:marvelapp/swaggerize-express.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/syte"
-url = "git@github.com:orf/syte.git"
-upstream = "git@github.com:rigoneri/syte.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/tag-github"
-url = "git@github.com:orf/tag-github.git"
-upstream = "git@github.com:porter-io/tag-github.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/tensorflow"
-url = "git@github.com:orf/tensorflow.git"
-upstream = "git@github.com:tensorflow/tensorflow.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/til"
-url = "git@github.com:orf/til.git"
-upstream = "git@github.com:jbranchaud/til.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/transmission"
 url = "git@github.com:orf/transmission.git"
 upstream = "git@github.com:transmission/transmission.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/unbabel-py"
-url = "git@github.com:orf/unbabel-py.git"
-upstream = "git@github.com:Unbabel/unbabel-py.git"
 branch = "master"
 
 [[repo]]
@@ -1049,18 +582,6 @@ branch = "master"
 [[repo]]
 path = "github/orf/vulnerable_website"
 url = "git@github.com:orf/vulnerable_website.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/wand"
-url = "git@github.com:orf/wand.git"
-upstream = "git@github.com:emcconville/wand.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/watchman"
-url = "git@github.com:orf/watchman.git"
-upstream = "git@github.com:facebook/watchman.git"
 branch = "master"
 
 [[repo]]
@@ -1089,12 +610,6 @@ url = "git@github.com:orf/wow_economy.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/wtforms-alchemy"
-url = "git@github.com:orf/wtforms-alchemy.git"
-upstream = "git@github.com:kvesteri/wtforms-alchemy.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/xcat"
 url = "git@github.com:orf/xcat.git"
 branch = "master"
@@ -1115,18 +630,55 @@ url = "git@github.com:orf/xpath-expressions.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/zola"
-url = "git@github.com:orf/zola.git"
-upstream = "git@github.com:getzola/zola.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/zomato-map"
 url = "git@github.com:orf/zomato-map.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/zpyi"
-url = "git@github.com:orf/zpyi.git"
-upstream = "git@github.com:sakshamsharma/zpyi.git"
+path = "gitlab/archived"
+url = "git@gitlab.com:tom6/archived.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/backend-coding-challenge"
+url = "git@gitlab.com:tom6/backend-coding-challenge.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-ce"
+url = "git@gitlab.com:tom6/gitlab-ce.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/jiri-gitlab"
+url = "git@gitlab.com:tom6/jiri-gitlab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/jiri-mirror"
+url = "git@gitlab.com:tom6/jiri-mirror.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/metrics-bug"
+url = "git@gitlab.com:tom6/metrics-bug.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/minimal-ruby-app"
+url = "git@gitlab.com:tom6/minimal-ruby-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/resizer"
+url = "git@gitlab.com:tom6/resizer.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/test-empty-project"
+url = "git@gitlab.com:tom6/test-empty-project.git"
+
+[[repo]]
+path = "gitlab/test-lfs"
+url = "git@gitlab.com:tom6/test-lfs.git"
 branch = "master"

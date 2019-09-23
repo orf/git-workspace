@@ -16,7 +16,12 @@ pub struct Repository {
 }
 
 impl Repository {
-    pub fn new(path: String, url: String, branch: Option<String>, upstream: Option<String>) -> Repository {
+    pub fn new(
+        path: String,
+        url: String,
+        branch: Option<String>,
+        upstream: Option<String>,
+    ) -> Repository {
         Repository {
             path,
             url,
@@ -49,7 +54,7 @@ impl Repository {
             .output()?;
 
         if self.upstream.is_some() {
-             self.set_upstream(root,self.upstream.as_ref().unwrap().as_str());
+            self.set_upstream(root, self.upstream.as_ref().unwrap().as_str());
         }
 
         Ok(())

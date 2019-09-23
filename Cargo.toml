@@ -16,6 +16,7 @@ paw = "1.0.0"
 rayon = "1.2.0"
 graphql_client = "0.8.0"
 reqwest = "0.9.20"
+walkdir = "2.2.9"
 
 [profile.release]
 lto = true

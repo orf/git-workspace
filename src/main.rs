@@ -1,17 +1,19 @@
 extern crate failure;
 extern crate git2;
-extern crate serde;
-extern crate structopt;
 extern crate graphql_client;
 extern crate reqwest;
+extern crate serde;
+extern crate structopt;
+extern crate walkdir;
 
 use crate::config::Config;
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use failure::Error;
+use rayon::prelude::*;
 use std::path::PathBuf;
 use structopt::StructOpt;
-use rayon::prelude::*;
+use walkdir::{DirEntry, WalkDir};
 
 mod config;
 mod lockfile;
@@ -50,11 +52,19 @@ fn update(workspace: &PathBuf) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
     repositories.par_iter().for_each(|repo| {
-        println!("{}", repo.full_path(workspace).to_string_lossy());
         if !repo.exists(workspace) {
+            println!("{}", repo.full_path(workspace).to_string_lossy());
             repo.clone(workspace);
         }
     });
+
+    let directory_roots: Vec<DirEntry> = WalkDir::new(workspace)
+        .into_iter()
+        .filter_entry(|e| !e.path().join(".git").is_dir())
+        .filter_map(|e| e.ok())
+        .filter(|e| e.file_type().is_dir() && e.path() != workspace)
+        .collect();
+    println!("{:?}", directory_roots);
     Ok(())
 }
 

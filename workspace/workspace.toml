@@ -2,10 +2,10 @@
 provider = "github"
 user = "orf"
 
-[onfido]
-provider = "gitlab"
-group = "gitlab-org"
-url = "https://gitlab.onfido.com"
+#[onfido]
+#provider = "gitlab"
+#group = "gitlab-org"
+#url = "https://gitlab.onfido.com"
 
 [gitlab]
 provider = "gitlab"
