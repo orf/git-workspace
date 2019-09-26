@@ -33,6 +33,14 @@ pub enum GitlabProvider {
 )]
 pub struct UserRepositories;
 
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "src/providers/graphql/gitlab/schema.json",
+    query_path = "src/providers/graphql/gitlab/projects.graphql",
+    response_derives = "Debug"
+)]
+pub struct GroupRepositories;
+
 impl GitlabProvider {
     fn fetch_user_repositories(
         &self,
@@ -67,14 +75,12 @@ impl GitlabProvider {
             .filter_map(|x| x.node);
         for repo in gitlab_repositories {
             let branch = repo.repository.and_then(|r| r.root_ref);
-            repositories.push(
-                Repository::new(
-                    format!("{}/{}", root, repo.path),
-                    repo.ssh_url_to_repo.expect("Unknown SSH URL"),
-                    branch,
-                    None
-                )
-            );
+            repositories.push(Repository::new(
+                format!("{}/{}", root, repo.full_path),
+                repo.ssh_url_to_repo.expect("Unknown SSH URL"),
+                branch,
+                None,
+            ));
         }
         Ok(repositories)
     }
@@ -83,12 +89,8 @@ impl GitlabProvider {
 impl Provider for GitlabProvider {
     fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
         let repositories = match self {
-            GitlabProvider::User { user, url } => {
-                self.fetch_user_repositories(root,user, url)?
-            }
-            GitlabProvider::Group { group, url } => {
-                vec![]
-            }
+            GitlabProvider::User { user, url } => self.fetch_user_repositories(root, user, url)?,
+            GitlabProvider::Group { group, url } => vec![],
         };
         Ok(repositories)
     }

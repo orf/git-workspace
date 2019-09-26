@@ -8,17 +8,20 @@ extern crate walkdir;
 
 use crate::config::Config;
 use crate::lockfile::Lockfile;
-use crate::repository::Repository;
+use crate::progress::ProgressSender;
 use failure::Error;
 use rayon::prelude::*;
 use std::path::PathBuf;
 use structopt::StructOpt;
 use walkdir::{DirEntry, WalkDir};
+use std::thread;
+use std::sync::mpsc::channel;
 
 mod config;
 mod lockfile;
 mod providers;
 mod repository;
+mod progress;
 
 #[derive(StructOpt)]
 #[structopt(name = "git-workspace", author, about)]
@@ -51,10 +54,17 @@ fn main(args: Args) -> Result<(), Error> {
 fn update(workspace: &PathBuf) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
-    repositories.par_iter().for_each(|repo| {
+
+    let (tx, rx) = channel();
+
+    let sender = ProgressSender::new(tx);
+
+
+    repositories.par_iter().for_each_with(sender, |sender, repo| {
+        sender.notify(&"hello there".to_string());
         if !repo.exists(workspace) {
             println!("{}", repo.full_path(workspace).to_string_lossy());
-            repo.clone(workspace);
+            //repo.clone(workspace);
         }
     });
 

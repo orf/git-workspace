@@ -319,11 +319,6 @@ upstream = "git@github.com:eatnumber1/goal.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/google-cloud-sdk-helm"
-url = "git@github.com:orf/google-cloud-sdk-helm.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/gping"
 url = "git@github.com:orf/gping.git"
 branch = "master"
@@ -635,50 +630,50 @@ url = "git@github.com:orf/zomato-map.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/archived"
+path = "gitlab/tom6/archived"
 url = "git@gitlab.com:tom6/archived.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/backend-coding-challenge"
+path = "gitlab/tom6/backend-coding-challenge"
 url = "git@gitlab.com:tom6/backend-coding-challenge.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/gitlab-ce"
+path = "gitlab/tom6/gitlab-ce"
 url = "git@gitlab.com:tom6/gitlab-ce.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/jiri-gitlab"
+path = "gitlab/tom6/jiri-gitlab"
 url = "git@gitlab.com:tom6/jiri-gitlab.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/jiri-mirror"
+path = "gitlab/tom6/jiri-mirror"
 url = "git@gitlab.com:tom6/jiri-mirror.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/metrics-bug"
+path = "gitlab/tom6/metrics-bug"
 url = "git@gitlab.com:tom6/metrics-bug.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/minimal-ruby-app"
+path = "gitlab/tom6/minimal-ruby-app"
 url = "git@gitlab.com:tom6/minimal-ruby-app.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/resizer"
+path = "gitlab/tom6/resizer"
 url = "git@gitlab.com:tom6/resizer.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/test-empty-project"
+path = "gitlab/tom6/test-empty-project"
 url = "git@gitlab.com:tom6/test-empty-project.git"
 
 [[repo]]
-path = "gitlab/test-lfs"
+path = "gitlab/tom6/test-lfs"
 url = "git@gitlab.com:tom6/test-lfs.git"
 branch = "master"

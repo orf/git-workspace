@@ -4,8 +4,6 @@ use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-pub struct CloneError {}
-
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Repository {
@@ -53,8 +51,8 @@ impl Repository {
             .arg(root.join(&self.path))
             .output()?;
 
-        if self.upstream.is_some() {
-            self.set_upstream(root, self.upstream.as_ref().unwrap().as_str());
+        if let Some(upstream) = &self.upstream {
+            self.set_upstream(root, upstream.as_str())?;
         }
 
         Ok(())

@@ -1,10 +1,27 @@
 query UserRepositories($userName: ID!) {
     namespace(fullPath: $userName) {
+        projects(includeSubgroups: true) {
+            edges {
+                node {
+                    archived,
+                    fullPath,
+                    sshUrlToRepo,
+                    repository {
+                        rootRef
+                    }
+                }
+            }
+        }
+    }
+}
+
+query GroupRepositories($groupName: ID!) {
+  group(fullPath: $groupName) {
     projects(includeSubgroups: true) {
       edges {
         node {
           archived,
-          path,
+          fullPath,
           sshUrlToRepo,
           repository {
             rootRef

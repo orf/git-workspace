@@ -5,10 +5,6 @@ use graphql_client::{GraphQLQuery, Response};
 use serde::Deserialize;
 use std::env;
 
-fn default_as_false() -> bool {
-    false
-}
-
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "lowercase", untagged)]
 pub enum GithubProvider {
