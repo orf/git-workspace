@@ -117,11 +117,6 @@ url = "git@github.com:orf/alfred-pycharm.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/alfred-quip-workflow"
-url = "git@github.com:orf/alfred-quip-workflow.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/apple-features"
 url = "git@github.com:orf/apple-features.git"
 branch = "master"
@@ -135,16 +130,6 @@ branch = "master"
 path = "github/orf/blackfriday"
 url = "git@github.com:orf/blackfriday.git"
 upstream = "git@github.com:russross/blackfriday.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/blog"
-url = "git@github.com:orf/blog.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/blog-gatsby"
-url = "git@github.com:orf/blog-gatsby.git"
 branch = "master"
 
 [[repo]]
@@ -195,6 +180,12 @@ upstream = "git@github.com:nilp0inter/cpe.git"
 branch = "develop"
 
 [[repo]]
+path = "github/orf/crates-build-env"
+url = "git@github.com:orf/crates-build-env.git"
+upstream = "git@github.com:rust-lang/crates-build-env.git"
+branch = "master"
+
+[[repo]]
 path = "github/orf/cvsslib"
 url = "git@github.com:orf/cvsslib.git"
 upstream = "git@github.com:ctxis/cvsslib.git"
@@ -235,11 +226,6 @@ branch = "master"
 [[repo]]
 path = "github/orf/django-debug-toolbar-template-timings"
 url = "git@github.com:orf/django-debug-toolbar-template-timings.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/django-docker-box"
-url = "git@github.com:orf/django-docker-box.git"
 branch = "master"
 
 [[repo]]
@@ -418,11 +404,6 @@ upstream = "git@github.com:jsvine/markovify.git"
 branch = "master"
 
 [[repo]]
-path = "github/orf/meetuptracker-frontend"
-url = "git@github.com:orf/meetuptracker-frontend.git"
-branch = "master"
-
-[[repo]]
 path = "github/orf/micro-sentry"
 url = "git@github.com:orf/micro-sentry.git"
 upstream = "git@github.com:tanmulabs/micro-sentry.git"
@@ -533,11 +514,6 @@ branch = "master"
 [[repo]]
 path = "github/orf/sid-ctf"
 url = "git@github.com:orf/sid-ctf.git"
-branch = "master"
-
-[[repo]]
-path = "github/orf/simple"
-url = "git@github.com:orf/simple.git"
 branch = "master"
 
 [[repo]]

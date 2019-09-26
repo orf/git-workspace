@@ -1,6 +1,6 @@
-use std::sync::mpsc::{Sender, Receiver};
-use std::thread::ThreadId;
+use std::sync::mpsc::{Receiver, Sender};
 use std::thread;
+use std::thread::ThreadId;
 
 #[derive(Clone)]
 pub struct ProgressSender {
@@ -9,11 +9,10 @@ pub struct ProgressSender {
 
 impl ProgressSender {
     pub fn new(sender: Sender<(ThreadId, String)>) -> ProgressSender {
-        ProgressSender {
-            sender
-        }
+        ProgressSender { sender }
     }
     pub fn notify(&self, message: &String) {
-        self.sender.send((thread::current().id(), String::from(message)));
+        self.sender
+            .send((thread::current().id(), String::from(message)));
     }
 }

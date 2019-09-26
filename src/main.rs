@@ -12,16 +12,16 @@ use crate::progress::ProgressSender;
 use failure::Error;
 use rayon::prelude::*;
 use std::path::PathBuf;
+use std::sync::mpsc::channel;
+use std::thread;
 use structopt::StructOpt;
 use walkdir::{DirEntry, WalkDir};
-use std::thread;
-use std::sync::mpsc::channel;
 
 mod config;
 mod lockfile;
+mod progress;
 mod providers;
 mod repository;
-mod progress;
 
 #[derive(StructOpt)]
 #[structopt(name = "git-workspace", author, about)]
@@ -59,14 +59,15 @@ fn update(workspace: &PathBuf) -> Result<(), Error> {
 
     let sender = ProgressSender::new(tx);
 
-
-    repositories.par_iter().for_each_with(sender, |sender, repo| {
-        sender.notify(&"hello there".to_string());
-        if !repo.exists(workspace) {
-            println!("{}", repo.full_path(workspace).to_string_lossy());
-            //repo.clone(workspace);
-        }
-    });
+    repositories
+        .par_iter()
+        .for_each_with(sender, |sender, repo| {
+            sender.notify(&"hello there".to_string());
+            if !repo.exists(workspace) {
+                println!("{}", repo.full_path(workspace).to_string_lossy());
+                //repo.clone(workspace);
+            }
+        });
 
     let directory_roots: Vec<DirEntry> = WalkDir::new(workspace)
         .into_iter()

@@ -65,8 +65,16 @@ impl Provider for GithubProvider {
             let response_body: Response<user_repositories::ResponseData> = res.json()?;
             let response_data: user_repositories::ResponseData =
                 response_body.data.expect("missing response data");
-            for repo in response_data.viewer.repositories.nodes.unwrap().iter() {
-                repositories.push(self.parse_repo(root, repo.as_ref().unwrap()))
+            for repo in response_data
+                .viewer
+                .repositories
+                .nodes
+                .unwrap()
+                .iter()
+                .map(|r| r.as_ref().unwrap())
+                .filter(|r| !r.is_archived)
+            {
+                repositories.push(self.parse_repo(root, &repo))
             }
 
             if !response_data.viewer.repositories.page_info.has_next_page {
