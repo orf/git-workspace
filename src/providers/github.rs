@@ -55,7 +55,10 @@ impl Provider for GithubProvider {
         let mut after = None;
 
         loop {
-            let q = Repositories::build_query(repositories::Variables { login: self.name.clone(), after });
+            let q = Repositories::build_query(repositories::Variables {
+                login: self.name.clone(),
+                after,
+            });
             let mut res = client
                 .post("https://api.github.com/graphql")
                 .bearer_auth(github_token.as_str())
