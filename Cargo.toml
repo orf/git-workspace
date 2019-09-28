@@ -1,6 +1,6 @@
 [package]
 name = "git-workspace"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Tom Forbes <tom@tomforb.es>"]
 edition = "2018"
 description = "Manage and update personal and work git repos from multiple providers"
@@ -8,10 +8,10 @@ license = "MIT"
 
 [dependencies]
 toml = "0.5.3"
-serde = { version = "1.0.99", features = ["derive"] }
-git2 = { version = "0.10.0", default-features = false }
+serde = { version = "1.0.101", features = ["derive"] }
+git2 = { version = "0.10.1", default-features = false }
 failure = "0.1.5"
-structopt = { version = "0.3.0", features = [ "paw" ] }
+structopt = { version = "0.3.2", features = [ "paw" ] }
 paw = "1.0.0"
 rayon = "1.2.0"
 graphql_client = "0.8.0"
