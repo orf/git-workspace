@@ -77,6 +77,7 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
         .num_threads(threads)
         .build()?;
 
+    // pool.install means that `.par_iter()` will use the thread pool we've built above.
     pool.install(|| {
         repositories
             .par_iter()

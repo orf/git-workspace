@@ -74,6 +74,9 @@ impl GitlabProvider {
             // Extract the node, which is also Some(T)
             .filter_map(|x| x.node);
         for repo in gitlab_repositories {
+            if repo.archived.unwrap() {
+                continue;
+            }
             let branch = repo.repository.and_then(|r| r.root_ref);
             repositories.push(Repository::new(
                 format!("{}/{}", root, repo.full_path),

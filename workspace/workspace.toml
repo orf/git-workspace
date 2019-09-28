@@ -2,10 +2,10 @@
 #provider = "github"
 #name = "orf"
 
-[github-django]
-provider = "github"
-name = "django"
-#
+#[github-django]
+#provider = "github"
+#name = "django"
+##
 #[github-onfido]
 #provider = "github"
 #name = "onfido"
@@ -14,7 +14,7 @@ name = "django"
 ##provider = "gitlab"
 ##group = "gitlab-org"
 ##url = "https://gitlab.onfido.com"
-#
-#[gitlab]
-#provider = "gitlab"
-#user = "tom6"
+
+[gitlab]
+provider = "gitlab"
+user = "tom6"
