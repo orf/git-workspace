@@ -1,5 +1,6 @@
-query UserRepositories($after: String) {
-    viewer {
+query Repositories($login: String!, $after: String) {
+    repositoryOwner(login: $login) {
+        __typename,
         repositories(first: 100, after: $after) {
             pageInfo {
                 hasNextPage
@@ -17,10 +18,5 @@ query UserRepositories($after: String) {
                 }
             }
         }
-    }
-    rateLimit {
-        limit
-        cost
-        remaining
     }
 }

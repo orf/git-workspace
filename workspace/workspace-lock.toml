@@ -1,4 +1,492 @@
 [[repo]]
+path = "github-django/django/asgi_ipc"
+url = "git@github.com:django/asgi_ipc.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/asgiref"
+url = "git@github.com:django/asgiref.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/channels"
+url = "git@github.com:django/channels.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/channels_redis"
+url = "git@github.com:django/channels_redis.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/code-of-conduct"
+url = "git@github.com:django/code-of-conduct.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/code.djangoproject.com"
+url = "git@github.com:django/code.djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/daphne"
+url = "git@github.com:django/daphne.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/deps"
+url = "git@github.com:django/deps.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django"
+url = "git@github.com:django/django.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-box"
+url = "git@github.com:django/django-box.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-contrib-comments"
+url = "git@github.com:django/django-contrib-comments.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-docker-box"
+url = "git@github.com:django/django-docker-box.git"
+upstream = "git@github.com:orf/django-docker-box.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-docs-translations"
+url = "git@github.com:django/django-docs-translations.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-formtools"
+url = "git@github.com:django/django-formtools.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/django-localflavor"
+url = "git@github.com:django/django-localflavor.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/djangobench"
+url = "git@github.com:django/djangobench.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/djangopeople"
+url = "git@github.com:django/djangopeople.git"
+upstream = "git@github.com:simonw/djangopeople.net.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/djangoproject.com"
+url = "git@github.com:django/djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/djangosnippets.org"
+url = "git@github.com:django/djangosnippets.org.git"
+branch = "master"
+
+[[repo]]
+path = "github-django/django/ticketbot"
+url = "git@github.com:django/ticketbot.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/PyPDF2"
+url = "git@github.com:onfido/PyPDF2.git"
+upstream = "git@github.com:mstamy2/PyPDF2.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/api-java-client"
+url = "git@github.com:onfido/api-java-client.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/api-javascript-client"
+url = "git@github.com:onfido/api-javascript-client.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/api-php-client"
+url = "git@github.com:onfido/api-php-client.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/api-python-client"
+url = "git@github.com:onfido/api-python-client.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/apivore"
+url = "git@github.com:onfido/apivore.git"
+upstream = "git@github.com:westfieldlabs/apivore.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/aws-nuke"
+url = "git@github.com:onfido/aws-nuke.git"
+upstream = "git@github.com:rebuy-de/aws-nuke.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/aws-to-k8s-labels"
+url = "git@github.com:onfido/aws-to-k8s-labels.git"
+upstream = "git@github.com:gcis/aws-to-k8s-labels.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/bisu"
+url = "git@github.com:onfido/bisu.git"
+upstream = "git@github.com:hole19/bisu.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/bitrise-step-open-vpn"
+url = "git@github.com:onfido/bitrise-step-open-vpn.git"
+upstream = "git@github.com:hermanolsson/bitrise-step-open-vpn.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/browserstack-local-ruby"
+url = "git@github.com:onfido/browserstack-local-ruby.git"
+upstream = "git@github.com:browserstack/browserstack-local-ruby.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/canvasfilters"
+url = "git@github.com:onfido/canvasfilters.git"
+upstream = "git@github.com:kig/canvasfilters.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/cb2"
+url = "git@github.com:onfido/cb2.git"
+upstream = "git@github.com:pedro/cb2.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/cucumber-api"
+url = "git@github.com:onfido/cucumber-api.git"
+upstream = "git@github.com:cristian-m-vasile/cucumber-api.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/curious-george"
+url = "git@github.com:onfido/curious-george.git"
+upstream = "git@github.com:gcis/curious-george.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/cypress-graphql-mock"
+url = "git@github.com:onfido/cypress-graphql-mock.git"
+upstream = "git@github.com:tgriesser/cypress-graphql-mock.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/dd-trace-js"
+url = "git@github.com:onfido/dd-trace-js.git"
+upstream = "git@github.com:DataDog/dd-trace-js.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/dependencies-resolver"
+url = "git@github.com:onfido/dependencies-resolver.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-awscli"
+url = "git@github.com:onfido/docker-awscli.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-eks-kubectl"
+url = "git@github.com:onfido/docker-eks-kubectl.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-kubectl"
+url = "git@github.com:onfido/docker-kubectl.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-postgres-toolbox"
+url = "git@github.com:onfido/docker-postgres-toolbox.git"
+upstream = "git@github.com:panubo/docker-postgres-toolbox.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-py3-boto3"
+url = "git@github.com:onfido/docker-py3-boto3.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/docker-zip"
+url = "git@github.com:onfido/docker-zip.git"
+upstream = "git@github.com:kramos/alpine-zip.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/enumerateDevices"
+url = "git@github.com:onfido/enumerateDevices.git"
+upstream = "git@github.com:xdumaine/enumerateDevices.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/envconsul"
+url = "git@github.com:onfido/envconsul.git"
+upstream = "git@github.com:jdotlu/envconsul.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/faiss_prebuilt"
+url = "git@github.com:onfido/faiss_prebuilt.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/fluentd-es-aws"
+url = "git@github.com:onfido/fluentd-es-aws.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/get"
+url = "git@github.com:onfido/get.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/horza"
+url = "git@github.com:onfido/horza.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/jasmine-react-rails"
+url = "git@github.com:onfido/jasmine-react-rails.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/js-client-tracker"
+url = "git@github.com:onfido/js-client-tracker.git"
+upstream = "git@github.com:Woopra/browser-tracker.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/jsonapi-serializers"
+url = "git@github.com:onfido/jsonapi-serializers.git"
+upstream = "git@github.com:fotinakis/jsonapi-serializers.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/k8s-aws-autoscaler"
+url = "git@github.com:onfido/k8s-aws-autoscaler.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/k8s-cleanup"
+url = "git@github.com:onfido/k8s-cleanup.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/k8s-node-check"
+url = "git@github.com:onfido/k8s-node-check.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/k8s-rabbit-pod-autoscaler"
+url = "git@github.com:onfido/k8s-rabbit-pod-autoscaler.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/logstash-filter-cipher_kms"
+url = "git@github.com:onfido/logstash-filter-cipher_kms.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/maru_blog_post_code"
+url = "git@github.com:onfido/maru_blog_post_code.git"
+branch = "development"
+
+[[repo]]
+path = "github-onfido/onfido/mixpanel-android-jar"
+url = "git@github.com:onfido/mixpanel-android-jar.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-android-sample-app"
+url = "git@github.com:onfido/onfido-android-sample-app.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-android-sdk"
+url = "git@github.com:onfido/onfido-android-sdk.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-ios-sdk"
+url = "git@github.com:onfido/onfido-ios-sdk.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-ios-sdk-release"
+url = "git@github.com:onfido/onfido-ios-sdk-release.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-sdk-assets"
+url = "git@github.com:onfido/onfido-sdk-assets.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-sdk-ionic-sample-app"
+url = "git@github.com:onfido/onfido-sdk-ionic-sample-app.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-sdk-react-native-sample-app"
+url = "git@github.com:onfido/onfido-sdk-react-native-sample-app.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-sdk-ui"
+url = "git@github.com:onfido/onfido-sdk-ui.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-sdk-web-sample-app"
+url = "git@github.com:onfido/onfido-sdk-web-sample-app.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido-xamarin-sample-app"
+url = "git@github.com:onfido/onfido-xamarin-sample-app.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/onfido.net"
+url = "git@github.com:onfido/onfido.net.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/php-onfido"
+url = "git@github.com:onfido/php-onfido.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/pinion-pipeline"
+url = "git@github.com:onfido/pinion-pipeline.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/pool-ladder"
+url = "git@github.com:onfido/pool-ladder.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/pyonfido"
+url = "git@github.com:onfido/pyonfido.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/react-modal-onfido"
+url = "git@github.com:onfido/react-modal-onfido.git"
+upstream = "git@github.com:reactjs/react-modal.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/react-native"
+url = "git@github.com:onfido/react-native.git"
+upstream = "git@github.com:facebook/react-native.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/react-native-website"
+url = "git@github.com:onfido/react-native-website.git"
+upstream = "git@github.com:facebook/react-native-website.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/react-orientation-aware-img"
+url = "git@github.com:onfido/react-orientation-aware-img.git"
+
+[[repo]]
+path = "github-onfido/onfido/react-webcam"
+url = "git@github.com:onfido/react-webcam.git"
+upstream = "git@github.com:mozmorris/react-webcam.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/s3-uploader"
+url = "git@github.com:onfido/s3-uploader.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/surge"
+url = "git@github.com:onfido/surge.git"
+upstream = "git@github.com:sintaxi/surge.git"
+branch = "release-onfido/0.20.2"
+
+[[repo]]
+path = "github-onfido/onfido/switch_user"
+url = "git@github.com:onfido/switch_user.git"
+upstream = "git@github.com:flyerhzm/switch_user.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/terraform-provider-bitbucket"
+url = "git@github.com:onfido/terraform-provider-bitbucket.git"
+upstream = "git@github.com:terraform-providers/terraform-provider-bitbucket.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/terraform_batch"
+url = "git@github.com:onfido/terraform_batch.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/tradesman"
+url = "git@github.com:onfido/tradesman.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/travis-weigh-in"
+url = "git@github.com:onfido/travis-weigh-in.git"
+upstream = "git@github.com:danvk/travis-weigh-in.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/tzu"
+url = "git@github.com:onfido/tzu.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/tzu_mock"
+url = "git@github.com:onfido/tzu_mock.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/tzu_stats"
+url = "git@github.com:onfido/tzu_stats.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/vaultkenv"
+url = "git@github.com:onfido/vaultkenv.git"
+branch = "master"
+
+[[repo]]
+path = "github-onfido/onfido/zapier-similar-web"
+url = "git@github.com:onfido/zapier-similar-web.git"
+branch = "master"
+
+[[repo]]
 path = "github/TheZ3ro/apk2java-linux"
 url = "git@github.com:TheZ3ro/apk2java-linux.git"
 branch = "master"

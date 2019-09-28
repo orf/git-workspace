@@ -1,6 +1,14 @@
 [github]
 provider = "github"
-user = "orf"
+name = "orf"
+
+[github-django]
+provider = "github"
+name = "django"
+
+[github-onfido]
+provider = "github"
+name = "onfido"
 
 #[onfido]
 #provider = "gitlab"

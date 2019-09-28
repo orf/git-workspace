@@ -6,10 +6,9 @@ use serde::Deserialize;
 use std::env;
 
 #[derive(Deserialize, Debug)]
-#[serde(rename_all = "lowercase", untagged)]
-pub enum GithubProvider {
-    User { user: String },
-    Org { org: String },
+#[serde(rename_all = "lowercase")]
+pub struct GithubProvider {
+    name: String,
 }
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
@@ -21,13 +20,13 @@ type GitSSHRemote = String;
     query_path = "src/providers/graphql/github/projects.graphql",
     response_derives = "Debug"
 )]
-pub struct UserRepositories;
+pub struct Repositories;
 
 impl GithubProvider {
     fn parse_repo(
         &self,
         root: &String,
-        repo: &user_repositories::UserRepositoriesViewerRepositoriesNodes,
+        repo: &repositories::RepositoriesRepositoryOwnerRepositoriesNodes,
     ) -> Repository {
         let default_branch = repo
             .default_branch_ref
@@ -56,18 +55,17 @@ impl Provider for GithubProvider {
         let mut after = None;
 
         loop {
-            let q = UserRepositories::build_query(user_repositories::Variables { after });
+            let q = Repositories::build_query(repositories::Variables { login: self.name.clone(), after });
             let mut res = client
                 .post("https://api.github.com/graphql")
                 .bearer_auth(github_token.as_str())
                 .json(&q)
                 .send()?;
-            let response_body: Response<user_repositories::ResponseData> = res.json()?;
-            let response_data: user_repositories::ResponseData =
+            let response_body: Response<repositories::ResponseData> = res.json()?;
+            let response_data: repositories::ResponseData =
                 response_body.data.expect("missing response data");
-            for repo in response_data
-                .viewer
-                .repositories
+            let response_repositories = response_data.repository_owner.unwrap().repositories;
+            for repo in response_repositories
                 .nodes
                 .unwrap()
                 .iter()
@@ -77,10 +75,10 @@ impl Provider for GithubProvider {
                 repositories.push(self.parse_repo(root, &repo))
             }
 
-            if !response_data.viewer.repositories.page_info.has_next_page {
+            if !response_repositories.page_info.has_next_page {
                 break;
             }
-            after = response_data.viewer.repositories.page_info.end_cursor;
+            after = response_repositories.page_info.end_cursor;
         }
 
         Ok(repositories)

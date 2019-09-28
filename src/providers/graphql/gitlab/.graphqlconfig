@@ -1,9 +1,9 @@
 {
-  "name": "Github GraphQL",
+  "name": "Gitlab GraphQL",
   "schemaPath": "schema.json",
   "extensions": {
     "endpoints": {
-      "Default GraphQL Endpoint": {
+      "Gitlab": {
         "url": "https://gitlab.com/api/graphql",
         "headers": {
           "user-agent": "JS GraphQL",
