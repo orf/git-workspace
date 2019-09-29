@@ -1,25 +1,26 @@
-extern crate ansi_escapes;
+extern crate console;
 extern crate failure;
 extern crate fs_extra;
 extern crate git2;
 extern crate graphql_client;
+extern crate indicatif;
 extern crate reqwest;
 extern crate serde;
-extern crate strip_ansi_escapes;
 extern crate structopt;
 extern crate walkdir;
 
 use crate::config::{Config, ProviderSource};
 use crate::lockfile::Lockfile;
-use crate::progress::{ProgressMonitor, ProgressSender};
+use crate::progress::ProgressManager;
 use failure::Error;
-use rayon::prelude::*;
-use std::collections::{HashSet};
+use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::mpsc::channel;
 use std::thread;
 use structopt::StructOpt;
-use walkdir::{WalkDir};
+use walkdir::WalkDir;
 
 mod config;
 mod lockfile;
@@ -86,34 +87,37 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
 
-    let (tx, rx) = channel();
-    let sender = ProgressSender::new(tx);
-    let receiver = ProgressMonitor::new(rx);
-
-    let monitor_thread = thread::spawn(move || {
-        receiver.start();
-    });
+    let progress = MultiProgress::new();
+    let manager = ProgressManager::new(&progress, threads);
+    let total_bar = progress.add(manager.create_total_bar(repositories.len() as u64));
 
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build()?;
 
+    let waiting_thread = thread::spawn(move || {
+        progress.join_and_clear();
+    });
+
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
     pool.install(|| {
         repositories
             .par_iter()
-            .for_each_with(sender, |sender, repo| {
-                let start = sender.start(repo.name());
+            .progress_with(total_bar)
+            .for_each(|repo| {
+                let bar = manager.get_bar();
+                bar.set_message("starting");
                 if fetch && repo.exists(workspace) {
-                    repo.fetch(workspace, &sender);
+                    repo.fetch(workspace, &bar);
                 } else if !fetch && !repo.exists(workspace) {
-                    repo.clone(workspace, &sender);
+                    repo.clone(workspace, &bar);
                 }
-                sender.finish(start);
+                manager.put_bar(bar);
             })
     });
+    manager.signal_done();
 
-    monitor_thread.join();
+    waiting_thread.join();
 
     let archive_directory = workspace.join(".archive");
 

@@ -81,7 +81,7 @@ impl Provider for GithubProvider {
                 .map(|r| r.as_ref().unwrap())
                 .filter(|r| !r.is_archived)
             {
-                repositories.push(self.parse_repo(&self.path,&repo))
+                repositories.push(self.parse_repo(&self.path, &repo))
             }
 
             if !response_repositories.page_info.has_next_page {

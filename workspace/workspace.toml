@@ -1,9 +1,5 @@
 [[provider]]
-provider = "github"
-name = "django"
-path = "github"
-
-[[provider]]
-provider = "github"
-name = "orf"
-path = "github"
+provider = "gitlab"
+user = "tom6"
+url = "https://gitlab.com"
+path = "gitlab"

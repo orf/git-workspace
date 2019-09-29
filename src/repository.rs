@@ -1,11 +1,11 @@
-use crate::progress::ProgressSender;
+use console::{strip_ansi_codes, truncate_str};
 use failure::Error;
 use git2::Repository as Git2Repo;
+use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use strip_ansi_escapes;
 
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
@@ -43,12 +43,8 @@ impl Repository {
         Ok(())
     }
 
-    fn run_with_progress(
-        &self,
-        command: &mut Command,
-        sender: &ProgressSender,
-    ) -> Result<(), Error> {
-        sender.update("starting".to_string());
+    fn run_with_progress(&self, command: &mut Command, bar: &ProgressBar) -> Result<(), Error> {
+        bar.set_message(format!("{}: starting", self.name()).as_str());
         let mut spawned = command
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
@@ -61,21 +57,17 @@ impl Repository {
                 if output.is_empty() {
                     continue;
                 }
-                let plain_bytes = strip_ansi_escapes::strip(output);
-                let line = String::from_utf8(plain_bytes.unwrap());
-                let mut line = line.unwrap().trim().replace('\n', " ");
-                if line.len() >= 70 {
-                    line.truncate(70);
-                    line.push_str("...");
-                }
-                sender.update(line.to_string());
+                let line = std::str::from_utf8(&output).unwrap();
+                let plain_line = strip_ansi_codes(line);
+                let truncated_line = truncate_str(plain_line.trim(), 70, "...");
+                bar.set_message(format!("{}: {}", self.name(), truncated_line).as_str());
             }
         }
         spawned.wait()?;
         Ok(())
     }
 
-    pub fn fetch(&self, root: &PathBuf, sender: &ProgressSender) -> Result<(), Error> {
+    pub fn fetch(&self, root: &PathBuf, bar: &ProgressBar) -> Result<(), Error> {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
@@ -86,12 +78,12 @@ impl Repository {
             .arg("--recurse-submodules=on-demand")
             .arg("--progress");
 
-        self.run_with_progress(child, sender)?;
+        self.run_with_progress(child, bar)?;
 
         Ok(())
     }
 
-    pub fn clone(&self, root: &PathBuf, sender: &ProgressSender) -> Result<(), Error> {
+    pub fn clone(&self, root: &PathBuf, bar: &ProgressBar) -> Result<(), Error> {
         let mut command = Command::new("git");
 
         let child = command
@@ -101,7 +93,7 @@ impl Repository {
             .arg(&self.url)
             .arg(root.join(&self.path));
 
-        self.run_with_progress(child, sender)?;
+        self.run_with_progress(child, bar)?;
 
         if let Some(upstream) = &self.upstream {
             self.set_upstream(root, upstream.as_str())?;

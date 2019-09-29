@@ -1,91 +1,48 @@
-use ansi_escapes;
+use indicatif::{MultiProgress, ProgressBar, ProgressStyle};
+use std::collections::HashMap;
 use std::sync::mpsc::{Receiver, Sender};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use std::thread::ThreadId;
 use std::time::{Duration, Instant};
 
-#[derive(Debug)]
-pub enum Progress {
-    Start(String),
-    Update(String),
-    Finish(Duration),
+pub struct ProgressManager {
+    bars: Arc<Mutex<Vec<ProgressBar>>>,
 }
 
-#[derive(Clone)]
-pub struct ProgressSender {
-    sender: Sender<(ThreadId, Progress)>,
-}
+impl ProgressManager {
+    pub fn new(multi_bar: &MultiProgress, threads: usize) -> ProgressManager {
+        let bars: Vec<ProgressBar> = (0..threads)
+            .map(|_| multi_bar.add(ProgressBar::new_spinner()))
+            .inspect(|p| p.enable_steady_tick(200))
+            .inspect(|p| p.set_message("waiting..."))
+            .collect();
+        let locked_bars = Arc::new(Mutex::new(bars));
 
-impl ProgressSender {
-    pub fn new(sender: Sender<(ThreadId, Progress)>) -> ProgressSender {
-        ProgressSender { sender }
+        ProgressManager { bars: locked_bars }
     }
-    pub fn start(&mut self, repo_name: String) -> Instant {
-        self.notify(Progress::Start(repo_name));
-        Instant::now()
+    pub fn create_total_bar(&self, total: u64) -> ProgressBar {
+        let bar = ProgressBar::new(total);
+        bar.set_style(
+            ProgressStyle::default_bar()
+                .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})")
+                .progress_chars("#>-"),
+        );
+        bar
     }
-    pub fn update(&self, msg: String) {
-        self.notify(Progress::Update(msg));
+    pub fn get_bar(&self) -> ProgressBar {
+        self.bars.lock().unwrap().pop().unwrap()
     }
-    pub fn finish(&self, start: Instant) {
-        self.notify(Progress::Finish(start.elapsed()))
+    pub fn put_bar(&self, bar: ProgressBar) {
+        bar.reset();
+        bar.set_message("waiting...");
+        self.bars.lock().unwrap().push(bar);
     }
-    fn notify(&self, progress: Progress) {
-        self.sender.send((thread::current().id(), progress));
-    }
-}
-
-pub struct ProgressMonitor {
-    receiver: Receiver<(ThreadId, Progress)>,
-}
-
-impl ProgressMonitor {
-    pub fn new(receiver: Receiver<(ThreadId, Progress)>) -> ProgressMonitor {
-        ProgressMonitor { receiver }
-    }
-
-    pub fn start(&self) {
-        /*
-        Here is how this works:
-        We receive a status message from each thread, with it's thread ID.
-        If the message is a Start message, we push it's thread ID and a message into the stack
-        If it's an update we replace the message in the stack with the provided string
-        If it's a finish message we write a message about the length of the clone.
-        At the end of the message processing we print a summary of all the thread statuses.
-        We use an ansi escape code to move the cursor to the start at the beginning of each
-        processing, which lets us overwrite the last status update.
-        */
-        let mut stack: Vec<(ThreadId, String, String)> = vec![];
-        for (thread_id, msg) in self.receiver.iter() {
-            let start_lines = stack.len() as u16;
-            print!("{}", ansi_escapes::EraseLines(start_lines + 1));
-
-            match msg {
-                Progress::Start(repo) => {
-                    stack.push((thread_id, repo, "".to_string()));
-                }
-                Progress::Update(msg) => {
-                    stack
-                        .iter_mut()
-                        .filter(|t| t.0 == thread_id)
-                        .for_each(|t| t.2 = msg.clone());
-                }
-                Progress::Finish(duration) => {
-                    let position = stack
-                        .iter()
-                        .position(|(id, _, _)| id == &thread_id)
-                        .unwrap();
-                    let (_, removed_repo, _) = stack.remove(position);
-                    let duration = duration.as_secs();
-                    if duration > 30 {
-                        println!("{} cloned in {} seconds", removed_repo, duration);
-                    }
-                }
-            }
-
-            for (_, repo, msg) in stack.iter() {
-                println!("{}: {}", repo, msg);
-            }
+    pub fn signal_done(&self) {
+        // Mark all bars as complete
+        let bars = self.bars.lock().unwrap();
+        for bar in bars.iter() {
+            bar.finish();
         }
     }
 }

@@ -17,10 +17,9 @@ rayon = "1.2.0"
 graphql_client = "0.8.0"
 reqwest = "0.9.20"
 walkdir = "2.2.9"
-pbr = "1.0.2"
-ansi-escapes = "0.1.0"
-strip-ansi-escapes = "0.1.0"
 fs_extra = "1.1.0"
+indicatif = {version = "*", features = ["with_rayon"]}
+console = "0.9.0"
 
 [profile.release]
 lto = true

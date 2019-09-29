@@ -27,7 +27,7 @@ impl Config {
         Ok(contents.providers)
     }
     pub fn write(&self, providers: Vec<ProviderSource>) -> Result<(), Error> {
-        let toml = toml::to_string(&ConfigContents { providers} )?;
+        let toml = toml::to_string(&ConfigContents { providers })?;
         fs::write(&self.path, toml)?;
         Ok(())
     }

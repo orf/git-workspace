@@ -35,7 +35,7 @@ pub enum GitlabProvider {
         url: String,
         #[structopt(long = "path", default_value = "gitlab")]
         #[structopt(about = "Clone repositories to a specific base path")]
-        path: String
+        path: String,
     },
 }
 
@@ -106,7 +106,9 @@ impl GitlabProvider {
 impl Provider for GitlabProvider {
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let repositories = match self {
-            GitlabProvider::User { user, url, path } => self.fetch_user_repositories(&path,user, url)?,
+            GitlabProvider::User { user, url, path } => {
+                self.fetch_user_repositories(&path, user, url)?
+            }
             GitlabProvider::Group { group, url, path } => vec![],
         };
         Ok(repositories)
