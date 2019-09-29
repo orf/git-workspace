@@ -25,7 +25,7 @@ impl Lockfile {
         Ok(config.repos)
     }
 
-    pub fn write(&self, repositories: Vec<Repository>) -> Result<(), Error> {
+    pub fn write(&self, repositories: &Vec<Repository>) -> Result<(), Error> {
         let mut sorted_repositories = repositories.clone();
         sorted_repositories.sort();
 

@@ -2,13 +2,19 @@ use crate::providers::Provider;
 use crate::repository::Repository;
 use failure::Error;
 use graphql_client::{GraphQLQuery, Response};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::env;
+use structopt::StructOpt;
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "lowercase")]
+#[derive(StructOpt)]
+#[structopt(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {
-    name: String,
+    pub name: String,
+    #[structopt(long = "path", default_value = "github")]
+    #[structopt(about = "Clone repositories to a specific base path")]
+    path: String,
 }
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
@@ -25,7 +31,7 @@ pub struct Repositories;
 impl GithubProvider {
     fn parse_repo(
         &self,
-        root: &String,
+        path: &String,
         repo: &repositories::RepositoriesRepositoryOwnerRepositoriesNodes,
     ) -> Repository {
         let default_branch = repo
@@ -38,7 +44,7 @@ impl GithubProvider {
             .and_then(|parent| Some(parent.ssh_url.clone()));
 
         Repository::new(
-            format!("{}/{}", root, repo.name_with_owner.clone()),
+            format!("{}/{}", path, repo.name_with_owner.clone()),
             repo.ssh_url.clone(),
             default_branch,
             upstream,
@@ -47,7 +53,7 @@ impl GithubProvider {
 }
 
 impl Provider for GithubProvider {
-    fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
+    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let github_token = env::var("GITHUB_TOKEN")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
@@ -75,7 +81,7 @@ impl Provider for GithubProvider {
                 .map(|r| r.as_ref().unwrap())
                 .filter(|r| !r.is_archived)
             {
-                repositories.push(self.parse_repo(root, &repo))
+                repositories.push(self.parse_repo(&self.path,&repo))
             }
 
             if !response_repositories.page_info.has_next_page {

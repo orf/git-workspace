@@ -2,26 +2,40 @@ use crate::providers::Provider;
 use crate::repository::Repository;
 use failure::Error;
 use graphql_client::{GraphQLQuery, Response};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::env;
+use structopt::StructOpt;
+
+static DEFAULT_GITLAB_URL: &'static str = "https://gitlab.com";
 
 fn public_gitlab_url() -> String {
-    "https://gitlab.com".to_string()
+    DEFAULT_GITLAB_URL.to_string()
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(untagged)]
 #[serde(rename_all = "lowercase")]
+#[derive(StructOpt)]
 pub enum GitlabProvider {
+    #[structopt(about = "Add a Gitlab user by name")]
     User {
         user: String,
         #[serde(default = "public_gitlab_url")]
+        #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
         url: String,
+        #[structopt(long = "path", default_value = "gitlab")]
+        #[structopt(about = "Clone repositories to a specific base path")]
+        path: String,
     },
+    #[structopt(about = "Add a Gitlab group by name")]
     Group {
         group: String,
         #[serde(default = "public_gitlab_url")]
+        #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
         url: String,
+        #[structopt(long = "path", default_value = "gitlab")]
+        #[structopt(about = "Clone repositories to a specific base path")]
+        path: String
     },
 }
 
@@ -44,7 +58,7 @@ pub struct GroupRepositories;
 impl GitlabProvider {
     fn fetch_user_repositories(
         &self,
-        root: &String,
+        path: &String,
         username: &String,
         url: &String,
     ) -> Result<Vec<Repository>, Error> {
@@ -79,7 +93,7 @@ impl GitlabProvider {
             }
             let branch = repo.repository.and_then(|r| r.root_ref);
             repositories.push(Repository::new(
-                format!("{}/{}", root, repo.full_path),
+                format!("{}/{}", path, repo.full_path),
                 repo.ssh_url_to_repo.expect("Unknown SSH URL"),
                 branch,
                 None,
@@ -90,10 +104,10 @@ impl GitlabProvider {
 }
 
 impl Provider for GitlabProvider {
-    fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
+    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let repositories = match self {
-            GitlabProvider::User { user, url } => self.fetch_user_repositories(root, user, url)?,
-            GitlabProvider::Group { group, url } => vec![],
+            GitlabProvider::User { user, url, path } => self.fetch_user_repositories(&path,user, url)?,
+            GitlabProvider::Group { group, url, path } => vec![],
         };
         Ok(repositories)
     }

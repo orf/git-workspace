@@ -1,11 +1,17 @@
 use failure::Error;
-use serde::Deserialize;
-use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
+use structopt::StructOpt;
 
 use crate::providers::{GithubProvider, GitlabProvider, Provider};
 use crate::repository::Repository;
+
+#[derive(Deserialize, Serialize, Debug)]
+struct ConfigContents {
+    #[serde(rename = "provider", default)]
+    providers: Vec<ProviderSource>,
+}
 
 pub struct Config {
     path: PathBuf,
@@ -15,16 +21,22 @@ impl Config {
     pub fn new(path: PathBuf) -> Config {
         Config { path }
     }
-    pub fn read(&self) -> Result<HashMap<String, ProviderSource>, Error> {
+    pub fn read(&self) -> Result<Vec<ProviderSource>, Error> {
         let file_contents = fs::read_to_string(&self.path)?;
-        let contents: HashMap<String, ProviderSource> = toml::from_str(file_contents.as_str())?;
-        Ok(contents)
+        let contents: ConfigContents = toml::from_str(file_contents.as_str())?;
+        Ok(contents.providers)
+    }
+    pub fn write(&self, providers: Vec<ProviderSource>) -> Result<(), Error> {
+        let toml = toml::to_string(&ConfigContents { providers} )?;
+        fs::write(&self.path, toml)?;
+        Ok(())
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(tag = "provider")]
 #[serde(rename_all = "lowercase")]
+#[derive(StructOpt)]
 pub enum ProviderSource {
     Gitlab(GitlabProvider),
     Github(GithubProvider),
@@ -38,7 +50,7 @@ impl ProviderSource {
         }
     }
 
-    pub fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error> {
-        Ok(self.provider().fetch_repositories(root)?)
+    pub fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
+        Ok(self.provider().fetch_repositories()?)
     }
 }

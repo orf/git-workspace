@@ -43,7 +43,11 @@ impl Repository {
         Ok(())
     }
 
-    fn run_with_progress(&self, command: &mut Command, sender: &ProgressSender) -> Result<(), Error> {
+    fn run_with_progress(
+        &self,
+        command: &mut Command,
+        sender: &ProgressSender,
+    ) -> Result<(), Error> {
         sender.update("starting".to_string());
         let mut spawned = command
             .stdout(Stdio::piped())
@@ -51,8 +55,8 @@ impl Repository {
             .spawn()?;
 
         if let Some(ref mut stderr) = spawned.stderr {
-            let lines = BufReader::new(stderr).split('\r' as u8).enumerate();
-            for (counter, line) in lines {
+            let lines = BufReader::new(stderr).split('\r' as u8);
+            for line in lines {
                 let output = line.unwrap();
                 if output.is_empty() {
                     continue;

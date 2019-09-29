@@ -20,6 +20,7 @@ walkdir = "2.2.9"
 pbr = "1.0.2"
 ansi-escapes = "0.1.0"
 strip-ansi-escapes = "0.1.0"
+fs_extra = "1.1.0"
 
 [profile.release]
 lto = true

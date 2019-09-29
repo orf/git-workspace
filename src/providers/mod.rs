@@ -6,7 +6,7 @@ pub use github::GithubProvider;
 pub use gitlab::GitlabProvider;
 
 pub trait Provider {
-    fn fetch_repositories(&self, root: &String) -> Result<Vec<Repository>, Error>;
+    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error>;
 }
 
 //trait Provider<T> {
