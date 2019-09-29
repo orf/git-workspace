@@ -1,38 +1,446 @@
 [[repo]]
-path = "gitlab/tom6/backend-coding-challenge"
-url = "git@gitlab.com:tom6/backend-coding-challenge.git"
+path = "gitlab/gitlab-org/Dockerfile"
+url = "git@gitlab.com:gitlab-org/Dockerfile.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/jiri-gitlab"
-url = "git@gitlab.com:tom6/jiri-gitlab.git"
+path = "gitlab/gitlab-org/Product"
+url = "git@gitlab.com:gitlab-org/Product.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/University"
+url = "git@gitlab.com:gitlab-org/University.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/jiri-mirror"
-url = "git@gitlab.com:tom6/jiri-mirror.git"
+path = "gitlab/gitlab-org/allocations"
+url = "git@gitlab.com:gitlab-org/allocations.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/metrics-bug"
-url = "git@gitlab.com:tom6/metrics-bug.git"
+path = "gitlab/gitlab-org/apilab"
+url = "git@gitlab.com:gitlab-org/apilab.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/minimal-ruby-app"
-url = "git@gitlab.com:tom6/minimal-ruby-app.git"
+path = "gitlab/gitlab-org/async-retrospectives"
+url = "git@gitlab.com:gitlab-org/async-retrospectives.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/resizer"
-url = "git@gitlab.com:tom6/resizer.git"
+path = "gitlab/gitlab-org/auto-deploy-helm"
+url = "git@gitlab.com:gitlab-org/auto-deploy-helm.git"
 branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/test-empty-project"
-url = "git@gitlab.com:tom6/test-empty-project.git"
+path = "gitlab/gitlab-org/backstage-changelog"
+url = "git@gitlab.com:gitlab-org/backstage-changelog.git"
+branch = "master"
 
 [[repo]]
-path = "gitlab/tom6/test-lfs"
-url = "git@gitlab.com:tom6/test-lfs.git"
+path = "gitlab/gitlab-org/blob-examples"
+url = "git@gitlab.com:gitlab-org/blob-examples.git"
 branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/CNG"
+url = "git@gitlab.com:gitlab-org/build/CNG.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/CNG-mirror"
+url = "git@gitlab.com:gitlab-org/build/CNG-mirror.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/alertmanager"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/alertmanager.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/chef-acme"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/chef-acme.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/compat_resource"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/compat_resource.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/config_guess"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/config_guess.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/consul"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/consul.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/curl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/curl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/distribution"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/distribution.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/exiftool"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/exiftool.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/go-crond"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/go-crond.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/jemalloc"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/jemalloc.git"
+branch = "dev"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/krb5"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/krb5.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libevent"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libevent.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libicu"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libicu.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libpng"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libpng.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libre2"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libre2.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/logrotate"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/logrotate.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/nginx-module-vts"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/nginx-module-vts.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/node_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/node_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/ohai"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/ohai.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/omnibus-ctl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/omnibus-ctl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/openssl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/openssl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/pg_plugins"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/pg_plugins.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/pgbouncer_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/pgbouncer_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/postgres_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/postgres_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/prometheus"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/prometheus.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/rb-readline"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/rb-readline.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/redis_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/redis_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/repmgr"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/repmgr.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/runit-cookbook"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/runit-cookbook.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/util-macros"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/util-macros.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/zlib"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/zlib.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/auto-deploy-app"
+url = "git@gitlab.com:gitlab-org/charts/auto-deploy-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/components/gitlab-operator"
+url = "git@gitlab.com:gitlab-org/charts/components/gitlab-operator.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/deploy-image-helm-base"
+url = "git@gitlab.com:gitlab-org/charts/deploy-image-helm-base.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/gitlab"
+url = "git@gitlab.com:gitlab-org/charts/gitlab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/gitlab-runner"
+url = "git@gitlab.com:gitlab-org/charts/gitlab-runner.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/plantuml"
+url = "git@gitlab.com:gitlab-org/charts/plantuml.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/azure-exporter"
+url = "git@gitlab.com:gitlab-org/ci-cd/azure-exporter.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/custom-executors/autoscaler"
+url = "git@gitlab.com:gitlab-org/ci-cd/custom-executors/autoscaler.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/dind-image-tests"
+url = "git@gitlab.com:gitlab-org/ci-cd/dind-image-tests.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/docker-machine"
+url = "git@gitlab.com:gitlab-org/ci-cd/docker-machine.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/gcp-exporter"
+url = "git@gitlab.com:gitlab-org/ci-cd/gcp-exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/google-docs-apps-scripts"
+url = "git@gitlab.com:gitlab-org/ci-cd/google-docs-apps-scripts.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/runner-release-helper"
+url = "git@gitlab.com:gitlab-org/ci-cd/runner-release-helper.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers"
+url = "git@gitlab.com:gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/suricata-runner"
+url = "git@gitlab.com:gitlab-org/ci-cd/suricata-runner.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/team-tasks"
+url = "git@gitlab.com:gitlab-org/ci-cd/team-tasks.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/gitlab-test"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/gitlab-test.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/lfs"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/lfs.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/vault-ci-service"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/vault-ci-service.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-training-sample"
+url = "git@gitlab.com:gitlab-org/ci-training-sample.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-training-slides"
+url = "git@gitlab.com:gitlab-org/ci-training-slides.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/auto-build-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/auto-build-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/auto-deploy-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/auto-deploy-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/cluster-applications"
+url = "git@gitlab.com:gitlab-org/cluster-integration/cluster-applications.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/helm-install-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/helm-install-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/knative-examples/knative-ruby-app"
+url = "git@gitlab.com:gitlab-org/cluster-integration/knative-examples/knative-ruby-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/knative-examples/knative-ruby-app-kubectl"
+url = "git@gitlab.com:gitlab-org/cluster-integration/knative-examples/knative-ruby-app-kubectl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci"
+url = "git@gitlab.com:gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/codeclimate"
+url = "git@gitlab.com:gitlab-org/codeclimate.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/codeclimate-rubocop"
+url = "git@gitlab.com:gitlab-org/codeclimate-rubocop.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/configure/general"
+url = "git@gitlab.com:gitlab-org/configure/general.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/configure/onboarding"
+url = "git@gitlab.com:gitlab-org/configure/onboarding.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/container-registry"
+url = "git@gitlab.com:gitlab-org/container-registry.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/Contribute2019_shaun_mccann"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/Contribute2019_shaun_mccann.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/DT-ADO101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/DT-ADO101.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/Phil"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/Phil.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/SimonAD101-mra"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/SimonAD101-mra.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/afontaine"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/afontaine.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/alejandro"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/alejandro.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/alexisworkshop"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/alexisworkshop.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/andr3-autodevops"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/andr3-autodevops.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arty-autodevops-101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arty-autodevops-101.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arueda-devops-101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arueda-devops-101.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arueda-devops-101-v2"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arueda-devops-101-v2.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/auto-devops-brandon-l"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/auto-devops-brandon-l.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/auto-devops-project---phil"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/auto-devops-project---phil.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chris-novello"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chris-novello.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chriscool"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chriscool.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chriscool-min-ruby-app"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chriscool-min-ruby-app.git"

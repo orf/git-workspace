@@ -33,7 +33,7 @@ impl Config {
     }
 }
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[serde(tag = "provider")]
 #[serde(rename_all = "lowercase")]
 #[derive(StructOpt)]

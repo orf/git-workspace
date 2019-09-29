@@ -1,5 +1,5 @@
 [[provider]]
 provider = "gitlab"
-user = "tom6"
+group = "gitlab-org"
 url = "https://gitlab.com"
 path = "gitlab"

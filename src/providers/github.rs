@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use structopt::StructOpt;
 
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[serde(rename_all = "lowercase")]
 #[derive(StructOpt)]
 #[structopt(about = "Add a Github user or organization by name")]
@@ -31,7 +31,7 @@ pub struct Repositories;
 impl GithubProvider {
     fn parse_repo(
         &self,
-        path: &String,
+        path: &str,
         repo: &repositories::RepositoriesRepositoryOwnerRepositoriesNodes,
     ) -> Repository {
         let default_branch = repo

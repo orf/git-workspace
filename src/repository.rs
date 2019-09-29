@@ -7,6 +7,7 @@ use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
+
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Repository {
@@ -31,10 +32,7 @@ impl Repository {
         }
     }
     pub fn exists(&self, root: &PathBuf) -> bool {
-        match Git2Repo::open(root.join(&self.path)) {
-            Ok(_) => true,
-            Err(_) => false,
-        }
+        Git2Repo::open(root.join(&self.path)).is_ok()
     }
 
     fn set_upstream(&self, root: &PathBuf, upstream: &str) -> Result<(), Error> {
@@ -43,15 +41,15 @@ impl Repository {
         Ok(())
     }
 
-    fn run_with_progress(&self, command: &mut Command, bar: &ProgressBar) -> Result<(), Error> {
-        bar.set_message(format!("{}: starting", self.name()).as_str());
+    fn run_with_progress(&self, command: &mut Command, progress_bar: &ProgressBar) -> Result<(), Error> {
+        progress_bar.set_message(format!("{}: starting", self.name()).as_str());
         let mut spawned = command
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()?;
 
         if let Some(ref mut stderr) = spawned.stderr {
-            let lines = BufReader::new(stderr).split('\r' as u8);
+            let lines = BufReader::new(stderr).split(b'\r');
             for line in lines {
                 let output = line.unwrap();
                 if output.is_empty() {
@@ -60,14 +58,17 @@ impl Repository {
                 let line = std::str::from_utf8(&output).unwrap();
                 let plain_line = strip_ansi_codes(line);
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
-                bar.set_message(format!("{}: {}", self.name(), truncated_line).as_str());
+                progress_bar.set_message(format!("{}: {}", self.name(), truncated_line).as_str());
             }
         }
-        spawned.wait()?;
+        let exit_code = spawned.wait()?;
+        if !exit_code.success() {
+            bail!("Git exited with code {}", exit_code.code().unwrap())
+        }
         Ok(())
     }
 
-    pub fn fetch(&self, root: &PathBuf, bar: &ProgressBar) -> Result<(), Error> {
+    pub fn fetch(&self, root: &PathBuf, progress_bar: &ProgressBar) -> Result<(), Error> {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
@@ -78,12 +79,12 @@ impl Repository {
             .arg("--recurse-submodules=on-demand")
             .arg("--progress");
 
-        self.run_with_progress(child, bar)?;
+        self.run_with_progress(child, progress_bar)?;
 
         Ok(())
     }
 
-    pub fn clone(&self, root: &PathBuf, bar: &ProgressBar) -> Result<(), Error> {
+    pub fn clone(&self, root: &PathBuf, progress_bar: &ProgressBar) -> Result<(), Error> {
         let mut command = Command::new("git");
 
         let child = command
@@ -93,7 +94,7 @@ impl Repository {
             .arg(&self.url)
             .arg(root.join(&self.path));
 
-        self.run_with_progress(child, bar)?;
+        self.run_with_progress(child, progress_bar)?;
 
         if let Some(upstream) = &self.upstream {
             self.set_upstream(root, upstream.as_str())?;

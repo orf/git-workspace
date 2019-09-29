@@ -1,4 +1,6 @@
 extern crate console;
+
+#[macro_use]
 extern crate failure;
 extern crate fs_extra;
 extern crate git2;
@@ -12,15 +14,16 @@ extern crate walkdir;
 use crate::config::{Config, ProviderSource};
 use crate::lockfile::Lockfile;
 use crate::progress::ProgressManager;
+use crate::repository::Repository;
 use failure::Error;
-use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
+use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
-use std::sync::mpsc::channel;
 use std::thread;
 use structopt::StructOpt;
 use walkdir::WalkDir;
+use std::thread::JoinHandle;
 
 mod config;
 mod lockfile;
@@ -32,10 +35,10 @@ mod repository;
 #[structopt(name = "git-workspace", author, about)]
 struct Args {
     #[structopt(
-        short = "w",
-        long = "workspace",
-        parse(from_os_str),
-        env = "GIT_WORKSPACE"
+    short = "w",
+    long = "workspace",
+    parse(from_os_str),
+    env = "GIT_WORKSPACE"
     )]
     workspace: PathBuf,
     #[structopt(subcommand)]
@@ -64,9 +67,9 @@ fn main(args: Args) -> Result<(), Error> {
         Command::List {} => list(&workspace_path)?,
         Command::Update { threads } => {
             lock(&workspace_path)?;
-            update(&workspace_path, threads, false)?
+            update(&workspace_path, threads)?
         }
-        Command::Fetch { threads } => update(&workspace_path, threads, true)?,
+        Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
     };
     Ok(())
@@ -78,15 +81,20 @@ fn add_provider_to_config(
 ) -> Result<(), Error> {
     let config = Config::new(workspace.join("workspace.toml"));
     let mut sources = config.read()?;
-    sources.push(provider_source);
-    config.write(sources)?;
+    if sources.iter().any(|s| s == &provider_source) {
+        println!("Entry already exists, skipping");
+    } else {
+        sources.push(provider_source);
+        config.write(sources)?;
+        println!("Added entry to workspace.toml");
+    }
     Ok(())
 }
 
-fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error> {
-    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read()?;
-
+fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
+    where
+        F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
+{
     let progress = MultiProgress::new();
     let manager = ProgressManager::new(&progress, threads);
     let total_bar = progress.add(manager.create_total_bar(repositories.len() as u64));
@@ -95,8 +103,9 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
         .num_threads(threads)
         .build()?;
 
-    let waiting_thread = thread::spawn(move || {
-        progress.join_and_clear();
+    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
+        progress.join_and_clear()?;
+        Ok(())
     });
 
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
@@ -105,20 +114,75 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
             .par_iter()
             .progress_with(total_bar)
             .for_each(|repo| {
-                let bar = manager.get_bar();
-                bar.set_message("starting");
-                if fetch && repo.exists(workspace) {
-                    repo.fetch(workspace, &bar);
-                } else if !fetch && !repo.exists(workspace) {
-                    repo.clone(workspace, &bar);
-                }
-                manager.put_bar(bar);
+                let progress_bar = manager.get_bar();
+                match f(repo, &progress_bar) {
+                    Ok(_) => {}
+                    Err(e) => {
+                        //format!("{}: {}", repo.name(), e)
+                    }
+                };
+                manager.put_bar(progress_bar);
             })
     });
     manager.signal_done();
 
     waiting_thread.join();
 
+    Ok(())
+}
+
+fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read()?;
+
+    let repos_to_clone: Vec<Repository> = repositories
+        .iter()
+        .filter(|r| !r.exists(workspace))
+        .cloned()
+        .collect();
+
+    println!(
+        "Cloning {} repositories",
+        repos_to_clone.len(),
+    );
+
+    map_repositories(&repos_to_clone, threads, |r, progress_bar| {
+        r.clone(&workspace, &progress_bar)
+    })?;
+    archive_repositories(workspace, repositories)?;
+
+    Ok(())
+}
+
+fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read()?;
+
+    let repos_to_fetch: Vec<Repository> = repositories
+        .iter()
+        .filter(|r| r.exists(workspace))
+        .cloned()
+        .collect();
+
+    println!(
+        "Fetching {} repositories",
+        repos_to_fetch.len(),
+    );
+
+    map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
+        r.fetch(&workspace, &progress_bar)
+    })?;
+
+    Ok(())
+}
+
+fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> Result<(), Error> {
+    // The logic here is as follows:
+    // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
+    //    in our lockfile), we skip it entirely.
+    // 2. If the directory is not, and contains a `.git` directory, then we mark it for archival and
+    //    skip processing.
+    // This assumes nobody deletes a .git directory in one of their projects.
     let archive_directory = workspace.join(".archive");
 
     let mut safe_paths: HashSet<PathBuf> = repositories
@@ -128,15 +192,9 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
     safe_paths.insert(archive_directory.clone());
 
     let mut to_archive = Vec::new();
+    let mut it = WalkDir::new(workspace).into_iter();
 
     // I couldn't work out how to use `filter_entry` here, so we just roll our own loop.
-    // The logic here is as follows:
-    // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
-    //    in our lockfile), we skip it entirely.
-    // 2. If the directory is not, and contains a `.git` directory, then we mark it for archival and
-    //    skip processing.
-    // This assumes nobody deletes a .git directory in one of their projects.
-    let mut it = WalkDir::new(workspace).into_iter();
 
     loop {
         let entry = match it.next() {
@@ -158,7 +216,7 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
     let options = fs_extra::dir::CopyOptions::new();
 
     if !archive_directory.exists() && !to_archive.is_empty() {
-        fs_extra::dir::create(&archive_directory, false);
+        fs_extra::dir::create(&archive_directory, false)?;
     }
 
     for from_dir in to_archive.iter() {
@@ -166,9 +224,9 @@ fn update(workspace: &PathBuf, threads: usize, fetch: bool) -> Result<(), Error>
         let to_dir = archive_directory.join(relative_dir);
         println!("Archiving {}", relative_dir.display());
         if to_dir.exists() {
-            fs_extra::dir::remove(&to_dir);
+            fs_extra::dir::remove(&to_dir)?;
         }
-        fs_extra::dir::create_all(&to_dir, false);
+        fs_extra::dir::create_all(&to_dir, false)?;
         fs_extra::dir::move_dir(&from_dir, &to_dir.parent().unwrap(), &options)?;
     }
     Ok(())
@@ -186,11 +244,6 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
     all_repositories.dedup();
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     lockfile.write(&all_repositories)?;
-    println!(
-        "Found {} repositories from {} users or groups",
-        all_repositories.len(),
-        sources.len()
-    );
     Ok(())
 }
 

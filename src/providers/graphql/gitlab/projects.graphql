@@ -1,5 +1,5 @@
-query UserRepositories($userName: ID!) {
-    namespace(fullPath: $userName) {
+query UserRepositories($name: ID!) {
+    namespace(fullPath: $name) {
         projects(includeSubgroups: true) {
             edges {
                 node {
@@ -15,8 +15,8 @@ query UserRepositories($userName: ID!) {
     }
 }
 
-query GroupRepositories($groupName: ID!) {
-  group(fullPath: $groupName) {
+query GroupRepositories($name: ID!) {
+  group(fullPath: $name) {
     projects(includeSubgroups: true) {
       edges {
         node {

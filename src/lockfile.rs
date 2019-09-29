@@ -25,8 +25,8 @@ impl Lockfile {
         Ok(config.repos)
     }
 
-    pub fn write(&self, repositories: &Vec<Repository>) -> Result<(), Error> {
-        let mut sorted_repositories = repositories.clone();
+    pub fn write(&self, repositories: &[Repository]) -> Result<(), Error> {
+        let mut sorted_repositories = repositories.to_owned();
         sorted_repositories.sort();
 
         let toml = toml::to_string(&LockfileContents {

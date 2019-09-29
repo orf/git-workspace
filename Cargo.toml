@@ -5,6 +5,9 @@ authors = ["Tom Forbes <tom@tomforb.es>"]
 edition = "2018"
 description = "Manage and update personal and work git repos from multiple providers"
 license = "MIT"
+categories = [
+    "development-tools",
+]
 
 [dependencies]
 toml = "0.5.3"
