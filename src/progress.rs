@@ -9,6 +9,7 @@ impl ProgressManager {
     pub fn new(multi_bar: &MultiProgress, threads: usize) -> ProgressManager {
         let bars: Vec<ProgressBar> = (0..threads)
             .map(|_| multi_bar.add(ProgressBar::new_spinner()))
+            .inspect(|p| p.enable_steady_tick(400))
             .inspect(|p| p.set_message("waiting..."))
             .collect();
         let locked_bars = Arc::new(Mutex::new(bars));

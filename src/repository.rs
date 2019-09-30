@@ -58,7 +58,8 @@ impl Repository {
                 let line = std::str::from_utf8(&output).unwrap();
                 let plain_line = strip_ansi_codes(line);
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
-                progress_bar.set_message(format!("{}: {}", self.name(), truncated_line).as_str());
+                let replaced_line = truncated_line.replace('\n', "");
+                progress_bar.set_message(format!("{}: {}", self.name(), replaced_line).as_str());
             }
         }
         let exit_code = spawned.wait()?;

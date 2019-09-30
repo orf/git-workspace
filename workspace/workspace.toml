@@ -3,3 +3,13 @@ provider = "gitlab"
 group = "gitlab-org"
 url = "https://gitlab.com"
 path = "gitlab"
+
+[[provider]]
+provider = "github"
+name = "orf"
+path = "github"
+
+[[provider]]
+provider = "github"
+name = "django"
+path = "github"
