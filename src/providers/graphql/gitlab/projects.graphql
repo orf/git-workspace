@@ -1,6 +1,6 @@
-query UserRepositories($name: ID!) {
+query UserRepositories($name: ID!, $after: String) {
     namespace(fullPath: $name) {
-        projects(includeSubgroups: true) {
+        projects(includeSubgroups: true, after: $after) {
             edges {
                 node {
                     archived,
@@ -11,13 +11,17 @@ query UserRepositories($name: ID!) {
                     }
                 }
             }
+            pageInfo {
+                hasNextPage,
+                endCursor,
+            }
         }
     }
 }
 
-query GroupRepositories($name: ID!) {
+query GroupRepositories($name: ID!, $after: String) {
   group(fullPath: $name) {
-    projects(includeSubgroups: true) {
+    projects(includeSubgroups: true, after: $after) {
       edges {
         node {
           archived,
@@ -27,6 +31,10 @@ query GroupRepositories($name: ID!) {
             rootRef
           }
         }
+      },
+      pageInfo {
+        hasNextPage,
+        endCursor,
       }
     }
   }
