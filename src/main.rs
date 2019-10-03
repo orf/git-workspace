@@ -75,7 +75,8 @@ fn handle_main(args: Args) -> Result<(), Error> {
         .workspace
         .canonicalize()
         .context(format!("{} does not exist", args.workspace.display()))?;
-    let workspace_path = expanduser::expanduser(path_str.to_string_lossy())?;
+    let workspace_path = expanduser::expanduser(path_str.to_string_lossy())
+        .context("Error expanding git workspace path")?;
 
     match args.command {
         Command::List {} => list(&workspace_path)?,
@@ -249,7 +250,11 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         fs_extra::dir::create_all(&to_dir, false)
             .context(format!("Error creating directory {}", to_dir.display()))?;
         fs_extra::dir::move_dir(&from_dir, &to_dir.parent().unwrap(), &options).context(
-            format!("Error moving directory {} to {}", from_dir.display(), to_dir.display()),
+            format!(
+                "Error moving directory {} to {}",
+                from_dir.display(),
+                to_dir.display()
+            ),
         )?;
     }
     Ok(())
