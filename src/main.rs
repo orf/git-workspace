@@ -1,7 +1,6 @@
 #[macro_use]
 extern crate failure;
 extern crate console;
-extern crate expanduser;
 extern crate fs_extra;
 extern crate graphql_client;
 extern crate indicatif;
@@ -9,6 +8,8 @@ extern crate reqwest;
 extern crate serde;
 extern crate structopt;
 extern crate walkdir;
+#[cfg(unix)]
+extern crate expanduser;
 
 use crate::config::{Config, ProviderSource};
 use crate::lockfile::Lockfile;
@@ -75,8 +76,13 @@ fn handle_main(args: Args) -> Result<(), Error> {
         .workspace
         .canonicalize()
         .context(format!("{} does not exist", args.workspace.display()))?;
-    let workspace_path = expanduser::expanduser(path_str.to_string_lossy())
-        .context("Error expanding git workspace path")?;
+    let workspace_path;
+    if cfg!(unix) {
+        workspace_path = expanduser::expanduser(path_str.to_string_lossy())
+            .context("Error expanding git workspace path")?;
+    } else {
+        workspace_path = PathBuf::from(path_str);
+    }
 
     match args.command {
         Command::List {} => list(&workspace_path)?,
