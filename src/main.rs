@@ -21,9 +21,9 @@ use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::thread;
+use std::thread::JoinHandle;
 use structopt::StructOpt;
 use walkdir::WalkDir;
-use std::thread::JoinHandle;
 
 mod config;
 mod lockfile;
@@ -35,10 +35,10 @@ mod repository;
 #[structopt(name = "git-workspace", author, about)]
 struct Args {
     #[structopt(
-    short = "w",
-    long = "workspace",
-    parse(from_os_str),
-    env = "GIT_WORKSPACE"
+        short = "w",
+        long = "workspace",
+        parse(from_os_str),
+        env = "GIT_WORKSPACE"
     )]
     workspace: PathBuf,
     #[structopt(subcommand)]
@@ -92,8 +92,8 @@ fn add_provider_to_config(
 }
 
 fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
-    where
-        F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
+where
+    F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
 {
     let progress = MultiProgress::new();
     let manager = ProgressManager::new(&progress, threads);
@@ -109,24 +109,31 @@ fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Res
     });
 
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
-    pool.install(|| {
+    let errors: Vec<(&Repository, Error)> = pool.install(|| {
         repositories
             .par_iter()
             .progress_with(total_bar)
-            .for_each(|repo| {
+            .map(|repo| {
                 let progress_bar = manager.get_bar();
-                match f(repo, &progress_bar) {
-                    Ok(_) => {}
-                    Err(e) => {
-                        //format!("{}: {}", repo.name(), e)
-                    }
+                let result = match f(repo, &progress_bar) {
+                    Ok(_) => Ok(()),
+                    Err(e) => Err((repo, e)),
                 };
                 manager.put_bar(progress_bar);
+                result
             })
+            .filter_map(Result::err)
+            .collect()
     });
     manager.signal_done();
-
     waiting_thread.join();
+
+    if !errors.is_empty() {
+        println!("{} repositories failed to clone:", errors.len());
+        for (repo, error) in errors {
+            print!("{}: {}", repo.name(), error)
+        }
+    }
 
     Ok(())
 }
@@ -141,10 +148,7 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         .cloned()
         .collect();
 
-    println!(
-        "Cloning {} repositories",
-        repos_to_clone.len(),
-    );
+    println!("Cloning {} repositories", repos_to_clone.len(),);
 
     map_repositories(&repos_to_clone, threads, |r, progress_bar| {
         r.clone(&workspace, &progress_bar)
@@ -164,10 +168,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         .cloned()
         .collect();
 
-    println!(
-        "Fetching {} repositories",
-        repos_to_fetch.len(),
-    );
+    println!("Fetching {} repositories", repos_to_fetch.len(),);
 
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
         r.fetch(&workspace, &progress_bar)

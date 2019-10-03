@@ -7,7 +7,6 @@ use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 
-
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
 pub struct Repository {
@@ -41,7 +40,11 @@ impl Repository {
         Ok(())
     }
 
-    fn run_with_progress(&self, command: &mut Command, progress_bar: &ProgressBar) -> Result<(), Error> {
+    fn run_with_progress(
+        &self,
+        command: &mut Command,
+        progress_bar: &ProgressBar,
+    ) -> Result<(), Error> {
         progress_bar.set_message(format!("{}: starting", self.name()).as_str());
         let mut spawned = command
             .stdout(Stdio::piped())

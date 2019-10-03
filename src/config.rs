@@ -22,6 +22,9 @@ impl Config {
         Config { path }
     }
     pub fn read(&self) -> Result<Vec<ProviderSource>, Error> {
+        if !self.path.exists() {
+            fs::File::create(&self.path)?;
+        }
         let file_contents = fs::read_to_string(&self.path)?;
         let contents: ConfigContents = toml::from_str(file_contents.as_str())?;
         Ok(contents.providers)

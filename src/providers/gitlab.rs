@@ -41,17 +41,17 @@ pub enum GitlabProvider {
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "src/providers/graphql/gitlab/schema.json",
-query_path = "src/providers/graphql/gitlab/projects.graphql",
-response_derives = "Debug"
+    schema_path = "src/providers/graphql/gitlab/schema.json",
+    query_path = "src/providers/graphql/gitlab/projects.graphql",
+    response_derives = "Debug"
 )]
 pub struct UserRepositories;
 
 #[derive(GraphQLQuery)]
 #[graphql(
-schema_path = "src/providers/graphql/gitlab/schema.json",
-query_path = "src/providers/graphql/gitlab/projects.graphql",
-response_derives = "Debug"
+    schema_path = "src/providers/graphql/gitlab/schema.json",
+    query_path = "src/providers/graphql/gitlab/projects.graphql",
+    response_derives = "Debug"
 )]
 pub struct GroupRepositories;
 impl GitlabProvider {
@@ -66,15 +66,16 @@ impl GitlabProvider {
 
     fn fetch_user_repositories(
         &self,
-        path: &String,
-        name: &String,
-        url: &String,
+        path: &str,
+        name: &str,
+        url: &str,
     ) -> Result<Vec<Repository>, Error> {
         let github_token = env::var("GITLAB_TOKEN")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = UserRepositories::build_query(user_repositories::Variables {
             name: name.to_string(),
+            after: Some("".to_string()),
         });
         let mut res = client
             .post(format!("{}/api/graphql", url).as_str())
@@ -112,15 +113,16 @@ impl GitlabProvider {
 
     fn fetch_group_repositories(
         &self,
-        path: &String,
-        name: &String,
-        url: &String,
+        path: &str,
+        name: &str,
+        url: &str,
     ) -> Result<Vec<Repository>, Error> {
         let github_token = env::var("GITLAB_TOKEN")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = GroupRepositories::build_query(group_repositories::Variables {
             name: name.to_string(),
+            after: Some("".to_string()),
         });
         let mut res = client
             .post(format!("{}/api/graphql", url).as_str())
@@ -165,7 +167,7 @@ impl Provider for GitlabProvider {
             }
             GitlabProvider::Group { group, url, path } => {
                 self.fetch_group_repositories(&path, group, url)?
-            },
+            }
         };
         Ok(repositories)
     }
