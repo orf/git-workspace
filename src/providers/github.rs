@@ -1,6 +1,6 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
-use failure::Error;
+use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -54,7 +54,8 @@ impl GithubProvider {
 
 impl Provider for GithubProvider {
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
-        let github_token = env::var("GITHUB_TOKEN")?;
+        let github_token =
+            env::var("GITHUB_TOKEN").context("Missing GITHUB_TOKEN environment variable")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
 
@@ -73,7 +74,10 @@ impl Provider for GithubProvider {
             let response_body: Response<repositories::ResponseData> = res.json()?;
             let response_data: repositories::ResponseData =
                 response_body.data.expect("missing response data");
-            let response_repositories = response_data.repository_owner.unwrap().repositories;
+            let response_repositories = response_data
+                .repository_owner
+                .expect("missing repository owner")
+                .repositories;
             for repo in response_repositories
                 .nodes
                 .unwrap()

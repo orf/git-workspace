@@ -1,5 +1,5 @@
 use console::{strip_ansi_codes, truncate_str};
-use failure::Error;
+use failure::{Error, ResultExt};
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
@@ -46,7 +46,7 @@ impl Repository {
 
         let output = child.output()?;
         if !output.status.success() {
-            bail!("Failed to set upstream")
+            bail!("Failed to set upstream on repo {}", root.display())
         }
         Ok(())
     }
@@ -94,7 +94,8 @@ impl Repository {
             .arg("--recurse-submodules=on-demand")
             .arg("--progress");
 
-        self.run_with_progress(child, progress_bar)?;
+        self.run_with_progress(child, progress_bar)
+            .context(format!("Error fetching repo in {}", root.display()))?;
 
         Ok(())
     }
@@ -109,7 +110,8 @@ impl Repository {
             .arg(&self.url)
             .arg(root.join(&self.path));
 
-        self.run_with_progress(child, progress_bar)?;
+        self.run_with_progress(child, progress_bar)
+            .context(format!("Error cloning repo into {}", root.display()))?;
 
         if let Some(upstream) = &self.upstream {
             self.set_upstream(root, upstream.as_str())?;

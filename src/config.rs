@@ -1,4 +1,4 @@
-use failure::Error;
+use failure::{Error, ResultExt};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
@@ -23,15 +23,23 @@ impl Config {
     }
     pub fn read(&self) -> Result<Vec<ProviderSource>, Error> {
         if !self.path.exists() {
-            fs::File::create(&self.path)?;
+            fs::File::create(&self.path).context(format!(
+                "Cannot create config at path {}",
+                self.path.display()
+            ))?;
         }
-        let file_contents = fs::read_to_string(&self.path)?;
-        let contents: ConfigContents = toml::from_str(file_contents.as_str())?;
+        let file_contents = fs::read_to_string(&self.path)
+            .context(format!("Cannot read file {}", self.path.display()))?;
+        let contents: ConfigContents = toml::from_str(file_contents.as_str()).context(format!(
+            "Error parsing TOML in file {}",
+            self.path.display()
+        ))?;
         Ok(contents.providers)
     }
     pub fn write(&self, providers: Vec<ProviderSource>) -> Result<(), Error> {
         let toml = toml::to_string(&ConfigContents { providers })?;
-        fs::write(&self.path, toml)?;
+        fs::write(&self.path, toml)
+            .context(format!("Error writing to file {}", self.path.display()))?;
         Ok(())
     }
 }

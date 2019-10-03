@@ -14,8 +14,7 @@ exclude = ["workspace/**"]
 toml = "0.5.3"
 serde = { version = "1.0.101", features = ["derive"] }
 failure = "0.1.5"
-structopt = { version = "0.3.2", features = [ "paw" ] }
-paw = "1.0.0"
+structopt = { version = "0.3.2" }
 rayon = "1.2.0"
 graphql_client = "0.8.0"
 reqwest = "0.9.21"
@@ -23,3 +22,4 @@ walkdir = "2.2.9"
 fs_extra = "1.1.0"
 indicatif = { version = "0.12.0", features = ["with_rayon"] }
 console = "0.9.0"
+expanduser = "1.2.1"

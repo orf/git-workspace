@@ -1,6 +1,6 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
-use failure::Error;
+use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -70,7 +70,8 @@ impl GitlabProvider {
         name: &str,
         url: &str,
     ) -> Result<Vec<Repository>, Error> {
-        let github_token = env::var("GITLAB_TOKEN")?;
+        let github_token =
+            env::var("GITLAB_TOKEN").context("Missing GITLAB_TOKEN environment variable")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = UserRepositories::build_query(user_repositories::Variables {
@@ -117,7 +118,8 @@ impl GitlabProvider {
         name: &str,
         url: &str,
     ) -> Result<Vec<Repository>, Error> {
-        let github_token = env::var("GITLAB_TOKEN")?;
+        let github_token =
+            env::var("GITLAB_TOKEN").context("Missing GITLAB_TOKEN environment variable")?;
         let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = GroupRepositories::build_query(group_repositories::Variables {

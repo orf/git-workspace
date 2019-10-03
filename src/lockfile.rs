@@ -1,5 +1,5 @@
 use crate::repository::Repository;
-use failure::Error;
+use failure::{Error, ResultExt};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
@@ -20,8 +20,10 @@ impl Lockfile {
     }
 
     pub fn read(&self) -> Result<Vec<Repository>, Error> {
-        let config_data = fs::read_to_string(&self.path)?;
-        let config: LockfileContents = toml::from_str(config_data.as_str())?;
+        let config_data = fs::read_to_string(&self.path)
+            .context(format!("Cannot read file {}", self.path.display()))?;
+        let config: LockfileContents =
+            toml::from_str(config_data.as_str()).context(format!("Error deserializing"))?;
         Ok(config.repos)
     }
 
@@ -32,7 +34,8 @@ impl Lockfile {
         let toml = toml::to_string(&LockfileContents {
             repos: sorted_repositories,
         })?;
-        fs::write(&self.path, toml)?;
+        fs::write(&self.path, toml)
+            .context(format!("Error writing lockfile to {}", self.path.display()))?;
 
         Ok(())
     }
