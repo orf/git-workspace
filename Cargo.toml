@@ -23,6 +23,3 @@ walkdir = "2.2.9"
 fs_extra = "1.1.0"
 indicatif = { version = "0.12.0", features = ["with_rayon"] }
 console = "0.9.0"
-
-[profile.release]
-lto = true
