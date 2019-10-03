@@ -1,0 +1,1083 @@
+[[repo]]
+path = "github/TheZ3ro/apk2java-linux"
+url = "git@github.com:TheZ3ro/apk2java-linux.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/asgi_ipc"
+url = "git@github.com:django/asgi_ipc.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/asgiref"
+url = "git@github.com:django/asgiref.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/channels"
+url = "git@github.com:django/channels.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/channels_redis"
+url = "git@github.com:django/channels_redis.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/code-of-conduct"
+url = "git@github.com:django/code-of-conduct.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/code.djangoproject.com"
+url = "git@github.com:django/code.djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/daphne"
+url = "git@github.com:django/daphne.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/deps"
+url = "git@github.com:django/deps.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django"
+url = "git@github.com:django/django.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-box"
+url = "git@github.com:django/django-box.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-contrib-comments"
+url = "git@github.com:django/django-contrib-comments.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-docker-box"
+url = "git@github.com:django/django-docker-box.git"
+upstream = "git@github.com:orf/django-docker-box.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-docs-translations"
+url = "git@github.com:django/django-docs-translations.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-formtools"
+url = "git@github.com:django/django-formtools.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-localflavor"
+url = "git@github.com:django/django-localflavor.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangobench"
+url = "git@github.com:django/djangobench.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangopeople"
+url = "git@github.com:django/djangopeople.git"
+upstream = "git@github.com:simonw/djangopeople.net.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangoproject.com"
+url = "git@github.com:django/djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangosnippets.org"
+url = "git@github.com:django/djangosnippets.org.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/ticketbot"
+url = "git@github.com:django/ticketbot.git"
+branch = "master"
+
+[[repo]]
+path = "github/onfido/faiss_prebuilt"
+url = "git@github.com:onfido/faiss_prebuilt.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/CTF"
+url = "git@github.com:orf/CTF.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/Facebook-link-stats"
+url = "git@github.com:orf/Facebook-link-stats.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/FindMeChicken-GAE"
+url = "git@github.com:orf/FindMeChicken-GAE.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/FindMeChicken-Twisted"
+url = "git@github.com:orf/FindMeChicken-Twisted.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/FindMeChicken-mono"
+url = "git@github.com:orf/FindMeChicken-mono.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/Flask-Hooker"
+url = "git@github.com:orf/Flask-Hooker.git"
+upstream = "git@github.com:doblel/Flask-Hooker.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/Gmail-dumper"
+url = "git@github.com:orf/Gmail-dumper.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/HtmlToWord"
+url = "git@github.com:orf/HtmlToWord.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/MovieFinder"
+url = "git@github.com:orf/MovieFinder.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/NoPriv"
+url = "git@github.com:orf/NoPriv.git"
+upstream = "git@github.com:RaymiiOrg/NoPriv.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/Stream-Framework"
+url = "git@github.com:orf/Stream-Framework.git"
+upstream = "git@github.com:tschellenbach/Stream-Framework.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/TinyLink"
+url = "git@github.com:orf/TinyLink.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/WikiQuiz"
+url = "git@github.com:orf/WikiQuiz.git"
+upstream = "git@github.com:alexgreene/WikiQuiz.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/Wikipedia-XML-Processor"
+url = "git@github.com:orf/Wikipedia-XML-Processor.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/aio-pipes"
+url = "git@github.com:orf/aio-pipes.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/aiohttp"
+url = "git@github.com:orf/aiohttp.git"
+upstream = "git@github.com:aio-libs/aiohttp.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/aiopg"
+url = "git@github.com:orf/aiopg.git"
+upstream = "git@github.com:aio-libs/aiopg.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/aioresponses"
+url = "git@github.com:orf/aioresponses.git"
+upstream = "git@github.com:pnuckowski/aioresponses.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/alfred-pycharm"
+url = "git@github.com:orf/alfred-pycharm.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/apple-features"
+url = "git@github.com:orf/apple-features.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/bare-hugo-theme"
+url = "git@github.com:orf/bare-hugo-theme.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/blackfriday"
+url = "git@github.com:orf/blackfriday.git"
+upstream = "git@github.com:russross/blackfriday.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/blog-hugo"
+url = "git@github.com:orf/blog-hugo.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/celery"
+url = "git@github.com:orf/celery.git"
+upstream = "git@github.com:celery/celery.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/clap"
+url = "git@github.com:orf/clap.git"
+upstream = "git@github.com:clap-rs/clap.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/cookiecutter"
+url = "git@github.com:orf/cookiecutter.git"
+upstream = "git@github.com:cookiecutter/cookiecutter.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/crates-build-env"
+url = "git@github.com:orf/crates-build-env.git"
+upstream = "git@github.com:rust-lang/crates-build-env.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/cvsslib"
+url = "git@github.com:orf/cvsslib.git"
+upstream = "git@github.com:ctxis/cvsslib.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/cyborg"
+url = "git@github.com:orf/cyborg.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/datatables"
+url = "git@github.com:orf/datatables.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/dd-trace-py"
+url = "git@github.com:orf/dd-trace-py.git"
+upstream = "git@github.com:DataDog/dd-trace-py.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/digest"
+url = "git@github.com:orf/digest.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/django"
+url = "git@github.com:orf/django.git"
+upstream = "git@github.com:django/django.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/django-choice-object"
+url = "git@github.com:orf/django-choice-object.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/django-debug-toolbar-template-timings"
+url = "git@github.com:orf/django-debug-toolbar-template-timings.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/django-performance-metrics"
+url = "git@github.com:orf/django-performance-metrics.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/dotfiles"
+url = "git@github.com:orf/dotfiles.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/endpoint"
+url = "git@github.com:orf/endpoint.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/exams"
+url = "git@github.com:orf/exams.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/faiss"
+url = "git@github.com:orf/faiss.git"
+upstream = "git@github.com:facebookresearch/faiss.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/faust"
+url = "git@github.com:orf/faust.git"
+upstream = "git@github.com:robinhood/faust.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/feedtester"
+url = "git@github.com:orf/feedtester.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/gatekeeper"
+url = "git@github.com:orf/gatekeeper.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/getshitdone"
+url = "git@github.com:orf/getshitdone.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/git-workspace"
+url = "git@github.com:orf/git-workspace.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/git2-rs"
+url = "git@github.com:orf/git2-rs.git"
+upstream = "git@github.com:rust-lang/git2-rs.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/gixy"
+url = "git@github.com:orf/gixy.git"
+upstream = "git@github.com:yandex/gixy.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/goal"
+url = "git@github.com:orf/goal.git"
+upstream = "git@github.com:eatnumber1/goal.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/gping"
+url = "git@github.com:orf/gping.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/hnewssimulator"
+url = "git@github.com:orf/hnewssimulator.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/horrible-afl-things"
+url = "git@github.com:orf/horrible-afl-things.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/howslow_django"
+url = "git@github.com:orf/howslow_django.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/howslow_flask"
+url = "git@github.com:orf/howslow_flask.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/icaro"
+url = "git@github.com:orf/icaro.git"
+upstream = "git@github.com:GianlucaGuarini/icaro.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/image-match"
+url = "git@github.com:orf/image-match.git"
+upstream = "git@github.com:EdjoLabs/image-match.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/imageio"
+url = "git@github.com:orf/imageio.git"
+upstream = "git@github.com:imageio/imageio.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/inliner"
+url = "git@github.com:orf/inliner.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/learnxinyminutes-docs"
+url = "git@github.com:orf/learnxinyminutes-docs.git"
+upstream = "git@github.com:adambard/learnxinyminutes-docs.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/localshop"
+url = "git@github.com:orf/localshop.git"
+upstream = "git@github.com:mvantellingen/localshop.git"
+branch = "develop"
+
+[[repo]]
+path = "github/orf/logbook"
+url = "git@github.com:orf/logbook.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/logbot"
+url = "git@github.com:orf/logbot.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/logstore"
+url = "git@github.com:orf/logstore.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/markovify"
+url = "git@github.com:orf/markovify.git"
+upstream = "git@github.com:jsvine/markovify.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/micro-sentry"
+url = "git@github.com:orf/micro-sentry.git"
+upstream = "git@github.com:tanmulabs/micro-sentry.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/model_mommy"
+url = "git@github.com:orf/model_mommy.git"
+upstream = "git@github.com:berinhard/model_mommy.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/node_exporter"
+url = "git@github.com:orf/node_exporter.git"
+upstream = "git@github.com:prometheus/node_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/nushell"
+url = "git@github.com:orf/nushell.git"
+upstream = "git@github.com:nushell/nushell.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/petal"
+url = "git@github.com:orf/petal.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pghero_solo"
+url = "git@github.com:orf/pghero_solo.git"
+upstream = "git@github.com:bmorton/pghero_solo.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pid"
+url = "git@github.com:orf/pid.git"
+upstream = "git@github.com:trbs/pid.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pip-tools"
+url = "git@github.com:orf/pip-tools.git"
+upstream = "git@github.com:jazzband/pip-tools.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/presentations"
+url = "git@github.com:orf/presentations.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pypaper"
+url = "git@github.com:orf/pypaper.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pyresize"
+url = "git@github.com:orf/pyresize.git"
+upstream = "git@github.com:xorpad-og/pyresize.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/pythonlx_2019_jan"
+url = "git@github.com:orf/pythonlx_2019_jan.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/resizer"
+url = "git@github.com:orf/resizer.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/rust-book-demo-server"
+url = "git@github.com:orf/rust-book-demo-server.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/selectize.js"
+url = "git@github.com:orf/selectize.js.git"
+upstream = "git@github.com:selectize/selectize.js.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/serving"
+url = "git@github.com:orf/serving.git"
+upstream = "git@github.com:tensorflow/serving.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/sid-ctf"
+url = "git@github.com:orf/sid-ctf.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/spam"
+url = "git@github.com:orf/spam.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/stellar"
+url = "git@github.com:orf/stellar.git"
+upstream = "git@github.com:fastmonkeys/stellar.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/svn-extractor"
+url = "git@github.com:orf/svn-extractor.git"
+upstream = "git@github.com:anantshri/svn-extractor.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/swaggerize-express"
+url = "git@github.com:orf/swaggerize-express.git"
+upstream = "git@github.com:marvelapp/swaggerize-express.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/transmission"
+url = "git@github.com:orf/transmission.git"
+upstream = "git@github.com:transmission/transmission.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/uni_timetables"
+url = "git@github.com:orf/uni_timetables.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/vulnerable_website"
+url = "git@github.com:orf/vulnerable_website.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/websocket_stdout_example"
+url = "git@github.com:orf/websocket_stdout_example.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/wikilink_py"
+url = "git@github.com:orf/wikilink_py.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/wordinserter"
+url = "git@github.com:orf/wordinserter.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/workaround"
+url = "git@github.com:orf/workaround.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/wow_economy"
+url = "git@github.com:orf/wow_economy.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/xcat"
+url = "git@github.com:orf/xcat.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/xcat_app"
+url = "git@github.com:orf/xcat_app.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/xcat_app_old"
+url = "git@github.com:orf/xcat_app_old.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/xpath-expressions"
+url = "git@github.com:orf/xpath-expressions.git"
+branch = "master"
+
+[[repo]]
+path = "github/orf/zomato-map"
+url = "git@github.com:orf/zomato-map.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/Dockerfile"
+url = "git@gitlab.com:gitlab-org/Dockerfile.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/Product"
+url = "git@gitlab.com:gitlab-org/Product.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/University"
+url = "git@gitlab.com:gitlab-org/University.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/allocations"
+url = "git@gitlab.com:gitlab-org/allocations.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/apilab"
+url = "git@gitlab.com:gitlab-org/apilab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/async-retrospectives"
+url = "git@gitlab.com:gitlab-org/async-retrospectives.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/auto-deploy-helm"
+url = "git@gitlab.com:gitlab-org/auto-deploy-helm.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/backstage-changelog"
+url = "git@gitlab.com:gitlab-org/backstage-changelog.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/blob-examples"
+url = "git@gitlab.com:gitlab-org/blob-examples.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/CNG"
+url = "git@gitlab.com:gitlab-org/build/CNG.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/CNG-mirror"
+url = "git@gitlab.com:gitlab-org/build/CNG-mirror.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/alertmanager"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/alertmanager.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/chef-acme"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/chef-acme.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/compat_resource"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/compat_resource.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/config_guess"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/config_guess.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/consul"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/consul.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/curl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/curl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/distribution"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/distribution.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/exiftool"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/exiftool.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/go-crond"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/go-crond.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/jemalloc"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/jemalloc.git"
+branch = "dev"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/krb5"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/krb5.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libevent"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libevent.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libicu"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libicu.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libpng"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libpng.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/libre2"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/libre2.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/logrotate"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/logrotate.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/nginx-module-vts"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/nginx-module-vts.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/node_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/node_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/ohai"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/ohai.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/omnibus-ctl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/omnibus-ctl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/openssl"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/openssl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/pg_plugins"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/pg_plugins.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/pgbouncer_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/pgbouncer_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/postgres_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/postgres_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/prometheus"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/prometheus.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/rb-readline"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/rb-readline.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/redis_exporter"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/redis_exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/repmgr"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/repmgr.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/runit-cookbook"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/runit-cookbook.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/util-macros"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/util-macros.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/build/omnibus-mirror/zlib"
+url = "git@gitlab.com:gitlab-org/build/omnibus-mirror/zlib.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/auto-deploy-app"
+url = "git@gitlab.com:gitlab-org/charts/auto-deploy-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/components/gitlab-operator"
+url = "git@gitlab.com:gitlab-org/charts/components/gitlab-operator.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/deploy-image-helm-base"
+url = "git@gitlab.com:gitlab-org/charts/deploy-image-helm-base.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/gitlab"
+url = "git@gitlab.com:gitlab-org/charts/gitlab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/gitlab-runner"
+url = "git@gitlab.com:gitlab-org/charts/gitlab-runner.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/charts/plantuml"
+url = "git@gitlab.com:gitlab-org/charts/plantuml.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/azure-exporter"
+url = "git@gitlab.com:gitlab-org/ci-cd/azure-exporter.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/custom-executors/autoscaler"
+url = "git@gitlab.com:gitlab-org/ci-cd/custom-executors/autoscaler.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/dind-image-tests"
+url = "git@gitlab.com:gitlab-org/ci-cd/dind-image-tests.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/docker-machine"
+url = "git@gitlab.com:gitlab-org/ci-cd/docker-machine.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/gcp-exporter"
+url = "git@gitlab.com:gitlab-org/ci-cd/gcp-exporter.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/google-docs-apps-scripts"
+url = "git@gitlab.com:gitlab-org/ci-cd/google-docs-apps-scripts.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/runner-release-helper"
+url = "git@gitlab.com:gitlab-org/ci-cd/runner-release-helper.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers"
+url = "git@gitlab.com:gitlab-org/ci-cd/shared-runners/images/gcp/windows-containers.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/suricata-runner"
+url = "git@gitlab.com:gitlab-org/ci-cd/suricata-runner.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/team-tasks"
+url = "git@gitlab.com:gitlab-org/ci-cd/team-tasks.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/gitlab-test"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/gitlab-test.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/lfs"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/lfs.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-cd/tests/vault-ci-service"
+url = "git@gitlab.com:gitlab-org/ci-cd/tests/vault-ci-service.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-training-sample"
+url = "git@gitlab.com:gitlab-org/ci-training-sample.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/ci-training-slides"
+url = "git@gitlab.com:gitlab-org/ci-training-slides.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/auto-build-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/auto-build-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/auto-deploy-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/auto-deploy-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/cluster-applications"
+url = "git@gitlab.com:gitlab-org/cluster-integration/cluster-applications.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/helm-install-image"
+url = "git@gitlab.com:gitlab-org/cluster-integration/helm-install-image.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/knative-examples/knative-ruby-app"
+url = "git@gitlab.com:gitlab-org/cluster-integration/knative-examples/knative-ruby-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/knative-examples/knative-ruby-app-kubectl"
+url = "git@gitlab.com:gitlab-org/cluster-integration/knative-examples/knative-ruby-app-kubectl.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci"
+url = "git@gitlab.com:gitlab-org/cluster-integration/test-utils/k3s-gitlab-ci.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/codeclimate"
+url = "git@gitlab.com:gitlab-org/codeclimate.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/codeclimate-rubocop"
+url = "git@gitlab.com:gitlab-org/codeclimate-rubocop.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/configure/general"
+url = "git@gitlab.com:gitlab-org/configure/general.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/configure/onboarding"
+url = "git@gitlab.com:gitlab-org/configure/onboarding.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/container-registry"
+url = "git@gitlab.com:gitlab-org/container-registry.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/Contribute2019_shaun_mccann"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/Contribute2019_shaun_mccann.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/DT-ADO101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/DT-ADO101.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/Phil"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/Phil.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/SimonAD101-mra"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/SimonAD101-mra.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/afontaine"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/afontaine.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/alejandro"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/alejandro.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/alexisworkshop"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/alexisworkshop.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/andr3-autodevops"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/andr3-autodevops.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arty-autodevops-101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arty-autodevops-101.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arueda-devops-101"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arueda-devops-101.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/arueda-devops-101-v2"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/arueda-devops-101-v2.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/auto-devops-brandon-l"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/auto-devops-brandon-l.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/auto-devops-project---phil"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/auto-devops-project---phil.git"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chris-novello"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chris-novello.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chriscool"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chriscool.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/gitlab-org/contribute-workshops/chriscool-min-ruby-app"
+url = "git@gitlab.com:gitlab-org/contribute-workshops/chriscool-min-ruby-app.git"
