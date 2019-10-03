@@ -3,7 +3,6 @@ extern crate console;
 #[macro_use]
 extern crate failure;
 extern crate fs_extra;
-extern crate git2;
 extern crate graphql_client;
 extern crate indicatif;
 extern crate reqwest;

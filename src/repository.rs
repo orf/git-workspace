@@ -1,6 +1,5 @@
 use console::{strip_ansi_codes, truncate_str};
 use failure::Error;
-use git2::Repository as Git2Repo;
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
@@ -31,12 +30,24 @@ impl Repository {
         }
     }
     pub fn exists(&self, root: &PathBuf) -> bool {
-        Git2Repo::open(root.join(&self.path)).is_ok()
+        let git_dir = root.join(&self.path).join(".git");
+        git_dir.exists() && git_dir.is_dir()
     }
 
     fn set_upstream(&self, root: &PathBuf, upstream: &str) -> Result<(), Error> {
-        let repo = Git2Repo::open(root.join(&self.path))?;
-        repo.remote("upstream", upstream)?;
+        let mut command = Command::new("git");
+        let child = command
+            .arg("-C")
+            .arg(root.join(&self.path))
+            .arg("remote")
+            .arg("set-url")
+            .arg("upstream")
+            .arg(upstream);
+
+        let output = child.output()?;
+        if !output.status.success() {
+            bail!("Failed to set upstream")
+        }
         Ok(())
     }
 
