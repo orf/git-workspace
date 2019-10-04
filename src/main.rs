@@ -36,10 +36,10 @@ mod repository;
 #[structopt(name = "git-workspace", author, about)]
 struct Args {
     #[structopt(
-        short = "w",
-        long = "workspace",
-        parse(from_os_str),
-        env = "GIT_WORKSPACE"
+    short = "w",
+    long = "workspace",
+    parse(from_os_str),
+    env = "GIT_WORKSPACE"
     )]
     workspace: PathBuf,
     #[structopt(subcommand)]
@@ -71,6 +71,12 @@ fn main() {
     }
 }
 
+#[cfg(unix)]
+fn expand_user(path: &PathBuf) -> PathBuf {
+    expanduser::expanduser(path_str.to_string_lossy())
+        .context("Error expanding git workspace path")?
+}
+
 fn handle_main(args: Args) -> Result<(), Error> {
     let path_str = args
         .workspace
@@ -79,8 +85,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     let workspace_path = if cfg!(unix) {
         PathBuf::from(path_str)
     } else {
-        expanduser::expanduser(path_str.to_string_lossy())
-            .context("Error expanding git workspace path")?
+        expand_user(&path_str)
     };
 
     match args.command {
@@ -112,8 +117,8 @@ fn add_provider_to_config(
 }
 
 fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
-where
-    F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
+    where
+        F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
 {
     let progress = MultiProgress::new();
     let manager = ProgressManager::new(&progress, threads);
@@ -169,7 +174,7 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         .cloned()
         .collect();
 
-    println!("Cloning {} repositories", repos_to_clone.len(),);
+    println!("Cloning {} repositories", repos_to_clone.len(), );
 
     map_repositories(&repos_to_clone, threads, |r, progress_bar| {
         r.clone(&workspace, &progress_bar)
@@ -189,7 +194,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         .cloned()
         .collect();
 
-    println!("Fetching {} repositories", repos_to_fetch.len(),);
+    println!("Fetching {} repositories", repos_to_fetch.len(), );
 
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
         r.fetch(&workspace, &progress_bar)
