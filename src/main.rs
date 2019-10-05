@@ -81,7 +81,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     {
         workspace_path = PathBuf::from(path_str);
     }
-    #[cfg((unix))]
+    #[cfg(unix)]
     {
         workspace_path = expanduser::expanduser(path_str.to_string_lossy())
             .context("Error expanding git workspace path")?;
