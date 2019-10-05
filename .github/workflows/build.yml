@@ -27,6 +27,7 @@ jobs:
             name: git-workspace-Darwin-x86_64.tar.gz
     env:
       GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
+      GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
     steps:
       - uses: actions/checkout@master
       - name: Install Rust
@@ -35,16 +36,26 @@ jobs:
           toolchain: ${{ matrix.rust }}
           override: true
           target: ${{ matrix.target }}
-      - uses: actions-rs/cargo@v1
+      - name: git-workspace add gitlab user
+        uses: actions-rs/cargo@v1
         with:
           command: run
           args: add gitlab user tom6
-      - uses: actions-rs/cargo@v1
+      - name: git-workspace update
+        uses: actions-rs/cargo@v1
         with:
           command: run
           args: update
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      - name: git-workspace fetch
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: fetch
+      - name: git-workspace list
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: list
       - name: Run build
         uses: actions-rs/cargo@v1
         with:
