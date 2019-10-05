@@ -71,11 +71,13 @@ jobs:
           command: run
           args: list
       - name: Build release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: actions-rs/cargo@v1
         with:
           command: build
           args: --release --target ${{ matrix.target }}
       - name: Package
+        if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
           strip target/${{ matrix.target }}/release/${{ matrix.bin }}
