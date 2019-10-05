@@ -79,6 +79,7 @@ impl Repository {
     ) -> Result<(), Error> {
         progress_bar.set_message(format!("{}: starting", self.name()).as_str());
         let mut spawned = command
+            .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()?;
