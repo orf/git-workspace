@@ -34,7 +34,7 @@ impl Repository {
         git_dir.exists() && git_dir.is_dir()
     }
 
-    fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
+    pub fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
         if self.upstream.is_none() {
             Ok(())
         }
