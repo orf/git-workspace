@@ -72,10 +72,23 @@ fn main() {
 }
 
 fn handle_main(args: Args) -> Result<(), Error> {
-    let path_str = args
-        .workspace
-        .canonicalize()
-        .context(format!("Workspace path {} does not exist", args.workspace.display()))?;
+    let path_str = (match args.workspace.exists() {
+        true => &args.workspace,
+        false => {
+            fs_extra::dir::create_all(&args.workspace, false).context(format!(
+                "Error creating workspace directory {}",
+                &args.workspace.display()
+            ))?;
+            println!("Created {} as it did not exist", &args.workspace.display());
+
+            &args.workspace
+        }
+    })
+    .canonicalize()
+    .context(format!(
+        "Error canonicalizing workspace path {}",
+        &args.workspace.display()
+    ))?;
     let workspace_path;
     #[cfg(not(unix))]
     {
