@@ -76,12 +76,16 @@ fn handle_main(args: Args) -> Result<(), Error> {
         .workspace
         .canonicalize()
         .context(format!("{} does not exist", args.workspace.display()))?;
-    let workspace_path = if cfg!(unix) {
-        expanduser::expanduser(path_str.to_string_lossy())
-            .context("Error expanding git workspace path")?
-    } else {
-        PathBuf::from(path_str)
-    };
+    let workspace_path;
+    #[cfg(not(unix))]
+    {
+        workspace_path = PathBuf::from(path_str);
+    }
+    #[cfg((unix))]
+    {
+        workspace_path = expanduser::expanduser(path_str.to_string_lossy())
+            .context("Error expanding git workspace path")?;
+    }
 
     match args.command {
         Command::List {} => list(&workspace_path)?,
