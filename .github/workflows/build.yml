@@ -36,6 +36,10 @@ jobs:
           toolchain: ${{ matrix.rust }}
           override: true
           target: ${{ matrix.target }}
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
       - name: git-workspace add gitlab user
         uses: actions-rs/cargo@v1
         with:
