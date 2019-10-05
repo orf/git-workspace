@@ -21,8 +21,6 @@ jobs:
         with:
           command: run
           args: -- --workspace=${GITHUB_WORKSPACE}/workspace add gitlab user tom6
-        env:
-          -
       - uses: actions-rs/cargo@v1
         with:
           command: run
