@@ -26,7 +26,7 @@ jobs:
             bin: git-workspace
             name: git-workspace-Darwin-x86_64.tar.gz
     env:
-      GIT_WORKSPACE: ${{runner.workspace}}/workspace-test-dir/
+      GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
     steps:
       - uses: actions/checkout@master
       - name: Install Rust
