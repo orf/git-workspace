@@ -177,7 +177,7 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
 
     map_repositories(&repos_to_clone, threads, |r, progress_bar| {
         r.clone(&workspace, &progress_bar)?;
-        r.set_upstream(&workspaxe)?;
+        r.set_upstream(&workspace)?;
         Ok(())
     })?;
     archive_repositories(workspace, repositories).context("Error archiving repository")?;

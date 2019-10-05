@@ -35,10 +35,10 @@ impl Repository {
     }
 
     pub fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
-        if self.upstream.is_none() {
-            Ok(())
-        }
-        let upstream = self.upstream.unwrap().as_str();
+        let upstream = match &self.upstream {
+            Some(upstream) => upstream,
+            None => return Ok(())
+        };
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
