@@ -167,7 +167,7 @@ where
     waiting_thread.join();
 
     if !errors.is_empty() {
-        eprintln!("{} repositories failed to clone:", errors.len());
+        eprintln!("{} repositories failed:", errors.len());
         for (repo, error) in errors {
             eprintln!("{}: {}", repo.name(), style(error).red())
         }
@@ -180,16 +180,12 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().context("Error reading lockfile")?;
 
-    let repos_to_clone: Vec<Repository> = repositories
-        .iter()
-        .filter(|r| !r.exists(workspace))
-        .cloned()
-        .collect();
+    println!("Updating {} repositories", repositories.len());
 
-    println!("Cloning {} repositories", repos_to_clone.len(),);
-
-    map_repositories(&repos_to_clone, threads, |r, progress_bar| {
-        r.clone(&workspace, &progress_bar)?;
+    map_repositories(&repositories, threads, |r, progress_bar| {
+        if !r.exists(workspace) {
+            r.clone(&workspace, &progress_bar)?;
+        }
         r.set_upstream(&workspace)?;
         Ok(())
     })?;

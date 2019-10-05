@@ -39,18 +39,30 @@ impl Repository {
             Some(upstream) => upstream,
             None => return Ok(()),
         };
+
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
             .arg(root.join(&self.path))
             .arg("remote")
-            .arg("set-url")
+            .arg("rm")
+            .arg("upstream");
+
+        child.status()?;
+
+        let mut command = Command::new("git");
+        let child = command
+            .arg("-C")
+            .arg(root.join(&self.path))
+            .arg("remote")
+            .arg("add")
             .arg("upstream")
             .arg(upstream);
 
         let output = child.output()?;
         if !output.status.success() {
-            bail!("Failed to set upstream on repo {}", root.display())
+            let stderr = std::str::from_utf8(&output.stderr).context("Error decoding git output")?;
+            bail!("Failed to set upstream on repo {}: {}", root.display(), stderr.trim())
         }
         Ok(())
     }
@@ -66,6 +78,8 @@ impl Repository {
             .stderr(Stdio::piped())
             .spawn()?;
 
+        let mut last_line = "No output".to_string();
+
         if let Some(ref mut stderr) = spawned.stderr {
             let lines = BufReader::new(stderr).split(b'\r');
             for line in lines {
@@ -78,11 +92,12 @@ impl Repository {
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
                 let replaced_line = truncated_line.replace('\n', "");
                 progress_bar.set_message(format!("{}: {}", self.name(), replaced_line).as_str());
+                last_line = replaced_line;
             }
         }
         let exit_code = spawned.wait()?;
         if !exit_code.success() {
-            bail!("Git exited with code {}", exit_code.code().unwrap())
+            bail!("Git exited with code {}: {}", exit_code.code().unwrap(), last_line)
         }
         Ok(())
     }
