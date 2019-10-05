@@ -23,7 +23,7 @@ impl Lockfile {
         let config_data = fs::read_to_string(&self.path)
             .context(format!("Cannot read file {}", self.path.display()))?;
         let config: LockfileContents =
-            toml::from_str(config_data.as_str()).context(format!("Error deserializing"))?;
+            toml::from_str(config_data.as_str()).context("Error deserializing".to_string())?;
         Ok(config.repos)
     }
 
