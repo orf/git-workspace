@@ -56,7 +56,7 @@ jobs:
         with:
           command: run
           args: list
-      - name: Run build
+      - name: Build release
         uses: actions-rs/cargo@v1
         with:
           command: build
