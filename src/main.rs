@@ -75,7 +75,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     let path_str = args
         .workspace
         .canonicalize()
-        .context(format!("{} does not exist", args.workspace.display()))?;
+        .context(format!("Workspace path {} does not exist", args.workspace.display()))?;
     let workspace_path;
     #[cfg(not(unix))]
     {
