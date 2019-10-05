@@ -33,7 +33,7 @@ jobs:
       - name: Switch SSH to https
         shell: bash
         run: |
-          git config url.https://gitlab.com/.insteadOf git@gitlab.com
+          git config url.https://gitlab.com/.insteadOf ssh://git@gitlab.com
           git clone git@gitlab.com:tom6/jiri-gitlab.git
       - name: Install Rust
         uses: actions-rs/toolchain@v1
