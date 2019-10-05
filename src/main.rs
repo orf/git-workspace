@@ -169,7 +169,10 @@ where
     if !errors.is_empty() {
         eprintln!("{} repositories failed:", errors.len());
         for (repo, error) in errors {
-            eprintln!("{}: {}", repo.name(), style(error).red())
+            eprintln!("{}:", repo.name());
+            for cause in error.iter_chain() {
+                eprintln!(" - {}", style(cause).red());
+            }
         }
     }
 
