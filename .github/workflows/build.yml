@@ -20,10 +20,13 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: run
-          args: -- --workspace=${GITHUB_WORKSPACE}/workspace add gitlab user tom6
+          args: add gitlab user tom6
+        env:
+          GIT_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}/workspace
       - uses: actions-rs/cargo@v1
         with:
           command: run
-          args: -- --workspace=${GITHUB_WORKSPACE}/workspace update
+          args: update
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GIT_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}/workspace

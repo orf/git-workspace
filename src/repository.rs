@@ -34,7 +34,11 @@ impl Repository {
         git_dir.exists() && git_dir.is_dir()
     }
 
-    fn set_upstream(&self, root: &PathBuf, upstream: &str) -> Result<(), Error> {
+    fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
+        if self.upstream.is_none() {
+            Ok(())
+        }
+        let upstream = self.upstream.unwrap().as_str();
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
@@ -112,10 +116,6 @@ impl Repository {
 
         self.run_with_progress(child, progress_bar)
             .context(format!("Error cloning repo into {}", root.display()))?;
-
-        if let Some(upstream) = &self.upstream {
-            self.set_upstream(root, upstream.as_str())?;
-        }
 
         Ok(())
     }
