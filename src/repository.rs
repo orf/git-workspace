@@ -61,8 +61,13 @@ impl Repository {
 
         let output = child.output()?;
         if !output.status.success() {
-            let stderr = std::str::from_utf8(&output.stderr).context("Error decoding git output")?;
-            bail!("Failed to set upstream on repo {}: {}", root.display(), stderr.trim())
+            let stderr =
+                std::str::from_utf8(&output.stderr).context("Error decoding git output")?;
+            bail!(
+                "Failed to set upstream on repo {}: {}",
+                root.display(),
+                stderr.trim()
+            )
         }
         Ok(())
     }
@@ -97,7 +102,11 @@ impl Repository {
         }
         let exit_code = spawned.wait()?;
         if !exit_code.success() {
-            bail!("Git exited with code {}: {}", exit_code.code().unwrap(), last_line)
+            bail!(
+                "Git exited with code {}: {}",
+                exit_code.code().unwrap(),
+                last_line
+            )
         }
         Ok(())
     }
