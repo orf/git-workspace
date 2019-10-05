@@ -10,6 +10,7 @@ extern crate reqwest;
 extern crate serde;
 extern crate structopt;
 extern crate walkdir;
+extern crate atomic_counter;
 
 use crate::config::{Config, ProviderSource};
 use crate::lockfile::Lockfile;
@@ -25,6 +26,7 @@ use std::thread::JoinHandle;
 use std::{process, thread};
 use structopt::StructOpt;
 use walkdir::WalkDir;
+use atomic_counter::{RelaxedCounter, AtomicCounter};
 
 mod config;
 mod lockfile;
@@ -104,7 +106,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     }
 
     match args.command {
-        Command::List {full} => list(&workspace_path, full)?,
+        Command::List { full } => list(&workspace_path, full)?,
         Command::Update { threads } => {
             lock(&workspace_path)?;
             update(&workspace_path, threads)?
@@ -149,6 +151,10 @@ where
         Ok(())
     });
 
+    let is_attended = total_bar.is_hidden();
+    let total_repositories = repositories.len();
+    let counter = RelaxedCounter::new(0);
+
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
     let errors: Vec<(&Repository, Error)> = pool.install(|| {
         repositories
@@ -156,11 +162,18 @@ where
             .progress_with(total_bar)
             .map(|repo| {
                 let progress_bar = manager.get_bar();
+                let idx = counter.inc();
+                if !is_attended {
+                    println!("[{}/{}] Cloning {}", idx, total_repositories, repo.name());
+                }
                 let result = match f(repo, &progress_bar) {
                     Ok(_) => Ok(()),
                     Err(e) => Err((repo, e)),
                 };
                 manager.put_bar(progress_bar);
+                if !is_attended {
+                    println!("[{}/{}] Cloned {}", idx, total_repositories, repo.name());
+                }
                 result
             })
             .filter_map(Result::err)
@@ -310,7 +323,6 @@ fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
         } else {
             println!("{}", repo.name());
         }
-
     }
     Ok(())
 }
