@@ -56,7 +56,10 @@ enum Command {
         #[structopt(short = "t", long = "threads", default_value = "4")]
         threads: usize,
     },
-    List {},
+    List {
+        #[structopt(long = "full")]
+        full: bool,
+    },
     Add(ProviderSource),
 }
 
@@ -101,7 +104,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     }
 
     match args.command {
-        Command::List {} => list(&workspace_path)?,
+        Command::List {full} => list(&workspace_path, full)?,
         Command::Update { threads } => {
             lock(&workspace_path)?;
             update(&workspace_path, threads)?
@@ -298,11 +301,16 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
     Ok(())
 }
 
-fn list(workspace: &PathBuf) -> Result<(), Error> {
+fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
     for repo in repositories {
-        println!("{}", repo.full_path(workspace).to_string_lossy());
+        if full {
+            println!("{}", repo.full_path(workspace).to_string_lossy());
+        } else {
+            println!("{}", repo.name());
+        }
+
     }
     Ok(())
 }
