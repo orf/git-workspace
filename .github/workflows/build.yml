@@ -18,12 +18,14 @@ jobs:
           toolchain: stable
           default: true
       - uses: actions-rs/cargo@v1
-          with:
-            command: run
-            args: add gitlab user tom6
+        with:
+          command: run
+          args: -- --workspace=${GITHUB_WORKSPACE}/workspace add gitlab user tom6
+        env:
+          -
       - uses: actions-rs/cargo@v1
-          with:
-            command: run
-            args: update
-          env:
-            GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        with:
+          command: run
+          args: -- --workspace=${GITHUB_WORKSPACE}/workspace update
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
