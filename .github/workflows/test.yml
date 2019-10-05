@@ -35,7 +35,6 @@ jobs:
         run: |
           git config --global url."https://gitlab.com/".insteadOf git@gitlab.com:
           git config --global url."https://".insteadOf git://
-          GIT_TRACE=1 git clone --verbose --progress git@gitlab.com:tom6/jiri-gitlab.git
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
