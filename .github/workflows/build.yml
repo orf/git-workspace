@@ -18,6 +18,12 @@ jobs:
           toolchain: stable
           default: true
       - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --all-features
+          with:
+            command: run
+            args: add gitlab user tom6
+      - uses: actions-rs/cargo@v1
+          with:
+            command: run
+            args: update
+          env:
+            GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
