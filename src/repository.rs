@@ -29,11 +29,6 @@ impl Repository {
             upstream,
         }
     }
-    pub fn exists(&self, root: &PathBuf) -> bool {
-        let git_dir = root.join(&self.path).join(".git");
-        git_dir.exists() && git_dir.is_dir()
-    }
-
     pub fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
         let upstream = match &self.upstream {
             Some(upstream) => upstream,
@@ -43,7 +38,7 @@ impl Repository {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
-            .arg(root.join(&self.path))
+            .arg(root.join(&self.name()))
             .arg("remote")
             .arg("rm")
             .arg("upstream");
@@ -53,7 +48,7 @@ impl Repository {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
-            .arg(root.join(&self.path))
+            .arg(root.join(&self.name()))
             .arg("remote")
             .arg("add")
             .arg("upstream")
@@ -116,7 +111,7 @@ impl Repository {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
-            .arg(root.join(&self.path))
+            .arg(root.join(&self.name()))
             .arg("fetch")
             .arg("--all")
             .arg("--prune")
@@ -137,17 +132,33 @@ impl Repository {
             .arg("--recurse-submodules")
             .arg("--progress")
             .arg(&self.url)
-            .arg(root.join(&self.path));
+            .arg(root.join(&self.name()));
 
         self.run_with_progress(child, progress_bar)
-            .context(format!("Error cloning repo into {}", root.display()))?;
+            .context(format!("Error cloning repo into {}", self.name()))?;
 
         Ok(())
     }
     pub fn name(&self) -> String {
-        self.path.clone()
+        // We have to normalize repository names here. On windows if you do `path.join(self.name())`
+        // it will cause issues if the name contains a forward slash. So here we just normalize it
+        // to the path separator on the system.
+        self.path
+            .replace('/', std::path::MAIN_SEPARATOR.to_string().as_str())
     }
-    pub fn full_path(&self, root: &Path) -> PathBuf {
-        root.join(&self.path)
+    pub fn get_path(&self, root: &Path) -> Result<PathBuf, Error> {
+        let joined = root.join(&self.name());
+        Ok(joined
+            .canonicalize()
+            .context(format!("Cannot resolve {}", joined.display()))?)
+    }
+    pub fn exists(&self, root: &PathBuf) -> bool {
+        match self.get_path(&root) {
+            Ok(path) => {
+                let git_dir = root.join(path).join(".git");
+                git_dir.exists() && git_dir.is_dir()
+            }
+            Err(_) => false,
+        }
     }
 }

@@ -7,6 +7,7 @@ jobs:
     name: Rust project
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         include:
@@ -20,7 +21,6 @@ jobs:
             target: x86_64-apple-darwin
             bin: git-workspace
             name: git-workspace-Darwin-x86_64.tar.gz
-# See https://github.community/t5/GitHub-Actions/Is-it-possible-to-disable-the-Windows-git-credential-helper/td-p/33962
 #          - os: windows-latest
 #            rust: stable
 #            target: x86_64-pc-windows-msvc
@@ -30,6 +30,8 @@ jobs:
       GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GCM_INTERACTIVE: never
+      GIT_TERMINAL_PROMPT: 0
     steps:
       - uses: actions/checkout@master
       - name: Switch SSH to https
@@ -37,6 +39,10 @@ jobs:
         run: |
           git config --global url."https://gitlab.com/".insteadOf git@gitlab.com:
           git config --global url."https://".insteadOf git://
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]
+          then
+            git config --global credential.helper wincred
+          fi
       - name: Install Rust
         uses: actions-rs/toolchain@v1
         with:
