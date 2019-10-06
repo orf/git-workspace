@@ -8,26 +8,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         include:
           - os: ubuntu-latest
             rust: stable
             target: x86_64-unknown-linux-gnu
             bin: git-workspace
             name: git-workspace-Linux-x86_64.tar.gz
-          - os: windows-latest
-            rust: stable
-            target: x86_64-pc-windows-msvc
-            bin: git-workspace.exe
-            name: git-workspace-Windows-x86_64.zip
           - os: macOS-latest
             rust: stable
             target: x86_64-apple-darwin
             bin: git-workspace
             name: git-workspace-Darwin-x86_64.tar.gz
+# See https://github.community/t5/GitHub-Actions/Is-it-possible-to-disable-the-Windows-git-credential-helper/td-p/33962
+#          - os: windows-latest
+#            rust: stable
+#            target: x86_64-pc-windows-msvc
+#            bin: git-workspace.exe
+#            name: git-workspace-Windows-x86_64.zip
     env:
       GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@master
       - name: Switch SSH to https
