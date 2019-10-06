@@ -1,6 +1,6 @@
 [package]
 name = "git-workspace"
-version = "0.1.9-alpha.0"
+version = "0.1.9"
 authors = ["Tom Forbes <tom@tomforb.es>"]
 edition = "2018"
 description = "Manage and update personal and work git repos from multiple providers"
