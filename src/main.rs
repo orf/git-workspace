@@ -153,7 +153,7 @@ where
 
     let is_attended = total_bar.is_hidden();
     let total_repositories = repositories.len();
-    let counter = RelaxedCounter::new(0);
+    let counter = RelaxedCounter::new(1);
 
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
     let errors: Vec<(&Repository, Error)> = pool.install(|| {
