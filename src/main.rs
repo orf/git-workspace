@@ -172,14 +172,14 @@ where
                 progress_bar.enable_steady_tick(100);
                 let idx = counter.inc();
                 if !is_attended {
-                    println!("[{}/{}] Cloning {}", idx, total_repositories, repo.name());
+                    println!("[{}/{}] Starting {}", idx, total_repositories, repo.name());
                 }
                 let result = match f(repo, &progress_bar) {
                     Ok(_) => Ok(()),
                     Err(e) => Err((repo, e)),
                 };
                 if !is_attended {
-                    println!("[{}/{}] Cloned {}", idx, total_repositories, repo.name());
+                    println!("[{}/{}] Finished {}", idx, total_repositories, repo.name());
                 }
                 progress_bar.finish_and_clear();
                 result
@@ -216,7 +216,7 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         r.set_upstream(&workspace)?;
         Ok(())
     })?;
-    archive_repositories(workspace, repositories).context("Error archiving repository")?;
+    archive_repositories(workspace, repositories).context("Error archiving repositories")?;
 
     Ok(())
 }
@@ -247,26 +247,43 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     // 2. If the directory is not, and contains a `.git` directory, then we mark it for archival and
     //    skip processing.
     // This assumes nobody deletes a .git directory in one of their projects.
-    let archive_directory = workspace.join(".archive");
+    let archive_directory = if cfg!(windows) {
+        workspace.join("_archive")
+    } else {
+        workspace.join(".archive")
+    };
 
-    let mut safe_paths: HashSet<PathBuf> = repositories
+    let mut repository_paths: HashSet<PathBuf> = repositories
         .iter()
-        .map(|r| r.full_path(workspace))
+        .filter(|r| r.exists(workspace))
+        .map(|r| r.get_path(workspace))
+        .filter_map(Result::ok)
         .collect();
-    safe_paths.insert(archive_directory.clone());
+
+    if !archive_directory.exists() {
+        fs_extra::dir::create(&archive_directory, false).context(format!(
+            "Error creating archive directory {}",
+            archive_directory.display()
+        ))?;
+    }
+
+    repository_paths.insert(
+        archive_directory
+            .canonicalize()
+            .context("Error canoncalizing archive directory")?,
+    );
 
     let mut to_archive = Vec::new();
     let mut it = WalkDir::new(workspace).into_iter();
 
     // I couldn't work out how to use `filter_entry` here, so we just roll our own loop.
-
     loop {
         let entry = match it.next() {
             None => break,
             Some(Err(err)) => bail!("Error iterating through directory: {}", err),
             Some(Ok(entry)) => entry,
         };
-        if safe_paths.contains(entry.path()) {
+        if repository_paths.contains(entry.path()) {
             it.skip_current_dir();
             continue;
         }
@@ -277,32 +294,18 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         }
     }
 
-    let options = fs_extra::dir::CopyOptions::new();
-
-    if !archive_directory.exists() && !to_archive.is_empty() {
-        fs_extra::dir::create(&archive_directory, false).context(format!(
-            "Error creating archive directory {}",
-            archive_directory.display()
-        ))?;
-    }
-
+    println!("Archiving {} repositories", to_archive.len(),);
     for from_dir in to_archive.iter() {
         let relative_dir = from_dir.strip_prefix(workspace)?;
         let to_dir = archive_directory.join(relative_dir);
         println!("Archiving {}", relative_dir.display());
-        if to_dir.exists() {
-            fs_extra::dir::remove(&to_dir)
-                .context(format!("Error removing directory {}", to_dir.display()))?;
-        }
-        fs_extra::dir::create_all(&to_dir, false)
+        fs_extra::dir::create_all(&to_dir, true)
             .context(format!("Error creating directory {}", to_dir.display()))?;
-        fs_extra::dir::move_dir(&from_dir, &to_dir.parent().unwrap(), &options).context(
-            format!(
-                "Error moving directory {} to {}",
-                from_dir.display(),
-                to_dir.display()
-            ),
-        )?;
+        std::fs::rename(&from_dir, &to_dir).context(format!(
+            "Error moving directory {} to {}",
+            from_dir.display(),
+            to_dir.display()
+        ))?;
     }
     Ok(())
 }
@@ -325,9 +328,10 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
 fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
-    for repo in repositories {
+    let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));
+    for repo in existing_repositories {
         if full {
-            println!("{}", repo.full_path(workspace).to_string_lossy());
+            println!("{}", repo.get_path(workspace).unwrap().display());
         } else {
             println!("{}", repo.name());
         }
