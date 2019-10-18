@@ -84,7 +84,8 @@ impl Repository {
             .stderr(Stdio::piped())
             .spawn()?;
 
-        let mut last_line = "No output".to_string();
+        let mut last_line = format!("{}: running...", self.name());
+        progress_bar.set_message(&last_line);
 
         if let Some(ref mut stderr) = spawned.stderr {
             let lines = BufReader::new(stderr).split(b'\r');
@@ -96,7 +97,7 @@ impl Repository {
                 let line = std::str::from_utf8(&output).unwrap();
                 let plain_line = strip_ansi_codes(line).replace('\n', "");
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
-                progress_bar.set_message(format!("{}: {}", self.name(), truncated_line).as_str());
+                progress_bar.set_message(&format!("{}: {}", self.name(), truncated_line));
                 last_line = plain_line;
             }
         }

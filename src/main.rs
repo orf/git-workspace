@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate failure;
+extern crate atomic_counter;
 extern crate console;
 #[cfg(unix)]
 extern crate expanduser;
@@ -10,15 +11,14 @@ extern crate reqwest;
 extern crate serde;
 extern crate structopt;
 extern crate walkdir;
-extern crate atomic_counter;
 
 use crate::config::{Config, ProviderSource};
 use crate::lockfile::Lockfile;
-use crate::progress::ProgressManager;
 use crate::repository::Repository;
+use atomic_counter::{AtomicCounter, RelaxedCounter};
 use console::style;
 use failure::{Error, ResultExt};
-use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar};
+use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
@@ -26,11 +26,9 @@ use std::thread::JoinHandle;
 use std::{process, thread};
 use structopt::StructOpt;
 use walkdir::WalkDir;
-use atomic_counter::{RelaxedCounter, AtomicCounter};
 
 mod config;
 mod lockfile;
-mod progress;
 mod providers;
 mod repository;
 
@@ -133,35 +131,44 @@ fn add_provider_to_config(
     Ok(())
 }
 
+use std::sync::Arc;
+
 fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
 where
     F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
 {
-    let progress = MultiProgress::new();
-    let manager = ProgressManager::new(&progress, threads);
-    let total_bar = progress.add(manager.create_total_bar(repositories.len() as u64));
+    let progress = Arc::new(MultiProgress::new());
+    let total_bar = progress.add(ProgressBar::new(repositories.len() as u64));
+    total_bar.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})")
+            .progress_chars("#>-"),
+    );
 
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build()
         .context("Error creating the thread pool")?;
 
-    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
-        progress.join_and_clear()?;
-        Ok(())
-    });
-
-    let is_attended = total_bar.is_hidden();
+    let is_attended = console::user_attended();
     let total_repositories = repositories.len();
     let counter = RelaxedCounter::new(1);
 
+    let progress_wait = progress.clone();
+
+    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
+        progress_wait.join()?;
+        Ok(())
+    });
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
     let errors: Vec<(&Repository, Error)> = pool.install(|| {
         repositories
             .par_iter()
             .progress_with(total_bar)
             .map(|repo| {
-                let progress_bar = manager.get_bar();
+                let progress_bar = progress.add(ProgressBar::new_spinner());
+                progress_bar.set_message("waiting...");
+                progress_bar.enable_steady_tick(100);
                 let idx = counter.inc();
                 if !is_attended {
                     println!("[{}/{}] Cloning {}", idx, total_repositories, repo.name());
@@ -170,16 +177,16 @@ where
                     Ok(_) => Ok(()),
                     Err(e) => Err((repo, e)),
                 };
-                manager.put_bar(progress_bar);
                 if !is_attended {
                     println!("[{}/{}] Cloned {}", idx, total_repositories, repo.name());
                 }
+                progress_bar.finish_and_clear();
                 result
             })
             .filter_map(Result::err)
             .collect()
     });
-    manager.signal_done();
+
     waiting_thread.join();
 
     if !errors.is_empty() {
