@@ -75,33 +75,34 @@ fn main() {
 }
 
 fn handle_main(args: Args) -> Result<(), Error> {
-    let path_str = (match args.workspace.exists() {
-        true => &args.workspace,
-        false => {
-            fs_extra::dir::create_all(&args.workspace, false).context(format!(
-                "Error creating workspace directory {}",
-                &args.workspace.display()
-            ))?;
-            println!("Created {} as it did not exist", &args.workspace.display());
+    let workspace_path;
+    #[cfg(not(unix))]
+    {
+        workspace_path = PathBuf::from(args.workspace);
+    }
+    #[cfg(unix)]
+    {
+        workspace_path = expanduser::expanduser(args.workspace.to_string_lossy())
+            .context("Error expanding git workspace path")?;
+    }
 
-            &args.workspace
+    let path_str = (match workspace_path.exists() {
+        true => &workspace_path,
+        false => {
+            fs_extra::dir::create_all(&workspace_path, false).context(format!(
+                "Error creating workspace directory {}",
+                &workspace_path.display()
+            ))?;
+            println!("Created {} as it did not exist", &workspace_path.display());
+
+            &workspace_path
         }
     })
     .canonicalize()
     .context(format!(
         "Error canonicalizing workspace path {}",
-        &args.workspace.display()
+        &workspace_path.display()
     ))?;
-    let workspace_path;
-    #[cfg(not(unix))]
-    {
-        workspace_path = PathBuf::from(path_str);
-    }
-    #[cfg(unix)]
-    {
-        workspace_path = expanduser::expanduser(path_str.to_string_lossy())
-            .context("Error expanding git workspace path")?;
-    }
 
     match args.command {
         Command::List { full } => list(&workspace_path, full)?,
