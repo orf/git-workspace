@@ -56,7 +56,6 @@ impl Provider for GithubProvider {
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let github_token =
             env::var("GITHUB_TOKEN").context("Missing GITHUB_TOKEN environment variable")?;
-        let client = reqwest::Client::new();
         let mut repositories = vec![];
 
         let mut after = None;
@@ -66,15 +65,14 @@ impl Provider for GithubProvider {
                 login: self.name.clone(),
                 after,
             });
-            let mut res = client
-                .post("https://api.github.com/graphql")
-                .bearer_auth(github_token.as_str())
-                .json(&q)
-                .send()?;
-            let response_body: Response<repositories::ResponseData> = res.json()?;
-            let response_data: repositories::ResponseData =
-                response_body.data.expect("missing response data");
+            let res = ureq::post("https://api.github.com/graphql")
+                .set("Authorization", format!("Bearer {}", github_token).as_str())
+                .send_json(json!(&q));
+            let response_data: Response<repositories::ResponseData> =
+                serde_json::from_value(res.into_json()?)?;
             let response_repositories = response_data
+                .data
+                .expect("Missing data")
                 .repository_owner
                 .expect("missing repository owner")
                 .repositories;

@@ -72,18 +72,18 @@ impl GitlabProvider {
     ) -> Result<Vec<Repository>, Error> {
         let github_token =
             env::var("GITLAB_TOKEN").context("Missing GITLAB_TOKEN environment variable")?;
-        let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = UserRepositories::build_query(user_repositories::Variables {
             name: name.to_string(),
             after: Some("".to_string()),
         });
-        let mut res = client
-            .post(format!("{}/api/graphql", url).as_str())
-            .bearer_auth(github_token.as_str())
-            .json(&q)
-            .send()?;
-        let response_body: Response<user_repositories::ResponseData> = res.json()?;
+        let res = ureq::post(format!("{}/api/graphql", url).as_str())
+            .set("Authorization", format!("Bearer {}", github_token).as_str())
+            .set("Content-Type", "application/json")
+            .send_json(json!(&q));
+        let json = res.into_json()?;
+        let response_body: Response<user_repositories::ResponseData> =
+            serde_json::from_value(json)?;
         let gitlab_repositories = response_body
             .data
             .expect("Missing data")
@@ -97,6 +97,7 @@ impl GitlabProvider {
             .filter_map(|x| x)
             // Extract the node, which is also Some(T)
             .filter_map(|x| x.node);
+
         for repo in gitlab_repositories {
             if repo.archived.unwrap() {
                 continue;
@@ -120,18 +121,18 @@ impl GitlabProvider {
     ) -> Result<Vec<Repository>, Error> {
         let github_token =
             env::var("GITLAB_TOKEN").context("Missing GITLAB_TOKEN environment variable")?;
-        let client = reqwest::Client::new();
         let mut repositories = vec![];
         let q = GroupRepositories::build_query(group_repositories::Variables {
             name: name.to_string(),
             after: Some("".to_string()),
         });
-        let mut res = client
-            .post(format!("{}/api/graphql", url).as_str())
-            .bearer_auth(github_token.as_str())
-            .json(&q)
-            .send()?;
-        let response_body: Response<group_repositories::ResponseData> = res.json()?;
+        let res = ureq::post(format!("{}/api/graphql", url).as_str())
+            .set("Authorization", format!("Bearer {}", github_token).as_str())
+            .set("Content-Type", "application/json")
+            .send_json(json!(&q));
+        let json = res.into_json()?;
+        let response_body: Response<group_repositories::ResponseData> =
+            serde_json::from_value(json)?;
         let gitlab_repositories = response_body
             .data
             .expect("Missing data")

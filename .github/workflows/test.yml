@@ -32,6 +32,7 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GCM_INTERACTIVE: never
       GIT_TERMINAL_PROMPT: 0
+      RUST_BACKTRACE: "1"
     steps:
       - uses: actions/checkout@master
       - name: Switch SSH to https
