@@ -314,6 +314,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         .filter_map(Result::ok)
         .collect();
 
+    // If the archive directory does not exist then we create it
     if !archive_directory.exists() {
         fs_extra::dir::create(&archive_directory, false).context(format!(
             "Error creating archive directory {}",
@@ -321,26 +322,35 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         ))?;
     }
 
+    // Make sure we add our archive directory to the set of repository paths. This ensures that
+    // it's not traversed below!
     repository_paths.insert(
         archive_directory
             .canonicalize()
             .context("Error canoncalizing archive directory")?,
     );
 
+    // Create a vector of all repositories to archive, and WalkDir iterator
     let mut to_archive = Vec::new();
     let mut it = WalkDir::new(workspace).into_iter();
 
-    // I couldn't work out how to use `filter_entry` here, so we just roll our own loop.
+    // Waldir provides a `filter_entry` method, but I couldn't work out how to use it
+    // correctly here. So we just roll our own loop:
     loop {
+        // Find the next directory. This can throw an error, in which case we bail out.
+        // Perhaps we shouldn't bail here?
         let entry = match it.next() {
             None => break,
             Some(Err(err)) => bail!("Error iterating through directory: {}", err),
             Some(Ok(entry)) => entry,
         };
+        // If the current path is in the set of repository paths then we skip processing it entirely.
         if repository_paths.contains(entry.path()) {
             it.skip_current_dir();
             continue;
         }
+        // If the entry has a .git directory inside it then we add it to the `to_archive` list
+        // and skip the current directory.
         if entry.path().join(".git").is_dir() {
             to_archive.push(entry.path().to_path_buf());
             it.skip_current_dir();
@@ -351,10 +361,11 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     if !to_archive.is_empty() {
         println!("Archiving {} repositories", to_archive.len());
         for from_dir in to_archive.iter() {
+            // Find the relative path
             let relative_dir = from_dir.strip_prefix(workspace)?;
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
-            fs_extra::dir::create_all(&to_dir, false)
+            fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
                 .context(format!("Error creating directory {}", to_dir.display()))?;
             std::fs::rename(&from_dir, &to_dir).context(format!(
                 "Error moving directory {} to {}",

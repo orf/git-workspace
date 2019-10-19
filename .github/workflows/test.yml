@@ -9,19 +9,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-#        os: [ubuntu-latest, macos-latest]
-        os: [windows-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
-#          - os: ubuntu-latest
-#            rust: stable
-#            target: x86_64-unknown-linux-gnu
-#            bin: git-workspace
-#            name: git-workspace-Linux-x86_64.tar.gz
-#          - os: macOS-latest
-#            rust: stable
-#            target: x86_64-apple-darwin
-#            bin: git-workspace
-#            name: git-workspace-Darwin-x86_64.tar.gz
+          - os: ubuntu-latest
+            rust: stable
+            target: x86_64-unknown-linux-gnu
+            bin: git-workspace
+            name: git-workspace-Linux-x86_64.tar.gz
+          - os: macOS-latest
+            rust: stable
+            target: x86_64-apple-darwin
+            bin: git-workspace
+            name: git-workspace-Darwin-x86_64.tar.gz
           - os: windows-latest
             rust: stable
             target: x86_64-pc-windows-msvc
