@@ -9,23 +9,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+#        os: [ubuntu-latest, macos-latest]
+        os: [windows-latest]
         include:
-          - os: ubuntu-latest
-            rust: stable
-            target: x86_64-unknown-linux-gnu
-            bin: git-workspace
-            name: git-workspace-Linux-x86_64.tar.gz
-          - os: macOS-latest
-            rust: stable
-            target: x86_64-apple-darwin
-            bin: git-workspace
-            name: git-workspace-Darwin-x86_64.tar.gz
-#          - os: windows-latest
+#          - os: ubuntu-latest
 #            rust: stable
-#            target: x86_64-pc-windows-msvc
-#            bin: git-workspace.exe
-#            name: git-workspace-Windows-x86_64.zip
+#            target: x86_64-unknown-linux-gnu
+#            bin: git-workspace
+#            name: git-workspace-Linux-x86_64.tar.gz
+#          - os: macOS-latest
+#            rust: stable
+#            target: x86_64-apple-darwin
+#            bin: git-workspace
+#            name: git-workspace-Darwin-x86_64.tar.gz
+          - os: windows-latest
+            rust: stable
+            target: x86_64-pc-windows-msvc
+            bin: git-workspace.exe
+            name: git-workspace-Windows-x86_64.zip
     env:
       GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
