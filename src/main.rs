@@ -361,12 +361,16 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     if !to_archive.is_empty() {
         println!("Archiving {} repositories", to_archive.len());
         for from_dir in to_archive.iter() {
-            // Find the relative path
+            // Find the relative path of the directory from the workspace. So if you have something
+            // like `workspace/github/repo-name`, it will be `github/repo-name`.
             let relative_dir = from_dir.strip_prefix(workspace)?;
+            // Join the relative directory (`github/repo-name`) with the archive directory.
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
+            // Create all the directories that are needed:
             fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
                 .context(format!("Error creating directory {}", to_dir.display()))?;
+            // Move the directory to the archive directory:
             std::fs::rename(&from_dir, &to_dir).context(format!(
                 "Error moving directory {} to {}",
                 from_dir.display(),
@@ -378,9 +382,12 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     Ok(())
 }
 
+/// Update our lockfile
 fn lock(workspace: &PathBuf) -> Result<(), Error> {
+    // Read the configuration sources
     let config = Config::new(workspace.join("workspace.toml"));
     let sources = config.read()?;
+    // For each source, in sequence, fetch the repositories
     let mut all_repositories = vec![];
     for source in sources.iter() {
         all_repositories.extend(source.fetch_repositories()?);
@@ -388,12 +395,15 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
     // We may have duplicated repositories here. Make sure they are unique based on the full path.
     all_repositories.sort();
     all_repositories.dedup();
+    // Write the lockfile out
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     lockfile.write(&all_repositories)?;
     Ok(())
 }
 
+/// List the contents of our workspace
 fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
+    // Read and parse the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
     let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));

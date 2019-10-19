@@ -22,8 +22,17 @@ impl Repository {
         branch: Option<String>,
         upstream: Option<String>,
     ) -> Repository {
+        // We have to normalize repository names here. On windows if you do `path.join(self.name())`
+        // it will cause issues if the name contains a forward slash. So here we just normalize it
+        // to the path separator on the system.
+        let norm_path = if cfg!(windows) {
+            path.replace('/', std::path::MAIN_SEPARATOR.to_string().as_str())
+        } else {
+            path
+        };
+
         Repository {
-            path,
+            path: norm_path,
             url,
             branch,
             upstream,
@@ -139,12 +148,8 @@ impl Repository {
 
         Ok(())
     }
-    pub fn name(&self) -> String {
-        // We have to normalize repository names here. On windows if you do `path.join(self.name())`
-        // it will cause issues if the name contains a forward slash. So here we just normalize it
-        // to the path separator on the system.
-        self.path
-            .replace('/', std::path::MAIN_SEPARATOR.to_string().as_str())
+    pub fn name(&self) -> &String {
+        &self.path
     }
     pub fn get_path(&self, root: &Path) -> Result<PathBuf, Error> {
         let joined = root.join(&self.name());
