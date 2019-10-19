@@ -301,7 +301,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
             let relative_dir = from_dir.strip_prefix(workspace)?;
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
-            fs_extra::dir::create_all(&to_dir, true)
+            fs_extra::dir::create_all(&to_dir.parent().unwrap(), true)
                 .context(format!("Error creating directory {}", to_dir.display()))?;
             std::fs::rename(&from_dir, &to_dir).context(format!(
                 "Error moving directory {} to {}",
