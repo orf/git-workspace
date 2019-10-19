@@ -295,19 +295,22 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         }
     }
 
-    println!("Archiving {} repositories", to_archive.len(),);
-    for from_dir in to_archive.iter() {
-        let relative_dir = from_dir.strip_prefix(workspace)?;
-        let to_dir = archive_directory.join(relative_dir);
-        println!("Archiving {}", relative_dir.display());
-        fs_extra::dir::create_all(&to_dir, true)
-            .context(format!("Error creating directory {}", to_dir.display()))?;
-        std::fs::rename(&from_dir, &to_dir).context(format!(
-            "Error moving directory {} to {}",
-            from_dir.display(),
-            to_dir.display()
-        ))?;
+    if !to_archive.is_empty() {
+        println!("Archiving {} repositories", to_archive.len());
+        for from_dir in to_archive.iter() {
+            let relative_dir = from_dir.strip_prefix(workspace)?;
+            let to_dir = archive_directory.join(relative_dir);
+            println!("Archiving {}", relative_dir.display());
+            fs_extra::dir::create_all(&to_dir, true)
+                .context(format!("Error creating directory {}", to_dir.display()))?;
+            std::fs::rename(&from_dir, &to_dir).context(format!(
+                "Error moving directory {} to {}",
+                from_dir.display(),
+                to_dir.display()
+            ))?;
+        }
     }
+
     Ok(())
 }
 
