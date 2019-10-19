@@ -135,11 +135,17 @@ fn add_provider_to_config(
 
 use std::sync::Arc;
 
+/// Take any number of repositories and apply `f` on each one.
+/// This method takes care of displaying progress bars and displaying
+/// any errors that may arise.
 fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
 where
     F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
 {
+    // Create our progress bar. We use Arc here as we need to share the MutliProgress across
+    // more than 1 thread (described below)
     let progress = Arc::new(MultiProgress::new());
+    // Create our total progress bar used with `.progress_iter()`.
     let total_bar = progress.add(ProgressBar::new(repositories.len() as u64));
     total_bar.set_style(
         ProgressStyle::default_bar()
@@ -147,34 +153,47 @@ where
             .progress_chars("#>-"),
     );
 
+    // user_attended() means a tty is attached to the output.
+    let is_attended = console::user_attended();
+    let total_repositories = repositories.len();
+    // Use a counter here if there is no tty, to show a stream of progress messages rather than
+    // a dynamic progress bar.
+    let counter = RelaxedCounter::new(1);
+
+    // Clone our Arc<MultiProgress> and spawn a thread. We need to call `.join()` on the
+    // `MultiProgress` to ensure that messages are pumped and the progress bars are updated.
+    // We need to do this in a thread as the `.map()` we do below also blocks.
+    let progress_wait = progress.clone();
+    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
+        progress_wait.join()?;
+        Ok(())
+    });
+
+    // Create our thread pool. We do this rather than use `.par_iter()` on any iterable as it
+    // allows us to customize the number of threads.
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build()
         .context("Error creating the thread pool")?;
 
-    let is_attended = console::user_attended();
-    let total_repositories = repositories.len();
-    let counter = RelaxedCounter::new(1);
-
-    let progress_wait = progress.clone();
-
-    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
-        progress_wait.join()?;
-        Ok(())
-    });
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
     let errors: Vec<(&Repository, Error)> = pool.install(|| {
         repositories
             .par_iter()
+            // Update our progress bar with each iteration
             .progress_with(total_bar)
             .map(|repo| {
+                // Create a progress bar and configure some defaults
                 let progress_bar = progress.add(ProgressBar::new_spinner());
                 progress_bar.set_message("waiting...");
-                progress_bar.enable_steady_tick(100);
+                progress_bar.enable_steady_tick(500);
+                // Increment our counter for use if the console is not a tty.
                 let idx = counter.inc();
                 if !is_attended {
                     println!("[{}/{}] Starting {}", idx, total_repositories, repo.name());
                 }
+                // Run our given function. If the result is an error then attach the
+                // erroring Repository object to it.
                 let result = match f(repo, &progress_bar) {
                     Ok(_) => Ok(()),
                     Err(e) => Err((repo, e)),
@@ -182,15 +201,21 @@ where
                 if !is_attended {
                     println!("[{}/{}] Finished {}", idx, total_repositories, repo.name());
                 }
+                // Clear the progress bar and return the result
                 progress_bar.finish_and_clear();
                 result
             })
+            // We only care about errors here, so filter them out.
             .filter_map(Result::err)
+            // Collect the results into a Vec
             .collect()
     });
 
+    // Join the progress thread. This will never join if the `progress_bar.finish_and_clear()`
+    // is not called on every progress bar, but that should never happen.
     waiting_thread.join();
 
+    // Print out each repository that failed to run.
     if !errors.is_empty() {
         eprintln!("{} repositories failed:", errors.len());
         for (repo, error) in errors {
@@ -204,6 +229,7 @@ where
     Ok(())
 }
 
+/// Update
 fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().context("Error reading lockfile")?;
@@ -301,7 +327,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
             let relative_dir = from_dir.strip_prefix(workspace)?;
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
-            fs_extra::dir::create_all(&to_dir.parent().unwrap(), true)
+            fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
                 .context(format!("Error creating directory {}", to_dir.display()))?;
             std::fs::rename(&from_dir, &to_dir).context(format!(
                 "Error moving directory {} to {}",
