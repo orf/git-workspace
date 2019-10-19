@@ -24,6 +24,7 @@ use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressSt
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
+use std::sync::Arc;
 use std::thread::JoinHandle;
 use std::{process, thread};
 use structopt::StructOpt;
@@ -66,7 +67,10 @@ enum Command {
 }
 
 fn main() {
+    // Parse our arguments to Args using structopt.
     let args = Args::from_args();
+    // Call handle_main and collect any errors. If we have an Err object then we
+    // print out a message with a chain of contexts, which should be informative.
     if let Err(e) = handle_main(args) {
         eprintln!("{}", style("There was an internal error!").red());
         for cause in e.iter_chain() {
@@ -76,64 +80,76 @@ fn main() {
     }
 }
 
+/// Our actual main function.
 fn handle_main(args: Args) -> Result<(), Error> {
-    let workspace_path;
+    // Convert our workspace path to a PathBuf. We cannot use the value given directly as
+    // it could contain a tilde, so we run `expanduser` on it _if_ we are on a Unix platform.
+    // On Windows this isn't supported.
+    let expanded_workspace_path;
     #[cfg(not(unix))]
     {
-        workspace_path = PathBuf::from(args.workspace);
+        expanded_workspace_path = PathBuf::from(args.workspace);
     }
     #[cfg(unix)]
     {
-        workspace_path = expanduser::expanduser(args.workspace.to_string_lossy())
+        expanded_workspace_path = expanduser::expanduser(args.workspace.to_string_lossy())
             .context("Error expanding git workspace path")?;
     }
 
-    let path_str = (if workspace_path.exists() {
-        &workspace_path
+    // If our workspace path doesn't exist then we need to create it, and call `canonicalize`
+    // on the result. This fails if the path does not exist.
+    let workspace_path = (if expanded_workspace_path.exists() {
+        &expanded_workspace_path
     } else {
-        fs_extra::dir::create_all(&workspace_path, false).context(format!(
+        fs_extra::dir::create_all(&expanded_workspace_path, false).context(format!(
             "Error creating workspace directory {}",
-            &workspace_path.display()
+            &expanded_workspace_path.display()
         ))?;
-        println!("Created {} as it did not exist", &workspace_path.display());
+        println!(
+            "Created {} as it did not exist",
+            &expanded_workspace_path.display()
+        );
 
-        &workspace_path
+        &expanded_workspace_path
     })
     .canonicalize()
     .context(format!(
         "Error canonicalizing workspace path {}",
-        &workspace_path.display()
+        &expanded_workspace_path.display()
     ))?;
 
+    // Run our sub command. Pretty self-explanatory.
     match args.command {
         Command::List { full } => list(&workspace_path, full)?,
         Command::Update { threads } => {
-            lock(&path_str)?;
-            update(&path_str, threads)?
+            lock(&workspace_path)?;
+            update(&workspace_path, threads)?
         }
-        Command::Fetch { threads } => fetch(&path_str, threads)?,
-        Command::Add(provider) => add_provider_to_config(&path_str, provider)?,
+        Command::Fetch { threads } => fetch(&workspace_path, threads)?,
+        Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
     };
     Ok(())
 }
 
+/// Add a given ProviderSource to our configuration file.
 fn add_provider_to_config(
     workspace: &PathBuf,
     provider_source: ProviderSource,
 ) -> Result<(), Error> {
+    // Load and parse our configuration file
     let config = Config::new(workspace.join("workspace.toml"));
     let mut sources = config.read().context("Error reading config file")?;
+    // Ensure we don't add duplicates:
     if sources.iter().any(|s| s == &provider_source) {
         println!("Entry already exists, skipping");
     } else {
+        // Push the provider into the source and write it to the configuration file
         sources.push(provider_source);
         config.write(sources).context("Error writing config file")?;
         println!("Added entry to workspace.toml");
     }
     Ok(())
 }
-
-use std::sync::Arc;
 
 /// Take any number of repositories and apply `f` on each one.
 /// This method takes care of displaying progress bars and displaying
@@ -229,29 +245,36 @@ where
     Ok(())
 }
 
-/// Update
+/// Update our workspace. This clones any new repositories and archives old ones.
 fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    // Load our lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().context("Error reading lockfile")?;
 
     println!("Updating {} repositories", repositories.len());
 
     map_repositories(&repositories, threads, |r, progress_bar| {
+        // Only clone repositories that don't exist
         if !r.exists(workspace) {
             r.clone(&workspace, &progress_bar)?;
+            // Maybe this should always be run, but whatever. It's fine for now.
+            r.set_upstream(&workspace)?;
         }
-        r.set_upstream(&workspace)?;
         Ok(())
     })?;
+    // Archive any repositories that have been deleted from the lockfile.
     archive_repositories(workspace, repositories).context("Error archiving repositories")?;
 
     Ok(())
 }
 
+/// Run `git fetch` on all our repositories
 fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    // Read the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
 
+    // We only care about repositories that exist
     let repos_to_fetch: Vec<Repository> = repositories
         .iter()
         .filter(|r| r.exists(workspace))
@@ -260,6 +283,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
 
     println!("Fetching {} repositories", repos_to_fetch.len(),);
 
+    // Run fetch on them
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
         r.fetch(&workspace, &progress_bar)
     })?;
@@ -274,12 +298,15 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     // 2. If the directory is not, and contains a `.git` directory, then we mark it for archival and
     //    skip processing.
     // This assumes nobody deletes a .git directory in one of their projects.
+
+    // Windows doesn't like .archive.
     let archive_directory = if cfg!(windows) {
         workspace.join("_archive")
     } else {
         workspace.join(".archive")
     };
 
+    // Create a set of all repository paths that currently exist.
     let mut repository_paths: HashSet<PathBuf> = repositories
         .iter()
         .filter(|r| r.exists(workspace))
@@ -327,7 +354,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
             let relative_dir = from_dir.strip_prefix(workspace)?;
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
-            fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
+            fs_extra::dir::create_all(&to_dir, false)
                 .context(format!("Error creating directory {}", to_dir.display()))?;
             std::fs::rename(&from_dir, &to_dir).context(format!(
                 "Error moving directory {} to {}",
