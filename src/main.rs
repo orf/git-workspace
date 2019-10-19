@@ -7,8 +7,10 @@ extern crate expanduser;
 extern crate fs_extra;
 extern crate graphql_client;
 extern crate indicatif;
-extern crate reqwest;
 extern crate serde;
+extern crate ureq;
+#[macro_use]
+extern crate serde_json;
 extern crate structopt;
 extern crate walkdir;
 
@@ -86,17 +88,16 @@ fn handle_main(args: Args) -> Result<(), Error> {
             .context("Error expanding git workspace path")?;
     }
 
-    let path_str = (match workspace_path.exists() {
-        true => &workspace_path,
-        false => {
-            fs_extra::dir::create_all(&workspace_path, false).context(format!(
-                "Error creating workspace directory {}",
-                &workspace_path.display()
-            ))?;
-            println!("Created {} as it did not exist", &workspace_path.display());
+    let path_str = (if workspace_path.exists() {
+        &workspace_path
+    } else {
+        fs_extra::dir::create_all(&workspace_path, false).context(format!(
+            "Error creating workspace directory {}",
+            &workspace_path.display()
+        ))?;
+        println!("Created {} as it did not exist", &workspace_path.display());
 
-            &workspace_path
-        }
+        &workspace_path
     })
     .canonicalize()
     .context(format!(
@@ -107,11 +108,11 @@ fn handle_main(args: Args) -> Result<(), Error> {
     match args.command {
         Command::List { full } => list(&workspace_path, full)?,
         Command::Update { threads } => {
-            lock(&workspace_path)?;
-            update(&workspace_path, threads)?
+            lock(&path_str)?;
+            update(&path_str, threads)?
         }
-        Command::Fetch { threads } => fetch(&workspace_path, threads)?,
-        Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
+        Command::Fetch { threads } => fetch(&path_str, threads)?,
+        Command::Add(provider) => add_provider_to_config(&path_str, provider)?,
     };
     Ok(())
 }
