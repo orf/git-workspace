@@ -50,7 +50,9 @@ impl Repository {
             .arg(root.join(&self.name()))
             .arg("remote")
             .arg("rm")
-            .arg("upstream");
+            .arg("upstream")
+            .stdout(Stdio::null())
+            .stderr(Stdio::null());
 
         child.status()?;
 
