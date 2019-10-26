@@ -1,5 +1,6 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
+use console::style;
 use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
@@ -53,6 +54,21 @@ impl GithubProvider {
 }
 
 impl Provider for GithubProvider {
+    fn correctly_configured(&self) -> bool {
+        let token = env::var("GITHUB_TOKEN");
+        if token.is_err() {
+            println!(
+                "{}",
+                style("Error: GITHUB_TOKEN environment variable is not defined").red()
+            );
+            println!("Create a personal access token here:");
+            println!("https://github.com/settings/tokens");
+            println!("Set a GITHUB_TOKEN environment variable with the value");
+            return false;
+        }
+        true
+    }
+
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let github_token =
             env::var("GITHUB_TOKEN").context("Missing GITHUB_TOKEN environment variable")?;

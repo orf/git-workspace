@@ -136,9 +136,14 @@ fn add_provider_to_config(
     workspace: &PathBuf,
     provider_source: ProviderSource,
 ) -> Result<(), Error> {
+    if !provider_source.correctly_configured() {
+        bail!("Provider is not correctly configured")
+    }
+
     // Load and parse our configuration file
     let config = Config::new(workspace.join("workspace.toml"));
     let mut sources = config.read().context("Error reading config file")?;
+
     // Ensure we don't add duplicates:
     if sources.iter().any(|s| s == &provider_source) {
         println!("Entry already exists, skipping");

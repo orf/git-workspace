@@ -1,5 +1,6 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
+use console::style;
 use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
@@ -163,6 +164,32 @@ impl GitlabProvider {
 }
 
 impl Provider for GitlabProvider {
+    fn correctly_configured(&self) -> bool {
+        let provider_url = match self {
+            GitlabProvider::Group {
+                group: _,
+                url,
+                path: _,
+            } => url,
+            GitlabProvider::User {
+                user: _,
+                url,
+                path: _,
+            } => url,
+        };
+        let token = env::var("GITLAB_TOKEN");
+        if token.is_err() {
+            println!(
+                "{}",
+                style("Error: GITLAB_TOKEN environment variable is not defined").red()
+            );
+            println!("Create a personal access token here:");
+            println!("{}/profile/personal_access_tokens", provider_url);
+            println!("Set a GITLAB_TOKEN environment variable with the value");
+            return false;
+        }
+        true
+    }
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let repositories = match self {
             GitlabProvider::User { user, url, path } => {

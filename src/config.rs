@@ -61,6 +61,10 @@ impl ProviderSource {
         }
     }
 
+    pub fn correctly_configured(&self) -> bool {
+        self.provider().correctly_configured()
+    }
+
     pub fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         Ok(self.provider().fetch_repositories()?)
     }
