@@ -9,4 +9,3 @@
 
 workspace/*
 !workspace/*.toml
-Cargo.lock

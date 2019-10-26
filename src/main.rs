@@ -151,6 +151,87 @@ fn add_provider_to_config(
     Ok(())
 }
 
+/// Update our workspace. This clones any new repositories and archives old ones.
+fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    // Load our lockfile
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read().context("Error reading lockfile")?;
+
+    println!("Updating {} repositories", repositories.len());
+
+    map_repositories(&repositories, threads, |r, progress_bar| {
+        // Only clone repositories that don't exist
+        if !r.exists(workspace) {
+            r.clone(&workspace, &progress_bar)?;
+            // Maybe this should always be run, but whatever. It's fine for now.
+            r.set_upstream(&workspace)?;
+        }
+        Ok(())
+    })?;
+    // Archive any repositories that have been deleted from the lockfile.
+    archive_repositories(workspace, repositories).context("Error archiving repositories")?;
+
+    Ok(())
+}
+
+/// Run `git fetch` on all our repositories
+fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    // Read the lockfile
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read()?;
+
+    // We only care about repositories that exist
+    let repos_to_fetch: Vec<Repository> = repositories
+        .iter()
+        .filter(|r| r.exists(workspace))
+        .cloned()
+        .collect();
+
+    println!("Fetching {} repositories", repos_to_fetch.len(),);
+
+    // Run fetch on them
+    map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
+        r.fetch(&workspace, &progress_bar)
+    })?;
+
+    Ok(())
+}
+
+/// Update our lockfile
+fn lock(workspace: &PathBuf) -> Result<(), Error> {
+    // Read the configuration sources
+    let config = Config::new(workspace.join("workspace.toml"));
+    let sources = config.read()?;
+    // For each source, in sequence, fetch the repositories
+    let mut all_repositories = vec![];
+    for source in sources.iter() {
+        all_repositories.extend(source.fetch_repositories()?);
+    }
+    // We may have duplicated repositories here. Make sure they are unique based on the full path.
+    all_repositories.sort();
+    all_repositories.dedup();
+    // Write the lockfile out
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    lockfile.write(&all_repositories)?;
+    Ok(())
+}
+
+/// List the contents of our workspace
+fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
+    // Read and parse the lockfile
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read()?;
+    let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));
+    for repo in existing_repositories {
+        if full {
+            println!("{}", repo.get_path(workspace).unwrap().display());
+        } else {
+            println!("{}", repo.name());
+        }
+    }
+    Ok(())
+}
+
 /// Take any number of repositories and apply `f` on each one.
 /// This method takes care of displaying progress bars and displaying
 /// any errors that may arise.
@@ -245,52 +326,7 @@ where
     Ok(())
 }
 
-/// Update our workspace. This clones any new repositories and archives old ones.
-fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
-    // Load our lockfile
-    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read().context("Error reading lockfile")?;
-
-    println!("Updating {} repositories", repositories.len());
-
-    map_repositories(&repositories, threads, |r, progress_bar| {
-        // Only clone repositories that don't exist
-        if !r.exists(workspace) {
-            r.clone(&workspace, &progress_bar)?;
-            // Maybe this should always be run, but whatever. It's fine for now.
-            r.set_upstream(&workspace)?;
-        }
-        Ok(())
-    })?;
-    // Archive any repositories that have been deleted from the lockfile.
-    archive_repositories(workspace, repositories).context("Error archiving repositories")?;
-
-    Ok(())
-}
-
-/// Run `git fetch` on all our repositories
-fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
-    // Read the lockfile
-    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read()?;
-
-    // We only care about repositories that exist
-    let repos_to_fetch: Vec<Repository> = repositories
-        .iter()
-        .filter(|r| r.exists(workspace))
-        .cloned()
-        .collect();
-
-    println!("Fetching {} repositories", repos_to_fetch.len(),);
-
-    // Run fetch on them
-    map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
-        r.fetch(&workspace, &progress_bar)
-    })?;
-
-    Ok(())
-}
-
+/// Find all projects that have been archived or deleted on our providers
 fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> Result<(), Error> {
     // The logic here is as follows:
     // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
@@ -379,40 +415,5 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         }
     }
 
-    Ok(())
-}
-
-/// Update our lockfile
-fn lock(workspace: &PathBuf) -> Result<(), Error> {
-    // Read the configuration sources
-    let config = Config::new(workspace.join("workspace.toml"));
-    let sources = config.read()?;
-    // For each source, in sequence, fetch the repositories
-    let mut all_repositories = vec![];
-    for source in sources.iter() {
-        all_repositories.extend(source.fetch_repositories()?);
-    }
-    // We may have duplicated repositories here. Make sure they are unique based on the full path.
-    all_repositories.sort();
-    all_repositories.dedup();
-    // Write the lockfile out
-    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    lockfile.write(&all_repositories)?;
-    Ok(())
-}
-
-/// List the contents of our workspace
-fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
-    // Read and parse the lockfile
-    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read()?;
-    let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));
-    for repo in existing_repositories {
-        if full {
-            println!("{}", repo.get_path(workspace).unwrap().display());
-        } else {
-            println!("{}", repo.name());
-        }
-    }
     Ok(())
 }
