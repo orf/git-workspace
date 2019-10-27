@@ -25,7 +25,7 @@ pub struct Repositories;
 #[structopt(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {
     pub name: String,
-    #[structopt(long = "path", default_value = "github/")]
+    #[structopt(long = "path", default_value = "github")]
     #[structopt(about = "Clone repositories to a specific base path")]
     path: String,
 }
@@ -34,7 +34,7 @@ impl fmt::Display for GithubProvider {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Github user/org {} in path {}",
+            "Github user/org {} in directory {}",
             style(&self.name).green(),
             style(&self.path).green()
         )

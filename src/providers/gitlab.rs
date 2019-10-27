@@ -57,7 +57,7 @@ pub enum GitlabProvider {
         #[serde(default = "public_gitlab_url")]
         #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
         url: String,
-        #[structopt(long = "path", default_value = "gitlab/")]
+        #[structopt(long = "path", default_value = "gitlab")]
         #[structopt(about = "Clone repositories to a specific base path")]
         path: String,
     },
@@ -68,14 +68,14 @@ impl fmt::Display for GitlabProvider {
         match &self {
             GitlabProvider::User { user, url, path } => write!(
                 f,
-                "Gitlab user {} at {} in path {}",
+                "Gitlab user {} at {} in directory {}",
                 style(user).green(),
                 style(url).green(),
                 style(path).green()
             ),
             GitlabProvider::Group { group, url, path } => write!(
                 f,
-                "Gitlab group {} at {} in path {}",
+                "Gitlab group {} at {} in directory {}",
                 style(group).green(),
                 style(url).green(),
                 style(path).green()
