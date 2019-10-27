@@ -1,5 +1,6 @@
 use failure::{Error, ResultExt};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 use std::fs;
 use std::path::PathBuf;
 use structopt::StructOpt;
@@ -67,5 +68,11 @@ impl ProviderSource {
 
     pub fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         Ok(self.provider().fetch_repositories()?)
+    }
+}
+
+impl fmt::Display for ProviderSource {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.provider())
     }
 }

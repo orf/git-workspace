@@ -148,10 +148,10 @@ fn add_provider_to_config(
     if sources.iter().any(|s| s == &provider_source) {
         println!("Entry already exists, skipping");
     } else {
+        println!("Adding {} to workspace.toml", provider_source);
         // Push the provider into the source and write it to the configuration file
         sources.push(provider_source);
         config.write(sources).context("Error writing config file")?;
-        println!("Added entry to workspace.toml");
     }
     Ok(())
 }

@@ -5,7 +5,30 @@ use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
+use std::fmt;
 use structopt::StructOpt;
+
+// GraphQL queries we use to fetch user and group repositories.
+// Right now, annoyingly, Gitlab has a bug around GraphQL pagination:
+// https://gitlab.com/gitlab-org/gitlab/issues/33419
+// So, we don't paginate at all in these queries. I'll fix this once
+// the issue is closed.
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "src/providers/graphql/gitlab/schema.json",
+    query_path = "src/providers/graphql/gitlab/projects.graphql",
+    response_derives = "Debug"
+)]
+pub struct UserRepositories;
+
+#[derive(GraphQLQuery)]
+#[graphql(
+    schema_path = "src/providers/graphql/gitlab/schema.json",
+    query_path = "src/providers/graphql/gitlab/projects.graphql",
+    response_derives = "Debug"
+)]
+pub struct GroupRepositories;
 
 static DEFAULT_GITLAB_URL: &str = "https://gitlab.com";
 
@@ -34,27 +57,33 @@ pub enum GitlabProvider {
         #[serde(default = "public_gitlab_url")]
         #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
         url: String,
-        #[structopt(long = "path", default_value = "gitlab")]
+        #[structopt(long = "path", default_value = "gitlab/")]
         #[structopt(about = "Clone repositories to a specific base path")]
         path: String,
     },
 }
 
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "src/providers/graphql/gitlab/schema.json",
-    query_path = "src/providers/graphql/gitlab/projects.graphql",
-    response_derives = "Debug"
-)]
-pub struct UserRepositories;
+impl fmt::Display for GitlabProvider {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            GitlabProvider::User { user, url, path } => write!(
+                f,
+                "Gitlab user {} at {} in path {}",
+                style(user).green(),
+                style(url).green(),
+                style(path).green()
+            ),
+            GitlabProvider::Group { group, url, path } => write!(
+                f,
+                "Gitlab group {} at {} in path {}",
+                style(group).green(),
+                style(url).green(),
+                style(path).green()
+            ),
+        }
+    }
+}
 
-#[derive(GraphQLQuery)]
-#[graphql(
-    schema_path = "src/providers/graphql/gitlab/schema.json",
-    query_path = "src/providers/graphql/gitlab/projects.graphql",
-    response_derives = "Debug"
-)]
-pub struct GroupRepositories;
 impl GitlabProvider {
     /*
     Duplicating these two methods is madness, but I don't know enough about rust to make them generic.

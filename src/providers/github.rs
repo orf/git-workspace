@@ -5,18 +5,8 @@ use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
+use std::fmt;
 use structopt::StructOpt;
-
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
-#[serde(rename_all = "lowercase")]
-#[derive(StructOpt)]
-#[structopt(about = "Add a Github user or organization by name")]
-pub struct GithubProvider {
-    pub name: String,
-    #[structopt(long = "path", default_value = "github")]
-    #[structopt(about = "Clone repositories to a specific base path")]
-    path: String,
-}
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
@@ -28,6 +18,28 @@ type GitSSHRemote = String;
     response_derives = "Debug"
 )]
 pub struct Repositories;
+
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[serde(rename_all = "lowercase")]
+#[derive(StructOpt)]
+#[structopt(about = "Add a Github user or organization by name")]
+pub struct GithubProvider {
+    pub name: String,
+    #[structopt(long = "path", default_value = "github/")]
+    #[structopt(about = "Clone repositories to a specific base path")]
+    path: String,
+}
+
+impl fmt::Display for GithubProvider {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Github user/org {} in path {}",
+            style(&self.name).green(),
+            style(&self.path).green()
+        )
+    }
+}
 
 impl GithubProvider {
     fn parse_repo(
