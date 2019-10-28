@@ -1,4 +1,4 @@
-# git-workspace
+# git-workspace :rocket:
 [![Crates.io](https://img.shields.io/crates/v/git-workspace.svg)](https://crates.io/crates/ripgrep)
 [![Actions Status](https://github.com/orf/git-workspace/workflows/CI/badge.svg)](https://github.com/orf/git-workspace/actions)
 
@@ -18,20 +18,21 @@ This may sound useless, but the "log into your git provider, browse to the proje
 Table of Contents
 =================
 
-   * [Install](#install)
+   * [Install :cd:](#install)
       * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
       * [Binaries (Windows)](#binaries-windows)
       * [Cargo](#cargo)
-   * [Usage](#usage)
+   * [Usage :saxophone:](#usage)
       * [Define your workspace](#define-your-workspace)
       * [Provider credentials](#provider-credentials)
       * [Adding providers](#adding-providers)
       * [Updating your workspace](#updating-your-workspace)
       * [Fetching all changes](#fetching-all-changes)
-   * [Switch projects](#switch-projects)
+   * [Switch projects :repeat:](#switch-projects)
       * [Fish, with fzf](#fish-with-fzf)
+   * [Contributing :bug:](#contributing)
 
-# Install
+# Install :cd:
 
 ## Homebrew (MacOS + Linux)
 
@@ -46,7 +47,7 @@ and move it to a directory on your `PATH`.
 
 Don't do this, it's pretty slow: `cargo install git-workspace`
 
-# Usage
+# Usage :saxophone:
 
 Git is really annoying and hijacks the `--help` flag for subcommands. **So to get help use `git-workspace --help`, not `git workspace --help`**.
 
@@ -94,7 +95,7 @@ Running `git workspace update` will:
 
 `git workspace fetch` will run `git fetch` on all projects.
 
-# Switch projects
+# Switch projects :repeat:
 
 `git workspace list` will output the names of all your projects. You can integrate this with whatever tool you wish to provide a way to quickly search for and select repositories.
 
@@ -113,3 +114,9 @@ function open-project -d "Open a project"
   end
 end
 ```
+
+# Contributing :bug:
+
+This is my first 'proper' Rust project. If you're experienced with Rust you might puke at the code, but any feedback to help me improve would be greatly appreciated!
+
+If you want to contribute then just go for it. `cargo install` should get you ready to go. Be warned: there are currently no tests :bomb:. I run integration tests with Github Actions, but that's about it. It's on my to-do list, I promise :tm:.
