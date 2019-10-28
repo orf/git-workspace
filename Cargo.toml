@@ -1,6 +1,8 @@
 [package]
 name = "git-workspace"
 version = "0.2.1-alpha.0"
+readme = "README.md"
+repository = "https://github.com/orf/git-workspace"
 authors = ["Tom Forbes <tom@tomforb.es>"]
 edition = "2018"
 description = "Manage and update personal and work git repos from multiple providers"
@@ -8,7 +10,8 @@ license = "MIT"
 categories = [
     "development-tools",
 ]
-exclude = ["workspace/**"]
+keywords = ["cli", "git", ""]
+exclude = ["workspace/**", "images/**", ".github/**"]
 
 [dependencies]
 toml = "0.5.3"
