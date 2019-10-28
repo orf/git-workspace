@@ -4,7 +4,7 @@
 
 ![](./images/demo.gif)
 
-If your company has a large number of repositories and your work involves jumping between them, then `git-workspace` can save you some time by:
+If your company has a large number of repositories and your work involves jumping between a lot of them, then `git-workspace` can save you some time by:
 
 * Easily synchronizing your projects directory with **Github**, **Gitlab.com** or **Gitlab self-hosted** :wrench:
 * Keep projects consistently named and under the correct path :file_folder:
