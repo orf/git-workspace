@@ -15,15 +15,27 @@ If your company has a large number of repositories and your work involves jumpin
 
 This may sound useless, but the "log into your git provider, browse to the project, copy the clone URL, devise a suitable path to clone it" dance can be a big slowdown. The only obvious solution here is to spend more time than you'll ever spend doing this in your whole life on writing a tool in Rust to do it for you.
 
+Table of Contents
+=================
+
+   * [Install](#install)
+      * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
+      * [Binaries (Windows)](#binaries-windows)
+      * [Cargo](#cargo)
+   * [Usage](#usage)
+      * [Define your workspace](#define-your-workspace)
+      * [Provider credentials](#provider-credentials)
+      * [Adding providers](#adding-providers)
+      * [Updating your workspace](#updating-your-workspace)
+      * [Fetching all changes](#fetching-all-changes)
+   * [Switch projects](#switch-projects)
+      * [Fish, with fzf](#fish-with-fzf)
+
 # Install
 
 ## Homebrew (MacOS + Linux)
 
-`brew tap orf/brew`
-
-Then:
-
-`brew install git-workspace`
+`brew tap orf/brew`, then `brew install git-workspace`
 
 ## Binaries (Windows)
 
@@ -32,9 +44,7 @@ and move it to a directory on your `PATH`.
 
 ## Cargo
 
-Don't do this, it's pretty slow:
-
-`cargo install git-workspace`
+Don't do this, it's pretty slow: `cargo install git-workspace`
 
 # Usage
 
