@@ -18,19 +18,19 @@ This may sound useless, but the "log into your git provider, browse to the proje
 Table of Contents
 =================
 
-   * [Install :cd:](#install)
+   * [Install :cd:](#install-c)
       * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
       * [Binaries (Windows)](#binaries-windows)
       * [Cargo](#cargo)
-   * [Usage :saxophone:](#usage)
+   * [Usage :saxophone:](#usage-saxophone)
       * [Define your workspace](#define-your-workspace)
       * [Provider credentials](#provider-credentials)
       * [Adding providers](#adding-providers)
       * [Updating your workspace](#updating-your-workspace)
       * [Fetching all changes](#fetching-all-changes)
-   * [Switch projects :repeat:](#switch-projects)
+   * [Switch projects :repeat:](#switch-projects-repeat)
       * [Fish, with fzf](#fish-with-fzf)
-   * [Contributing :bug:](#contributing)
+   * [Contributing :bug:](#contributing-bug)
 
 # Install :cd:
 
