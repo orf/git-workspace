@@ -10,7 +10,7 @@ license = "MIT"
 categories = [
     "development-tools",
 ]
-keywords = ["cli", "git", ""]
+keywords = ["cli", "git"]
 exclude = ["workspace/**", "images/**", ".github/**"]
 
 [dependencies]
