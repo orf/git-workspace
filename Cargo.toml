@@ -33,4 +33,3 @@ expanduser = "1.2.1"
 
 [profile.release]
 lto = true
-debug = true
