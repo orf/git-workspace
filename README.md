@@ -18,7 +18,7 @@ This may sound useless, but the "log into your git provider, browse to the proje
 Table of Contents
 =================
 
-   * [Install :cd:](#install-c)
+   * [Install :cd:](#install-cd)
       * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
       * [Binaries (Windows)](#binaries-windows)
       * [Cargo](#cargo)
