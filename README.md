@@ -4,7 +4,7 @@
 
 ![](./images/demo.gif)
 
-If your company has a large number of repositories and your work involves jumping between then, then `git-workspace` can save you some time by:
+If your company has a large number of repositories and your work involves jumping between them, then `git-workspace` can save you some time by:
 
 * Easily synchronizing your projects directory with **Github**, **Gitlab.com** or **Gitlab self-hosted** :wrench:
 * Keep projects consistently named and under the correct path :file_folder:
@@ -19,7 +19,11 @@ This may sound useless, but the "log into your git provider, browse to the proje
 
 ## Homebrew (MacOS + Linux)
 
-`brew tap orf/brew && brew install git-workspace`
+`brew tap orf/brew`
+
+Then:
+
+`brew install git-workspace`
 
 ## Binaries (Windows)
 
@@ -28,4 +32,74 @@ and move it to a directory on your `PATH`.
 
 ## Cargo
 
+Don't do this, it's pretty slow:
+
 `cargo install git-workspace`
+
+# Usage
+
+Git is really annoying and hijacks the `--help` flag for subcommands. **So to get help use `git-workspace --help`, not `git workspace --help`**.
+
+## Define your workspace
+
+A workspace is the directory that `git-workspace` will manage for you, filling it with projects cloned from your providers. To configure this just set a `GIT_WORKSPACE` environment variable that points to an empty directory. For example:
+
+`export GIT_WORKSPACE=~/projects`
+
+## Provider credentials
+
+Both Github and Gitlab require personal access tokens to access their GraphQL endpoints. Create an access token here:
+
+* Github: https://github.com/settings/tokens (Just the `repo` scope)
+
+* Gitlab: https://gitlab.com/profile/personal_access_tokens (Just the `api` scope)
+
+Export these tokens as `GITHUB_TOKEN` and `GITLAB_TOKEN` in your shell.
+
+## Adding providers
+
+You can use `git workspace add` to quickly add entries to your `workspace.toml`:
+
+* Clone all github repositories for a user or org
+
+   * `git workspace add github [USER OR ORG NAME]`
+
+* Clone a namespace from Gitlab: 
+
+   * `git workspace add gitlab group gitlab-ce/gitlab-services`
+
+* Clone from a self-hosted gitlab instance: 
+
+   * `git workspace add gitlab group my-company-group --url=https://internal-gitlab.company.com`
+
+## Updating your workspace
+
+Running `git workspace update` will:
+
+1. Fetch all repositories from your providers
+2. Clone any new repositories that are not present locally
+3. Move any deleted repositories to `$GIT_WORKSPACE/.archived/` for posterity
+
+## Fetching all changes
+
+`git workspace fetch` will run `git fetch` on all projects.
+
+# Switch projects
+
+`git workspace list` will output the names of all your projects. You can integrate this with whatever tool you wish to provide a way to quickly search for and select repositories.
+
+## Fish, with [fzf](https://github.com/junegunn/fzf)
+
+The following fish shell snippet gives you a `open-project [search-string]` command you can use to search for and open projects. It combines the `git workspace list` command with `fzf`, and opens the project path with your `$EDITOR`:
+
+```fish
+# ~/.config/fish/functions/open-project.fish
+function open-project -d "Open a project"
+  set filter "$argv"
+  set chosen_project (git workspace list | fzf -q "$filter")
+  if string length -q -- $chosen_project
+     $EDITOR $GIT_WORKSPACE/$chosen_project
+     pushd $GIT_WORKSPACE/$chosen_project
+  end
+end
+```
