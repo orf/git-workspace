@@ -1,5 +1,5 @@
 # git-workspace :rocket:
-[![Crates.io](https://img.shields.io/crates/v/git-workspace.svg)](https://crates.io/crates/ripgrep)
+[![Crates.io](https://img.shields.io/crates/v/git-workspace.svg)](https://crates.io/crates/git-workspace)
 [![Actions Status](https://github.com/orf/git-workspace/workflows/CI/badge.svg)](https://github.com/orf/git-workspace/actions)
 
 ![](./images/demo.gif)
