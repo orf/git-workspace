@@ -2,7 +2,7 @@
 [![Crates.io](https://img.shields.io/crates/v/git-workspace.svg)](https://crates.io/crates/git-workspace)
 [![Actions Status](https://github.com/orf/git-workspace/workflows/CI/badge.svg)](https://github.com/orf/git-workspace/actions)
 
-![](./images/readme.gif)
+![](./images/readme-example.gif)
 
 If your company has a large number of repositories and your work involves jumping between a lot of them, then `git-workspace` can save you some time by:
 
