@@ -19,9 +19,8 @@ type GitSSHRemote = String;
 )]
 pub struct Repositories;
 
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
 #[serde(rename_all = "lowercase")]
-#[derive(StructOpt)]
 #[structopt(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {
     pub name: String,
