@@ -73,12 +73,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: update
+          args: update --threads=8
       - name: git-workspace fetch
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: fetch
+          args: fetch --threads=8
       - name: git-workspace list
         uses: actions-rs/cargo@v1
         with:
