@@ -75,13 +75,13 @@ You can use `git workspace add` to quickly add entries to your `workspace.toml`:
 
    * `git workspace add github [USER OR ORG NAME]`
 
-* Clone a namespace from Gitlab: 
+* Clone a namespace or user from Gitlab: 
 
-   * `git workspace add gitlab group gitlab-ce/gitlab-services`
+   * `git workspace add gitlab gitlab-ce/gitlab-services`
 
 * Clone from a self-hosted gitlab instance: 
 
-   * `git workspace add gitlab group my-company-group --url=https://internal-gitlab.company.com`
+   * `git workspace add gitlab my-company-group --url=https://internal-gitlab.company.com`
 
 ## Updating your workspace
 

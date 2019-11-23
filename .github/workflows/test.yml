@@ -63,12 +63,12 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add gitlab user tom6
+          args: add gitlab tom6
       - name: git-workspace add gitlab group
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add gitlab group gitlab-org
+          args: add gitlab gitlab-org
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:
