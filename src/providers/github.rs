@@ -34,8 +34,8 @@ impl fmt::Display for GithubProvider {
         write!(
             f,
             "Github user/org {} in directory {}",
-            style(&self.name).green(),
-            style(&self.path).green()
+            style(&self.name.to_lowercase()).green(),
+            style(&self.path.to_lowercase()).green()
         )
     }
 }
@@ -77,6 +77,14 @@ impl Provider for GithubProvider {
             println!("Set a GITHUB_TOKEN environment variable with the value");
             return false;
         }
+        if self.name.ends_with('/') {
+            println!(
+                "{}",
+                style("Error: Ensure that names do not end in forward slashes").red()
+            );
+            println!("You specified: {}", self.name);
+            return false;
+        }
         true
     }
 
@@ -89,7 +97,7 @@ impl Provider for GithubProvider {
 
         loop {
             let q = Repositories::build_query(repositories::Variables {
-                login: self.name.clone(),
+                login: self.name.to_lowercase(),
                 after,
             });
             let res = ureq::post("https://api.github.com/graphql")

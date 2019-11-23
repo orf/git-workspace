@@ -75,7 +75,7 @@ impl fmt::Display for GitlabProvider {
         write!(
             f,
             "Gitlab user/group {} at {} in directory {}",
-            style(&self.name).green(),
+            style(&self.name.to_lowercase()).green(),
             style(&self.url).green(),
             style(&self.path).green()
         )
@@ -95,6 +95,14 @@ impl Provider for GitlabProvider {
             println!("Set a GITLAB_TOKEN environment variable with the value");
             return false;
         }
+        if self.name.ends_with('/') {
+            println!(
+                "{}",
+                style("Error: Ensure that names do not end in forward slashes").red()
+            );
+            println!("You specified: {}", self.name);
+            return false;
+        }
         true
     }
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
@@ -104,7 +112,7 @@ impl Provider for GitlabProvider {
         let mut after = Some("".to_string());
         loop {
             let q = Repositories::build_query(repositories::Variables {
-                name: self.name.to_string(),
+                name: self.name.to_string().to_lowercase(),
                 after,
             });
             let res = ureq::post(format!("{}/api/graphql", self.url).as_str())
