@@ -29,6 +29,7 @@ jobs:
     env:
       GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      GITLAB_ALTERNATIVE_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GCM_INTERACTIVE: never
       GIT_TERMINAL_PROMPT: 0
@@ -59,6 +60,11 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
+      - name: git workspace add github org
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: add github django
       - name: git-workspace add gitlab user
         uses: actions-rs/cargo@v1
         with:
@@ -68,7 +74,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add gitlab gitlab-org
+          args: add gitlab gitlab-org --env-var GITLAB_ALTERNATIVE_TOKEN
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:
