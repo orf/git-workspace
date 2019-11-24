@@ -57,6 +57,10 @@ fn public_gitlab_url() -> String {
     DEFAULT_GITLAB_URL.to_string()
 }
 
+fn default_env_var() -> String {
+    String::from("GITHUB_TOKEN")
+}
+
 #[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
 #[serde(rename_all = "lowercase")]
 #[structopt(about = "Add a Gitlab user or group by name")]
@@ -70,6 +74,7 @@ pub struct GitlabProvider {
     path: String,
     #[structopt(long = "env-name", short = "e", default_value = "GITLAB_TOKEN")]
     #[structopt(about = "Use the token stored in this environment variable for authentication")]
+    #[serde(default = "default_env_var")]
     env_var: String,
 }
 

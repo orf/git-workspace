@@ -19,6 +19,10 @@ type GitSSHRemote = String;
 )]
 pub struct Repositories;
 
+fn default_env_var() -> String {
+    String::from("GITHUB_TOKEN")
+}
+
 #[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
 #[serde(rename_all = "lowercase")]
 #[structopt(about = "Add a Github user or organization by name")]
@@ -29,6 +33,7 @@ pub struct GithubProvider {
     path: String,
     #[structopt(long = "env-name", short = "e", default_value = "GITHUB_TOKEN")]
     #[structopt(about = "Use the token stored in this environment variable for authentication")]
+    #[serde(default = "default_env_var")]
     env_var: String,
 }
 
