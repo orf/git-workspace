@@ -77,10 +77,11 @@ impl fmt::Display for GitlabProvider {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Gitlab user/group {} at {} in directory {}",
+            "Gitlab user/group {} at {} in directory {}, using the token stored in {}",
             style(&self.name.to_lowercase()).green(),
             style(&self.url).green(),
-            style(&self.path).green()
+            style(&self.path).green(),
+            style(&self.env_var).green(),
         )
     }
 }

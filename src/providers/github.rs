@@ -36,9 +36,10 @@ impl fmt::Display for GithubProvider {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Github user/org {} in directory {}",
+            "Github user/org {} in directory {}, using the token stored in {}",
             style(&self.name.to_lowercase()).green(),
-            style(&self.path.to_lowercase()).green()
+            style(&self.path.to_lowercase()).green(),
+            style(&self.env_var).green(),
         )
     }
 }
