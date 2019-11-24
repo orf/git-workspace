@@ -74,7 +74,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add gitlab gitlab-org --env-var GITLAB_ALTERNATIVE_TOKEN
+          args: add gitlab gitlab-org --env-name GITLAB_ALTERNATIVE_TOKEN
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:

@@ -68,7 +68,7 @@ pub struct GitlabProvider {
     #[structopt(long = "path", default_value = "gitlab")]
     #[structopt(about = "Clone repositories to a specific base path")]
     path: String,
-    #[structopt(long = "env-var", short = "e", default_value = "GITLAB_TOKEN")]
+    #[structopt(long = "env-name", short = "e", default_value = "GITLAB_TOKEN")]
     #[structopt(about = "Use the token stored in this environment variable for authentication")]
     env_var: String,
 }
