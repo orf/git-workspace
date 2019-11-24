@@ -68,31 +68,35 @@ pub struct GitlabProvider {
     #[structopt(long = "path", default_value = "gitlab")]
     #[structopt(about = "Clone repositories to a specific base path")]
     path: String,
+    #[structopt(long = "env-name", short = "e", default_value = "GITLAB_TOKEN")]
+    #[structopt(about = "Use the token stored in this environment variable for authentication")]
+    env_var: String,
 }
 
 impl fmt::Display for GitlabProvider {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Gitlab user/group {} at {} in directory {}",
+            "Gitlab user/group {} at {} in directory {}, using the token stored in {}",
             style(&self.name.to_lowercase()).green(),
             style(&self.url).green(),
-            style(&self.path).green()
+            style(&self.path).green(),
+            style(&self.env_var).green(),
         )
     }
 }
 
 impl Provider for GitlabProvider {
     fn correctly_configured(&self) -> bool {
-        let token = env::var("GITLAB_TOKEN");
+        let token = env::var(&self.env_var);
         if token.is_err() {
             println!(
                 "{}",
-                style("Error: GITLAB_TOKEN environment variable is not defined").red()
+                style(format!("Error: {} environment variable is not defined", self.env_var)).red()
             );
             println!("Create a personal access token here:");
             println!("{}/profile/personal_access_tokens", self.url);
-            println!("Set a GITLAB_TOKEN environment variable with the value");
+            println!("Set an environment variable called {} with the value", self.env_var);
             return false;
         }
         if self.name.ends_with('/') {
@@ -107,7 +111,7 @@ impl Provider for GitlabProvider {
     }
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
         let gitlab_token =
-            env::var("GITLAB_TOKEN").context("Missing GITLAB_TOKEN environment variable")?;
+            env::var(&self.env_var).context(format!("Missing {} environment variable", self.env_var))?;
         let mut repositories = vec![];
         let mut after = Some("".to_string());
         loop {
@@ -136,7 +140,7 @@ impl Provider for GitlabProvider {
                     .filter_map(|x| x)
                     // Extract the node, which is also Some(T)
                     .filter_map(|x| x.node)
-                    .map(|x| ProjectNode::from(x))
+                    .map(ProjectNode::from)
                     .collect();
                 after = group_data.page_info.end_cursor;
             } else {
@@ -149,7 +153,7 @@ impl Provider for GitlabProvider {
                     .filter_map(|x| x)
                     // Extract the node, which is also Some(T)
                     .filter_map(|x| x.node)
-                    .map(|x| ProjectNode::from(x))
+                    .map(ProjectNode::from)
                     .collect();
                 after = namespace_data.page_info.end_cursor;
             }

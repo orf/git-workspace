@@ -27,15 +27,19 @@ pub struct GithubProvider {
     #[structopt(long = "path", default_value = "github")]
     #[structopt(about = "Clone repositories to a specific base path")]
     path: String,
+    #[structopt(long = "env-name", short = "e", default_value = "GITHUB_TOKEN")]
+    #[structopt(about = "Use the token stored in this environment variable for authentication")]
+    env_var: String,
 }
 
 impl fmt::Display for GithubProvider {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
-            "Github user/org {} in directory {}",
+            "Github user/org {} in directory {}, using the token stored in {}",
             style(&self.name.to_lowercase()).green(),
-            style(&self.path.to_lowercase()).green()
+            style(&self.path.to_lowercase()).green(),
+            style(&self.env_var).green(),
         )
     }
 }
@@ -49,11 +53,11 @@ impl GithubProvider {
         let default_branch = repo
             .default_branch_ref
             .as_ref()
-            .and_then(|branch| Some(branch.name.clone()));
+            .map(|branch| branch.name.clone());
         let upstream = repo
             .parent
             .as_ref()
-            .and_then(|parent| Some(parent.ssh_url.clone()));
+            .map(|parent| parent.ssh_url.clone());
 
         Repository::new(
             format!("{}/{}", path, repo.name_with_owner.clone()),
@@ -66,15 +70,15 @@ impl GithubProvider {
 
 impl Provider for GithubProvider {
     fn correctly_configured(&self) -> bool {
-        let token = env::var("GITHUB_TOKEN");
+        let token = env::var(&self.env_var);
         if token.is_err() {
             println!(
                 "{}",
-                style("Error: GITHUB_TOKEN environment variable is not defined").red()
+                style(format!("Error: {} environment variable is not defined", self.env_var)).red()
             );
             println!("Create a personal access token here:");
             println!("https://github.com/settings/tokens");
-            println!("Set a GITHUB_TOKEN environment variable with the value");
+            println!("Set a {} environment variable with the value", self.env_var);
             return false;
         }
         if self.name.ends_with('/') {
