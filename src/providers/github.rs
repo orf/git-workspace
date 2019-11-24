@@ -54,10 +54,7 @@ impl GithubProvider {
             .default_branch_ref
             .as_ref()
             .map(|branch| branch.name.clone());
-        let upstream = repo
-            .parent
-            .as_ref()
-            .map(|parent| parent.ssh_url.clone());
+        let upstream = repo.parent.as_ref().map(|parent| parent.ssh_url.clone());
 
         Repository::new(
             format!("{}/{}", path, repo.name_with_owner.clone()),
@@ -74,7 +71,11 @@ impl Provider for GithubProvider {
         if token.is_err() {
             println!(
                 "{}",
-                style(format!("Error: {} environment variable is not defined", self.env_var)).red()
+                style(format!(
+                    "Error: {} environment variable is not defined",
+                    self.env_var
+                ))
+                .red()
             );
             println!("Create a personal access token here:");
             println!("https://github.com/settings/tokens");

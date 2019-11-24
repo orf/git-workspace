@@ -92,11 +92,18 @@ impl Provider for GitlabProvider {
         if token.is_err() {
             println!(
                 "{}",
-                style(format!("Error: {} environment variable is not defined", self.env_var)).red()
+                style(format!(
+                    "Error: {} environment variable is not defined",
+                    self.env_var
+                ))
+                .red()
             );
             println!("Create a personal access token here:");
             println!("{}/profile/personal_access_tokens", self.url);
-            println!("Set an environment variable called {} with the value", self.env_var);
+            println!(
+                "Set an environment variable called {} with the value",
+                self.env_var
+            );
             return false;
         }
         if self.name.ends_with('/') {
@@ -110,8 +117,8 @@ impl Provider for GitlabProvider {
         true
     }
     fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
-        let gitlab_token =
-            env::var(&self.env_var).context(format!("Missing {} environment variable", self.env_var))?;
+        let gitlab_token = env::var(&self.env_var)
+            .context(format!("Missing {} environment variable", self.env_var))?;
         let mut repositories = vec![];
         let mut after = Some("".to_string());
         loop {
