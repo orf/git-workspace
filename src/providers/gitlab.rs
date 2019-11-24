@@ -167,7 +167,7 @@ impl Provider for GitlabProvider {
             }
 
             if after.is_none() {
-                break
+                break;
             }
         }
         Ok(repositories)
