@@ -134,10 +134,7 @@ impl Provider for GitlabProvider {
         let mut after = Some("".to_string());
         let name = self.name.to_string().to_lowercase();
         loop {
-            let q = Repositories::build_query(repositories::Variables {
-                name,
-                after,
-            });
+            let q = Repositories::build_query(repositories::Variables { name, after });
             let res = ureq::post(format!("{}/api/graphql", self.url).as_str())
                 .set("Authorization", format!("Bearer {}", gitlab_token).as_str())
                 .set("Content-Type", "application/json")
