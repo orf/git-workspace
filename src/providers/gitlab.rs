@@ -132,9 +132,10 @@ impl Provider for GitlabProvider {
             .context(format!("Missing {} environment variable", self.env_var))?;
         let mut repositories = vec![];
         let mut after = Some("".to_string());
+        let name = self.name.to_string().to_lowercase();
         loop {
             let q = Repositories::build_query(repositories::Variables {
-                name: self.name.to_string().to_lowercase(),
+                name,
                 after,
             });
             let res = ureq::post(format!("{}/api/graphql", self.url).as_str())
@@ -161,8 +162,8 @@ impl Provider for GitlabProvider {
                     .map(ProjectNode::from)
                     .collect();
                 after = group_data.page_info.end_cursor;
-            } else {
-                let namespace_data = data.namespace.expect("Missing group").projects;
+            } else if data.namespace.is_some() {
+                let namespace_data = data.namespace.expect("Missing namespace").projects;
                 temp_repositories = namespace_data
                     .edges
                     .expect("missing edges")
@@ -174,6 +175,8 @@ impl Provider for GitlabProvider {
                     .map(ProjectNode::from)
                     .collect();
                 after = namespace_data.page_info.end_cursor;
+            } else {
+                panic!("Gitlab group/user {} returned invalid data... 😓", name);
             }
 
             repositories.extend(
