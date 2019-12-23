@@ -76,6 +76,12 @@ pub struct GitlabProvider {
     #[structopt(about = "Use the token stored in this environment variable for authentication")]
     #[serde(default = "default_env_var")]
     env_var: String,
+    // Currently does not work.
+    // https://gitlab.com/gitlab-org/gitlab/issues/121595
+    //    #[structopt(long = "skip-forks")]
+    //    #[structopt(about = "Don't clone forked repositories")]
+    //    #[serde(default = "default_forks")]
+    //    skip_forks: bool,
 }
 
 impl fmt::Display for GitlabProvider {
