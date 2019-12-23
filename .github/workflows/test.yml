@@ -72,6 +72,11 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
+      - name: git workspace add orf
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: add github orf --skip-forks
       - name: git workspace add github org
         uses: actions-rs/cargo@v1
         with:
