@@ -115,6 +115,21 @@ function open-project -d "Open a project"
 end
 ```
 
+## Bash, with [fzf](https://github.com/junegunn/fzf)
+
+Contributed by a user:
+
+```bash
+wsp() {
+    if [[ "$#" == "0" ]]; then
+        fzf_arg=""
+    else
+        fzf_arg="-q"
+    fi
+    cd ${GIT_WORKSPACE}/$(git workspace list | fzf $fzf_arg "$@")
+}
+```
+
 # Contributing :bug:
 
 This is my first 'proper' Rust project. If you're experienced with Rust you might puke at the code, but any feedback to help me improve would be greatly appreciated!
