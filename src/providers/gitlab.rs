@@ -176,17 +176,19 @@ impl Provider for GitlabProvider {
                 after = namespace_data.page_info.end_cursor;
             }
 
-            for repo in temp_repositories {
-                if repo.archived {
-                    continue;
-                }
-                repositories.push(Repository::new(
-                    format!("{}/{}", self.path, repo.full_path),
-                    repo.ssh_url,
-                    repo.root_ref,
-                    None,
-                ));
-            }
+            repositories.extend(
+                temp_repositories
+                    .into_iter()
+                    .filter(|r| !r.archived)
+                    .map(|r| {
+                        Repository::new(
+                            format!("{}/{}", self.path, r.full_path),
+                            r.ssh_url,
+                            r.root_ref,
+                            None,
+                        )
+                    }),
+            );
 
             if after.is_none() {
                 break;

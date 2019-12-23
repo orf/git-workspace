@@ -135,15 +135,16 @@ impl Provider for GithubProvider {
                 .repository_owner
                 .expect("missing repository owner")
                 .repositories;
-            for repo in response_repositories
-                .nodes
-                .unwrap()
-                .iter()
-                .map(|r| r.as_ref().unwrap())
-                .filter(|r| !r.is_archived)
-            {
-                repositories.push(self.parse_repo(&self.path, &repo))
-            }
+
+            repositories.extend(
+                response_repositories
+                    .nodes
+                    .unwrap()
+                    .iter()
+                    .map(|r| r.as_ref().unwrap())
+                    .filter(|r| !r.is_archived)
+                    .map(|repo| self.parse_repo(&self.path, &repo)),
+            );
 
             if !response_repositories.page_info.has_next_page {
                 break;
