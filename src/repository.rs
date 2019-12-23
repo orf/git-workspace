@@ -146,7 +146,11 @@ impl Repository {
             .arg(root.join(&self.name()));
 
         self.run_with_progress(child, progress_bar)
-            .context(format!("Error cloning repo into {}", self.name()))?;
+            .context(format!(
+                "Error cloning repo into {} from {}",
+                self.name(),
+                &self.url
+            ))?;
 
         Ok(())
     }

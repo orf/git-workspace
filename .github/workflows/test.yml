@@ -39,6 +39,7 @@ jobs:
         shell: bash
         run: |
           git config --global url."https://gitlab.com/".insteadOf git@gitlab.com:
+          git config --global url."https://github.com/".insteadOf git@github.com:
           git config --global url."https://".insteadOf git://
           if [[ "${{ matrix.os }}" == "windows-latest" ]]
           then
