@@ -23,6 +23,10 @@ fn default_env_var() -> String {
     String::from("GITHUB_TOKEN")
 }
 
+const fn default_forks() -> bool {
+    false
+}
+
 #[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
 #[serde(rename_all = "lowercase")]
 #[structopt(about = "Add a Github user or organization by name")]
@@ -35,6 +39,11 @@ pub struct GithubProvider {
     #[structopt(about = "Use the token stored in this environment variable for authentication")]
     #[serde(default = "default_env_var")]
     env_var: String,
+
+    #[structopt(long = "skip-forks")]
+    #[structopt(about = "Don't clone forked repositories")]
+    #[serde(default = "default_forks")]
+    skip_forks: bool,
 }
 
 impl fmt::Display for GithubProvider {
@@ -105,9 +114,14 @@ impl Provider for GithubProvider {
 
         let mut after = None;
 
+        // include_forks needs to be None instead of true, as the graphql parameter has three
+        // states: false - no forks, true - only forks, none - all repositories.
+        let include_forks: Option<bool> = if self.skip_forks { Some(false) } else { None };
+
         loop {
             let q = Repositories::build_query(repositories::Variables {
                 login: self.name.to_lowercase(),
+                include_forks,
                 after,
             });
             let res = ureq::post("https://api.github.com/graphql")
@@ -121,15 +135,16 @@ impl Provider for GithubProvider {
                 .repository_owner
                 .expect("missing repository owner")
                 .repositories;
-            for repo in response_repositories
-                .nodes
-                .unwrap()
-                .iter()
-                .map(|r| r.as_ref().unwrap())
-                .filter(|r| !r.is_archived)
-            {
-                repositories.push(self.parse_repo(&self.path, &repo))
-            }
+
+            repositories.extend(
+                response_repositories
+                    .nodes
+                    .unwrap()
+                    .iter()
+                    .map(|r| r.as_ref().unwrap())
+                    .filter(|r| !r.is_archived)
+                    .map(|repo| self.parse_repo(&self.path, &repo)),
+            );
 
             if !response_repositories.page_info.has_next_page {
                 break;

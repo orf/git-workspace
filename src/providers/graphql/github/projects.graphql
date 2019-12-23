@@ -1,7 +1,7 @@
-query Repositories($login: String!, $after: String) {
+query Repositories($login: String!, $after: String, $includeForks: Boolean) {
     repositoryOwner(login: $login) {
         __typename,
-        repositories(first: 100, after: $after) {
+        repositories(first: 100, after: $after, isFork: $includeForks) {
             pageInfo {
                 hasNextPage
                 endCursor

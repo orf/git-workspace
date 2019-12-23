@@ -315,7 +315,8 @@ where
 
     // Join the progress thread. This will never join if the `progress_bar.finish_and_clear()`
     // is not called on every progress bar, but that should never happen.
-    waiting_thread.join();
+    // We just ignore this error for now :(
+    waiting_thread.join().ok();
 
     // Print out each repository that failed to run.
     if !errors.is_empty() {

@@ -72,6 +72,11 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
+      - name: git workspace add orf
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: add github orf --skip-forks
       - name: git workspace add github org
         uses: actions-rs/cargo@v1
         with:
@@ -86,7 +91,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add gitlab gitlab-org --env-name GITLAB_ALTERNATIVE_TOKEN
+          args: add gitlab gitlab-org/frontend --env-name GITLAB_ALTERNATIVE_TOKEN
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:
