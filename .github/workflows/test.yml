@@ -62,6 +62,12 @@ jobs:
           path: target
           key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Run cargo bloat
+        uses: orf/cargo-bloat-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
+
       - name: Build
         uses: actions-rs/cargo@v1
         with:
@@ -194,20 +200,3 @@ jobs:
         with:
           command: fmt
           args: --all -- --check
-
-  cargo_bloat:
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@master
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - name: Run cargo bloat
-        uses: orf/cargo-bloat-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
