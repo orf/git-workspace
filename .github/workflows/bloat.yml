@@ -5,6 +5,8 @@ on: # rebuild any PRs and main branch changes
       - master
       - 'releases/*'
 
+name: bloat
+
 jobs:
   cargo_bloat:
     strategy:
