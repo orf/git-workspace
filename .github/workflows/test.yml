@@ -66,7 +66,7 @@ jobs:
         uses: orf/cargo-bloat-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-        if: contains(matrix.os, ['ubuntu-latest', 'macos-latest'])
+        if: matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'
 
       - name: Build
         uses: actions-rs/cargo@v1
