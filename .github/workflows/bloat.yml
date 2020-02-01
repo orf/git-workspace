@@ -3,7 +3,6 @@ on: # rebuild any PRs and main branch changes
   push:
     branches:
       - master
-      - 'releases/*'
 
 name: bloat
 
