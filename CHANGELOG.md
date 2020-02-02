@@ -9,3 +9,4 @@
 - Removed cookie support from ureq.
 
 <!-- next-url -->
+[Unreleased]: https://github.com/orf/git-workspace/compare/v0.4.1...HEAD
