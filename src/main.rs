@@ -63,6 +63,9 @@ enum Command {
         #[structopt(long = "full")]
         full: bool,
     },
+    Run {
+        args: Vec<String>,
+    },
     Add(ProviderSource),
 }
 
@@ -127,6 +130,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
         }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
+        Command::Run { args } => ()
     };
     Ok(())
 }
