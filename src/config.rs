@@ -1,4 +1,5 @@
 use failure::{Error, ResultExt};
+use globset;
 use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::fs;
@@ -7,6 +8,7 @@ use structopt::StructOpt;
 
 use crate::providers::{GithubProvider, GitlabProvider, Provider};
 use crate::repository::Repository;
+use std::ffi::OsString;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct ConfigContents {
@@ -15,32 +17,49 @@ struct ConfigContents {
 }
 
 pub struct Config {
-    path: PathBuf,
+    workspace: PathBuf,
 }
 
 impl Config {
-    pub fn new(path: PathBuf) -> Config {
-        Config { path }
+    pub fn new(workspace: PathBuf) -> Config {
+        Config { workspace }
     }
+
+    fn all_config_files(&self) -> Result<Vec<OsString>, Error> {
+        let matcher = globset::GlobBuilder::new("workspace*.toml")
+            .literal_separator(true)
+            .build()?
+            .compile_matcher();
+        let entries: Vec<OsString> = fs::read_dir(&self.workspace)?
+            .map(|res| res.map(|e| e.file_name()))
+            .collect::<Result<Vec<_>, std::io::Error>>()?;
+        let mut entries_that_exist: Vec<OsString> = entries
+            .into_iter()
+            .filter(|p| p != "workspace-lock.toml" && matcher.is_match(p))
+            .collect();
+        entries_that_exist.sort();
+        return Ok(entries_that_exist);
+    }
+
     pub fn read(&self) -> Result<Vec<ProviderSource>, Error> {
-        if !self.path.exists() {
-            fs::File::create(&self.path).context(format!(
-                "Cannot create config at path {}",
-                self.path.display()
-            ))?;
+        let all_configs = self.all_config_files()?;
+        let mut all_providers = vec![];
+
+        for file_name in all_configs {
+            let path = self.workspace.join(file_name);
+            let file_contents = fs::read_to_string(&path)
+                .context(format!("Cannot read file {}", path.display()))?;
+            let contents: ConfigContents = toml::from_str(file_contents.as_str())
+                .context(format!("Error parsing TOML in file {}", path.display()))?;
+            all_providers.extend(contents.providers);
         }
-        let file_contents = fs::read_to_string(&self.path)
-            .context(format!("Cannot read file {}", self.path.display()))?;
-        let contents: ConfigContents = toml::from_str(file_contents.as_str()).context(format!(
-            "Error parsing TOML in file {}",
-            self.path.display()
-        ))?;
-        Ok(contents.providers)
+        Ok(all_providers)
     }
-    pub fn write(&self, providers: Vec<ProviderSource>) -> Result<(), Error> {
+    pub fn write(&self, providers: Vec<ProviderSource>, config: &PathBuf) -> Result<(), Error> {
         let toml = toml::to_string(&ConfigContents { providers })?;
-        fs::write(&self.path, toml)
-            .context(format!("Error writing to file {}", self.path.display()))?;
+        let config_path = &self.workspace.join(config);
+        fs::write(config_path, toml)
+            .context(format!("Error writing to file {}", config_path.display()))?;
         Ok(())
     }
 }

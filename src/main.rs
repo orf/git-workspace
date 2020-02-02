@@ -82,7 +82,12 @@ enum Command {
         args: Vec<String>,
     },
     /// Add a provider to the configuration
-    Add(ProviderSource),
+    Add {
+        #[structopt(short = "file", long = "file", default_value = "workspace.toml")]
+        file: PathBuf,
+        #[structopt(subcommand)]
+        command: ProviderSource,
+    },
 }
 
 fn main() {
@@ -145,7 +150,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
             update(&workspace_path, threads)?
         }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
-        Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
+        Command::Add { file, command } => add_provider_to_config(&workspace_path, command, &file)?,
         Command::Run {
             threads,
             command,
@@ -159,23 +164,25 @@ fn handle_main(args: Args) -> Result<(), Error> {
 fn add_provider_to_config(
     workspace: &PathBuf,
     provider_source: ProviderSource,
+    file: &PathBuf,
 ) -> Result<(), Error> {
     if !provider_source.correctly_configured() {
         bail!("Provider is not correctly configured")
     }
 
     // Load and parse our configuration file
-    let config = Config::new(workspace.join("workspace.toml"));
+    let config = Config::new(workspace.clone());
     let mut sources = config.read().context("Error reading config file")?;
-
     // Ensure we don't add duplicates:
     if sources.iter().any(|s| s == &provider_source) {
         println!("Entry already exists, skipping");
     } else {
-        println!("Adding {} to workspace.toml", provider_source);
+        println!("Adding {} to {}", provider_source, file.display());
         // Push the provider into the source and write it to the configuration file
         sources.push(provider_source);
-        config.write(sources).context("Error writing config file")?;
+        config
+            .write(sources, file)
+            .context("Error writing config file")?;
     }
     Ok(())
 }
@@ -256,7 +263,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
 /// Update our lockfile
 fn lock(workspace: &PathBuf) -> Result<(), Error> {
     // Read the configuration sources
-    let config = Config::new(workspace.join("workspace.toml"));
+    let config = Config::new(workspace.clone());
     let sources = config.read()?;
     // For each source, in sequence, fetch the repositories
     let mut all_repositories = vec![];
