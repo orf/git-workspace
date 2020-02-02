@@ -64,6 +64,8 @@ enum Command {
         full: bool,
     },
     Run {
+        #[structopt(short = "t", long = "threads", default_value = "4")]
+        threads: usize,
         args: Vec<String>,
     },
     Add(ProviderSource),
@@ -130,7 +132,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
         }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
-        Command::Run { args } => ()
+        Command::Run { threads, args } => execute_cmd(&workspace_path, threads, args)?,
     };
     Ok(())
 }
@@ -183,8 +185,8 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
     Ok(())
 }
 
-/// Run `git fetch` on all our repositories
-fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+/// Execute a command on all our repositories
+fn execute_cmd(workspace: &PathBuf, threads: usize, command: Vec<String>) -> Result<(), Error> {
     // Read the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
@@ -196,13 +198,33 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         .cloned()
         .collect();
 
-    println!("Fetching {} repositories", repos_to_fetch.len(),);
+    println!(
+        "Running \"git {}\" on {} repositories",
+        command.join(" "),
+        repos_to_fetch.len()
+    );
 
     // Run fetch on them
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
-        r.fetch(&workspace, &progress_bar)
+        r.execute_git(&workspace, &progress_bar, &command)
     })?;
+    Ok(())
+}
 
+/// Run `git fetch` on all our repositories
+fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+    let cmd = vec![
+        "fetch",
+        "--all",
+        "--prune",
+        "--recurse-submodules=on-demand",
+        "--progress",
+    ];
+    execute_cmd(
+        workspace,
+        threads,
+        cmd.iter().map(|s| s.to_string()).collect(),
+    )?;
     Ok(())
 }
 

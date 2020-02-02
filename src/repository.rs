@@ -118,19 +118,17 @@ impl Repository {
         Ok(())
     }
 
-    pub fn fetch(&self, root: &PathBuf, progress_bar: &ProgressBar) -> Result<(), Error> {
+    pub fn execute_git(
+        &self,
+        root: &PathBuf,
+        progress_bar: &ProgressBar,
+        args: &Vec<String>,
+    ) -> Result<(), Error> {
         let mut command = Command::new("git");
-        let child = command
-            .arg("-C")
-            .arg(root.join(&self.name()))
-            .arg("fetch")
-            .arg("--all")
-            .arg("--prune")
-            .arg("--recurse-submodules=on-demand")
-            .arg("--progress");
+        let child = command.arg("-C").arg(root.join(&self.name())).args(args);
 
         self.run_with_progress(child, progress_bar)
-            .context(format!("Error fetching repo in {}", root.display()))?;
+            .context(format!("Error running command in repo {}", root.display()))?;
 
         Ok(())
     }
