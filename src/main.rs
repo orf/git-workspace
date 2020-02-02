@@ -51,23 +51,37 @@ struct Args {
 
 #[derive(StructOpt)]
 enum Command {
+    /// Update the workspace, removing and adding any repositories as needed.
     Update {
         #[structopt(short = "t", long = "threads", default_value = "4")]
         threads: usize,
     },
+    /// Fetch new commits for all repositories in the workspace
     Fetch {
         #[structopt(short = "t", long = "threads", default_value = "4")]
         threads: usize,
     },
+    /// List all repositories in the workspace
+    ///
+    /// This command will output the names of all known repositories in the workspace.
+    /// Passing --full will output absolute paths.
     List {
         #[structopt(long = "full")]
         full: bool,
     },
+    /// Run a git command in all repositories
+    ///
+    /// This command executes the "command" in all git workspace repositories.
+    /// The program will receive the given "args", and have it's working directory
+    /// set to the repository directory.
     Run {
         #[structopt(short = "t", long = "threads", default_value = "4")]
         threads: usize,
+        #[structopt(required = true)]
+        command: String,
         args: Vec<String>,
     },
+    /// Add a provider to the configuration
     Add(ProviderSource),
 }
 
@@ -132,7 +146,11 @@ fn handle_main(args: Args) -> Result<(), Error> {
         }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add(provider) => add_provider_to_config(&workspace_path, provider)?,
-        Command::Run { threads, args } => execute_cmd(&workspace_path, threads, args)?,
+        Command::Run {
+            threads,
+            command,
+            args,
+        } => execute_cmd(&workspace_path, threads, command, args)?,
     };
     Ok(())
 }
@@ -186,7 +204,12 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
 }
 
 /// Execute a command on all our repositories
-fn execute_cmd(workspace: &PathBuf, threads: usize, command: Vec<String>) -> Result<(), Error> {
+fn execute_cmd(
+    workspace: &PathBuf,
+    threads: usize,
+    cmd: String,
+    args: Vec<String>,
+) -> Result<(), Error> {
     // Read the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
@@ -199,14 +222,15 @@ fn execute_cmd(workspace: &PathBuf, threads: usize, command: Vec<String>) -> Res
         .collect();
 
     println!(
-        "Running \"git {}\" on {} repositories",
-        command.join(" "),
+        "Running {} {} on {} repositories",
+        cmd,
+        args.join(" "),
         repos_to_fetch.len()
     );
 
     // Run fetch on them
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
-        r.execute_git(&workspace, &progress_bar, &command)
+        r.execute_cmd(&workspace, &progress_bar, &cmd, &args)
     })?;
     Ok(())
 }
@@ -223,6 +247,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
     execute_cmd(
         workspace,
         threads,
+        "git".to_string(),
         cmd.iter().map(|s| s.to_string()).collect(),
     )?;
     Ok(())

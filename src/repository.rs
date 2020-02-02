@@ -118,17 +118,18 @@ impl Repository {
         Ok(())
     }
 
-    pub fn execute_git(
+    pub fn execute_cmd(
         &self,
         root: &PathBuf,
         progress_bar: &ProgressBar,
+        cmd: &String,
         args: &Vec<String>,
     ) -> Result<(), Error> {
-        let mut command = Command::new("git");
-        let child = command.arg("-C").arg(root.join(&self.name())).args(args);
+        let mut command = Command::new(cmd);
+        let child = command.args(args).current_dir(root.join(&self.name()));
 
         self.run_with_progress(child, progress_bar)
-            .context(format!("Error running command in repo {}", root.display()))?;
+            .context(format!("Error running command in repo {}", self.name()))?;
 
         Ok(())
     }
