@@ -65,16 +65,18 @@ fn default_env_var() -> String {
 #[serde(rename_all = "lowercase")]
 #[structopt(about = "Add a Gitlab user or group by name")]
 pub struct GitlabProvider {
+    /// The name of the gitlab group or namespace to add. Can include slashes.
     pub name: String,
     #[serde(default = "public_gitlab_url")]
     #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
+    /// Gitlab instance URL
     pub url: String,
     #[structopt(long = "path", default_value = "gitlab")]
-    #[structopt(about = "Clone repositories to a specific base path")]
+    /// Clone repos to a specific path
     path: String,
     #[structopt(long = "env-name", short = "e", default_value = "GITLAB_TOKEN")]
-    #[structopt(about = "Use the token stored in this environment variable for authentication")]
     #[serde(default = "default_env_var")]
+    /// Environment variable containing the auth token
     env_var: String,
     // Currently does not work.
     // https://gitlab.com/gitlab-org/gitlab/issues/121595
@@ -144,11 +146,11 @@ impl Provider for GitlabProvider {
                 .set("Content-Type", "application/json")
                 .send_json(json!(&q));
             let json = res.into_json()?;
+
             let response_body: Response<repositories::ResponseData> = serde_json::from_value(json)?;
             let data = response_body.data.expect("Missing data");
 
             let temp_repositories: Vec<ProjectNode>;
-
             // This is annoying but I'm still not sure how to unify it.
             if data.group.is_some() {
                 let group_data = data.group.expect("Missing group").projects;
@@ -177,7 +179,10 @@ impl Provider for GitlabProvider {
                     .collect();
                 after = namespace_data.page_info.end_cursor;
             } else {
-                panic!("Gitlab group/user {} returned invalid data... 😓", name);
+                bail!(
+                    "Gitlab group/user {} could not be found. Are you sure you have access?",
+                    name
+                );
             }
 
             repositories.extend(
