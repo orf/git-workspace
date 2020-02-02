@@ -312,7 +312,7 @@ dependencies = [
 
 [[package]]
 name = "git-workspace"
-version = "0.4.2-alpha.0"
+version = "0.5.0"
 dependencies = [
  "atomic-counter 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "console 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",

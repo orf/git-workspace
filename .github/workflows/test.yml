@@ -115,18 +115,18 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target ${{ matrix.target }}
+          args: --release
       - name: Package
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
         run: |
-          strip target/${{ matrix.target }}/release/${{ matrix.bin }}
-          cd target/${{ matrix.target }}/release
+          strip target/release/${{ matrix.bin }}
+          cd target/release
           if [[ "${{ matrix.os }}" == "windows-latest" ]]
           then
-          7z a ../../../${{ matrix.name }} ${{ matrix.bin }}
+          7z a ../../${{ matrix.name }} ${{ matrix.bin }}
           else
-          tar czvf ../../../${{ matrix.name }} ${{ matrix.bin }}
+          tar czvf ../../${{ matrix.name }} ${{ matrix.bin }}
           fi
           cd -
       - name: Publish
