@@ -31,18 +31,19 @@ const fn default_forks() -> bool {
 #[serde(rename_all = "lowercase")]
 #[structopt(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {
+    /// The name of the user or organisation to add.
     pub name: String,
     #[structopt(long = "path", default_value = "github")]
-    #[structopt(about = "Clone repositories to a specific base path")]
+    /// Clone repositories to a specific base path
     path: String,
     #[structopt(long = "env-name", short = "e", default_value = "GITHUB_TOKEN")]
-    #[structopt(about = "Use the token stored in this environment variable for authentication")]
     #[serde(default = "default_env_var")]
+    /// Environment variable containing the auth token
     env_var: String,
 
     #[structopt(long = "skip-forks")]
-    #[structopt(about = "Don't clone forked repositories")]
     #[serde(default = "default_forks")]
+    /// Don't clone forked repositories
     skip_forks: bool,
 }
 
@@ -131,9 +132,9 @@ impl Provider for GithubProvider {
                 serde_json::from_value(res.into_json()?)?;
             let response_repositories = response_data
                 .data
-                .expect("Missing data")
+                .expect(format!("Invalid response from Gitlab for user {}", self.name).as_str())
                 .repository_owner
-                .expect("missing repository owner")
+                .expect(format!("Invalid response from Gitlab for user {}", self.name).as_str())
                 .repositories;
 
             repositories.extend(
