@@ -8,6 +8,7 @@ use structopt::StructOpt;
 
 use crate::providers::{GithubProvider, GitlabProvider, Provider};
 use crate::repository::Repository;
+use std::ffi::OsString;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct ConfigContents {
@@ -24,20 +25,19 @@ impl Config {
         Config { workspace }
     }
 
-    fn all_config_files(&self) -> Result<Vec<PathBuf>, Error> {
+    fn all_config_files(&self) -> Result<Vec<OsString>, Error> {
         let matcher = globset::GlobBuilder::new("workspace*.toml")
             .literal_separator(true)
             .build()?
             .compile_matcher();
-        let entries: Vec<PathBuf> = fs::read_dir(&self.workspace)?
-            .map(|res| res.map(|e| e.path()))
+        let entries: Vec<OsString> = fs::read_dir(&self.workspace)?
+            .map(|res| res.map(|e| e.file_name()))
             .collect::<Result<Vec<_>, std::io::Error>>()?;
-        let mut entries_that_exist: Vec<PathBuf> = entries
+        let mut entries_that_exist: Vec<OsString> = entries
             .into_iter()
-            .filter(|p| matcher.is_match(p))
+            .filter(|p| p != "workspace-lock.toml" && matcher.is_match(p))
             .collect();
         entries_that_exist.sort();
-
         return Ok(entries_that_exist);
     }
 
@@ -45,14 +45,14 @@ impl Config {
         let all_configs = self.all_config_files()?;
         let mut all_providers = vec![];
 
-        for p in all_configs {
-            let file_contents =
-                fs::read_to_string(&p).context(format!("Cannot read file {}", p.display()))?;
+        for file_name in all_configs {
+            let path = self.workspace.join(file_name);
+            let file_contents = fs::read_to_string(&path)
+                .context(format!("Cannot read file {}", path.display()))?;
             let contents: ConfigContents = toml::from_str(file_contents.as_str())
-                .context(format!("Error parsing TOML in file {}", p.display()))?;
+                .context(format!("Error parsing TOML in file {}", path.display()))?;
             all_providers.extend(contents.providers);
         }
-
         Ok(all_providers)
     }
     pub fn write(&self, providers: Vec<ProviderSource>, config: &PathBuf) -> Result<(), Error> {
