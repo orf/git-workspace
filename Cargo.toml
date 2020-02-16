@@ -26,7 +26,7 @@ indicatif = { version = "0.14.0", features = ["with_rayon"] }
 console = { version = "0.9.2", default_features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
 ureq = { version = "0.11.4", features = ["json", "tls"], default_features = false }
-serde_json = "1.0.47"
+serde_json = "1.0.48"
 globset = "0.4.4"
 
 [target."cfg(unix)".dependencies]
