@@ -1,0 +1,130 @@
+[[repo]]
+path = "github/django/asgi_ipc"
+url = "git@github.com:django/asgi_ipc.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/asgiref"
+url = "git@github.com:django/asgiref.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/channels"
+url = "git@github.com:django/channels.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/channels_redis"
+url = "git@github.com:django/channels_redis.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/code-of-conduct"
+url = "git@github.com:django/code-of-conduct.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/code.djangoproject.com"
+url = "git@github.com:django/code.djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/daphne"
+url = "git@github.com:django/daphne.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/deps"
+url = "git@github.com:django/deps.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django"
+url = "git@github.com:django/django.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-contrib-comments"
+url = "git@github.com:django/django-contrib-comments.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-docker-box"
+url = "git@github.com:django/django-docker-box.git"
+upstream = "git@github.com:orf/django-docker-box.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-docs-translations"
+url = "git@github.com:django/django-docs-translations.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/django-localflavor"
+url = "git@github.com:django/django-localflavor.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangobench"
+url = "git@github.com:django/djangobench.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangopeople"
+url = "git@github.com:django/djangopeople.git"
+upstream = "git@github.com:simonw/djangopeople.net.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangoproject.com"
+url = "git@github.com:django/djangoproject.com.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/djangosnippets.org"
+url = "git@github.com:django/djangosnippets.org.git"
+branch = "master"
+
+[[repo]]
+path = "github/django/ticketbot"
+url = "git@github.com:django/ticketbot.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/backend-coding-challenge"
+url = "git@gitlab.com:tom6/backend-coding-challenge.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/gitlab"
+url = "git@gitlab.com:tom6/gitlab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/jiri-gitlab"
+url = "git@gitlab.com:tom6/jiri-gitlab.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/metrics-bug"
+url = "git@gitlab.com:tom6/metrics-bug.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/minimal-ruby-app"
+url = "git@gitlab.com:tom6/minimal-ruby-app.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/resizer"
+url = "git@gitlab.com:tom6/resizer.git"
+branch = "master"
+
+[[repo]]
+path = "gitlab/tom6/test-empty-project"
+url = "git@gitlab.com:tom6/test-empty-project.git"
+
+[[repo]]
+path = "gitlab/tom6/test-lfs"
+url = "git@gitlab.com:tom6/test-lfs.git"
+branch = "master"

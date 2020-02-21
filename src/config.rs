@@ -17,36 +17,40 @@ struct ConfigContents {
 }
 
 pub struct Config {
-    workspace: PathBuf,
+    files: Vec<PathBuf>
 }
 
-impl Config {
-    pub fn new(workspace: PathBuf) -> Config {
-        Config { workspace }
-    }
 
-    fn all_config_files(&self) -> Result<Vec<OsString>, Error> {
-        let matcher = globset::GlobBuilder::new("workspace*.toml")
-            .literal_separator(true)
-            .build()?
-            .compile_matcher();
-        let entries: Vec<OsString> = fs::read_dir(&self.workspace)?
-            .map(|res| res.map(|e| e.file_name()))
-            .collect::<Result<Vec<_>, std::io::Error>>()?;
-        let mut entries_that_exist: Vec<OsString> = entries
-            .into_iter()
-            .filter(|p| p != "workspace-lock.toml" && matcher.is_match(p))
-            .collect();
-        entries_that_exist.sort();
-        return Ok(entries_that_exist);
+pub fn all_config_files(workspace: &PathBuf) -> Result<Vec<PathBuf>, Error> {
+    let matcher = globset::GlobBuilder::new("workspace*.toml")
+        .literal_separator(true)
+        .build()?
+        .compile_matcher();
+    let entries: Vec<OsString> = fs::read_dir(&workspace)?
+        .map(|res| res.map(|e| e.file_name()))
+        .collect::<Result<Vec<_>, std::io::Error>>()?;
+    let mut entries_that_exist: Vec<PathBuf> = entries
+        .into_iter()
+        .filter(|p| p != "workspace-lock.toml" && matcher.is_match(p))
+        .map(|p| workspace.join(p))
+        .collect();
+    entries_that_exist.sort();
+    return Ok(entries_that_exist);
+}
+
+
+impl Config {
+    pub fn new(files: Vec<PathBuf>) -> Config {
+        Config { files }
     }
 
     pub fn read(&self) -> Result<Vec<ProviderSource>, Error> {
-        let all_configs = self.all_config_files()?;
         let mut all_providers = vec![];
 
-        for file_name in all_configs {
-            let path = self.workspace.join(file_name);
+        for path in &self.files {
+            if !path.exists() {
+                continue
+            }
             let file_contents = fs::read_to_string(&path)
                 .context(format!("Cannot read file {}", path.display()))?;
             let contents: ConfigContents = toml::from_str(file_contents.as_str())
@@ -55,9 +59,8 @@ impl Config {
         }
         Ok(all_providers)
     }
-    pub fn write(&self, providers: Vec<ProviderSource>, config: &PathBuf) -> Result<(), Error> {
+    pub fn write(&self, providers: Vec<ProviderSource>, config_path: &PathBuf) -> Result<(), Error> {
         let toml = toml::to_string(&ConfigContents { providers })?;
-        let config_path = &self.workspace.join(config);
         fs::write(config_path, toml)
             .context(format!("Error writing to file {}", config_path.display()))?;
         Ok(())
