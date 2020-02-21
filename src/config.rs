@@ -17,9 +17,8 @@ struct ConfigContents {
 }
 
 pub struct Config {
-    files: Vec<PathBuf>
+    files: Vec<PathBuf>,
 }
-
 
 pub fn all_config_files(workspace: &PathBuf) -> Result<Vec<PathBuf>, Error> {
     let matcher = globset::GlobBuilder::new("workspace*.toml")
@@ -38,7 +37,6 @@ pub fn all_config_files(workspace: &PathBuf) -> Result<Vec<PathBuf>, Error> {
     return Ok(entries_that_exist);
 }
 
-
 impl Config {
     pub fn new(files: Vec<PathBuf>) -> Config {
         Config { files }
@@ -49,7 +47,7 @@ impl Config {
 
         for path in &self.files {
             if !path.exists() {
-                continue
+                continue;
             }
             let file_contents = fs::read_to_string(&path)
                 .context(format!("Cannot read file {}", path.display()))?;
@@ -59,7 +57,11 @@ impl Config {
         }
         Ok(all_providers)
     }
-    pub fn write(&self, providers: Vec<ProviderSource>, config_path: &PathBuf) -> Result<(), Error> {
+    pub fn write(
+        &self,
+        providers: Vec<ProviderSource>,
+        config_path: &PathBuf,
+    ) -> Result<(), Error> {
         let toml = toml::to_string(&ConfigContents { providers })?;
         fs::write(config_path, toml)
             .context(format!("Error writing to file {}", config_path.display()))?;

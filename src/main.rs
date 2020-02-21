@@ -14,7 +14,7 @@ extern crate serde_json;
 extern crate structopt;
 extern crate walkdir;
 
-use crate::config::{Config, ProviderSource, all_config_files};
+use crate::config::{all_config_files, Config, ProviderSource};
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use atomic_counter::{AtomicCounter, RelaxedCounter};
