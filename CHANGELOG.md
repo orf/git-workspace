@@ -1,6 +1,9 @@
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
 
+### Changed
+- Fixed a bug causing provider configurations to be duplicated when adding providers to multiple config files
+
 ## [0.5.0] - 2020-02-02
 
 ### Added

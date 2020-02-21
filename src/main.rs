@@ -14,7 +14,7 @@ extern crate serde_json;
 extern crate structopt;
 extern crate walkdir;
 
-use crate::config::{Config, ProviderSource};
+use crate::config::{all_config_files, Config, ProviderSource};
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use atomic_counter::{AtomicCounter, RelaxedCounter};
@@ -169,9 +169,9 @@ fn add_provider_to_config(
     if !provider_source.correctly_configured() {
         bail!("Provider is not correctly configured")
     }
-
-    // Load and parse our configuration file
-    let config = Config::new(workspace.clone());
+    let path_to_config = workspace.join(file);
+    // Load and parse our configuration files
+    let config = Config::new(vec![path_to_config]);
     let mut sources = config.read().context("Error reading config file")?;
     // Ensure we don't add duplicates:
     if sources.iter().any(|s| s == &provider_source) {
@@ -181,7 +181,7 @@ fn add_provider_to_config(
         // Push the provider into the source and write it to the configuration file
         sources.push(provider_source);
         config
-            .write(sources, file)
+            .write(sources, &workspace.join(file))
             .context("Error writing config file")?;
     }
     Ok(())
@@ -262,8 +262,10 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
 
 /// Update our lockfile
 fn lock(workspace: &PathBuf) -> Result<(), Error> {
+    // Find all config files
+    let config_files = all_config_files(workspace)?;
     // Read the configuration sources
-    let config = Config::new(workspace.clone());
+    let config = Config::new(config_files);
     let sources = config.read()?;
     // For each source, in sequence, fetch the repositories
     let mut all_repositories = vec![];
