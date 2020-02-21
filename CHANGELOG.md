@@ -1,5 +1,6 @@
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.5.1] - 2020-02-21
 
 ### Changed
 - Fixed a bug causing provider configurations to be duplicated when adding providers to multiple config files
@@ -14,5 +15,6 @@
 - Removed cookie support from ureq.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/orf/git-workspace/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/orf/git-workspace/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/orf/git-workspace/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/orf/git-workspace/compare/v0.4.1...v0.5.0
