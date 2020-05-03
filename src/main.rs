@@ -6,27 +6,29 @@ extern crate fs_extra;
 extern crate graphql_client;
 extern crate indicatif;
 extern crate serde;
-extern crate ureq;
 #[macro_use]
 extern crate serde_json;
 extern crate structopt;
+extern crate ureq;
 extern crate walkdir;
 
-use crate::config::{all_config_files, Config, ProviderSource};
-use crate::lockfile::Lockfile;
-use crate::repository::Repository;
-use anyhow::{anyhow, Context};
-use atomic_counter::{AtomicCounter, RelaxedCounter};
-
-use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
-use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::thread;
 use std::thread::JoinHandle;
+
+use atomic_counter::{AtomicCounter, RelaxedCounter};
+use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use structopt::StructOpt;
 use walkdir::WalkDir;
+
+use anyhow::{anyhow, Context};
+
+use crate::config::{all_config_files, Config, ProviderSource};
+use crate::lockfile::Lockfile;
+use crate::repository::Repository;
 
 mod config;
 mod lockfile;
@@ -273,15 +275,28 @@ fn lock(workspace: &PathBuf) -> anyhow::Result<()> {
     let sources = config
         .read()
         .with_context(|| "Error reading config files")?;
+
+    let total_bar = ProgressBar::new(sources.len() as u64);
+    total_bar.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})")
+            .progress_chars("#>-"),
+    );
+
+    println!("Fetching repositories...");
+
     // For each source, in sequence, fetch the repositories
-    let mut all_repositories = vec![];
-    for source in sources.iter() {
-        all_repositories.extend(
+    let results = sources
+        .par_iter()
+        .progress_with(total_bar)
+        .map(|source| {
             source
                 .fetch_repositories()
-                .with_context(|| format!("Error fetching repositories from {}", source))?,
-        );
-    }
+                .with_context(|| format!("Error fetching repositories from {}", source))
+        })
+        .collect::<anyhow::Result<Vec<_>>>()?;
+    let mut all_repositories: Vec<Repository> = results.into_iter().flatten().collect();
+    // let all_repositories: Vec<Repository> = all_repository_results.iter().collect::<anyhow::Result<Vec<Repository>>>()?;
     // We may have duplicated repositories here. Make sure they are unique based on the full path.
     all_repositories.sort();
     all_repositories.dedup();
@@ -480,12 +495,21 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> a
         for from_dir in to_archive.iter() {
             // Find the relative path of the directory from the workspace. So if you have something
             // like `workspace/github/repo-name`, it will be `github/repo-name`.
-            let relative_dir = from_dir.strip_prefix(workspace)?;
+            let relative_dir = from_dir.strip_prefix(workspace).with_context(|| {
+                format!(
+                    "Failed to strip the prefix '{}' from {}",
+                    workspace.display(),
+                    from_dir.display()
+                )
+            })?;
             // Join the relative directory (`github/repo-name`) with the archive directory.
             let to_dir = archive_directory.join(relative_dir);
             println!("Archiving {}", relative_dir.display());
+            let parent_dir = &to_dir.parent().with_context(|| {
+                format!("Failed to get the parent directory of {}", to_dir.display())
+            })?;
             // Create all the directories that are needed:
-            fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
+            fs_extra::dir::create_all(parent_dir, false)
                 .with_context(|| format!("Error creating directory {}", to_dir.display()))?;
             // Move the directory to the archive directory:
             std::fs::rename(&from_dir, &to_dir).with_context(|| {

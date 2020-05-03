@@ -89,7 +89,7 @@ impl Repository {
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
             .spawn()
-            .with_context(|| format!("Error starting command {}", command))?;
+            .with_context(|| format!("Error starting command {:?}", command))?;
 
         let mut last_line = format!("{}: running...", self.name());
         progress_bar.set_message(&last_line);
