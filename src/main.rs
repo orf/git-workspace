@@ -393,10 +393,13 @@ where
         eprintln!("{} repositories failed:", errors.len());
         for (repo, error) in errors {
             eprintln!("{}:", repo.name());
-            error.chain().skip(1).for_each(|cause| eprintln!("because: {}", cause));
+            error
+                .chain()
+                .skip(1)
+                .for_each(|cause| eprintln!("because: {}", cause));
         }
 
-        return Err(anyhow!("Some repositories failed"))
+        return Err(anyhow!("Some repositories failed"));
     }
 
     Ok(())

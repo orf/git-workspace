@@ -88,7 +88,8 @@ impl Repository {
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
-            .spawn().with_context(|| format!("Error starting command {}", command))?;
+            .spawn()
+            .with_context(|| format!("Error starting command {}", command))?;
 
         let mut last_line = format!("{}: running...", self.name());
         progress_bar.set_message(&last_line);
@@ -107,7 +108,9 @@ impl Repository {
                 last_line = plain_line;
             }
         }
-        let exit_code = spawned.wait().context("Error waiting for process to finish")?;
+        let exit_code = spawned
+            .wait()
+            .context("Error waiting for process to finish")?;
         if !exit_code.success() {
             return Err(anyhow!(
                 "Git exited with code {}: {}",
