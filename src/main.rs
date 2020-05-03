@@ -413,8 +413,6 @@ where
                 .skip(1)
                 .for_each(|cause| eprintln!("because: {}", cause));
         }
-
-        return Err(anyhow!("Some repositories failed"));
     }
 
     Ok(())
