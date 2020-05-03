@@ -1,13 +1,12 @@
-use crate::providers::Provider;
+use crate::providers::{resp_to_json, Provider};
 use crate::repository::Repository;
+use anyhow::{anyhow, Context};
 use console::style;
-use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt;
 use structopt::StructOpt;
-
 // GraphQL queries we use to fetch user and group repositories.
 // Right now, annoyingly, Gitlab has a bug around GraphQL pagination:
 // https://gitlab.com/gitlab-org/gitlab/issues/33419
@@ -129,9 +128,9 @@ impl Provider for GitlabProvider {
         }
         true
     }
-    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
+    fn fetch_repositories(&self) -> anyhow::Result<Vec<Repository>> {
         let gitlab_token = env::var(&self.env_var)
-            .context(format!("Missing {} environment variable", self.env_var))?;
+            .with_context(|| format!("Missing {} environment variable", self.env_var))?;
         let mut repositories = vec![];
         let mut after = Some("".to_string());
         let name = self.name.to_string().to_lowercase();
@@ -145,7 +144,7 @@ impl Provider for GitlabProvider {
                 .set("Authorization", format!("Bearer {}", gitlab_token).as_str())
                 .set("Content-Type", "application/json")
                 .send_json(json!(&q));
-            let json = res.into_json()?;
+            let json = resp_to_json(res)?;
 
             let response_body: Response<repositories::ResponseData> = serde_json::from_value(json)?;
             let data = response_body.data.expect("Missing data");
@@ -179,10 +178,10 @@ impl Provider for GitlabProvider {
                     .collect();
                 after = namespace_data.page_info.end_cursor;
             } else {
-                bail!(
+                return Err(anyhow!(
                     "Gitlab group/user {} could not be found. Are you sure you have access?",
                     name
-                );
+                ));
             }
 
             repositories.extend(

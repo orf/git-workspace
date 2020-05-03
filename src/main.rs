@@ -1,5 +1,3 @@
-#[macro_use]
-extern crate failure;
 extern crate atomic_counter;
 extern crate console;
 #[cfg(unix)]
@@ -17,16 +15,16 @@ extern crate walkdir;
 use crate::config::{all_config_files, Config, ProviderSource};
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
+use anyhow::{anyhow, Context};
 use atomic_counter::{AtomicCounter, RelaxedCounter};
-use console::style;
-use failure::{Error, ResultExt};
+
 use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use std::collections::HashSet;
 use std::path::PathBuf;
 use std::sync::Arc;
+use std::thread;
 use std::thread::JoinHandle;
-use std::{process, thread};
 use structopt::StructOpt;
 use walkdir::WalkDir;
 
@@ -90,22 +88,23 @@ enum Command {
     },
 }
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     // Parse our arguments to Args using structopt.
     let args = Args::from_args();
+    handle_main(args)
     // Call handle_main and collect any errors. If we have an Err object then we
     // print out a message with a chain of contexts, which should be informative.
-    if let Err(e) = handle_main(args) {
-        eprintln!("{}", style("There was an internal error!").red());
-        for cause in e.iter_chain() {
-            eprintln!("{}", style(cause).red());
-        }
-        process::exit(1);
-    }
+    // if let Err(e) = handle_main(args) {
+    //     eprintln!("{}", style("There was an internal error!").red());
+    //     for cause in e.iter_chain() {
+    //         eprintln!("{}", style(cause).red());
+    //     }
+    //     process::exit(1);
+    // }
 }
 
 /// Our actual main function.
-fn handle_main(args: Args) -> Result<(), Error> {
+fn handle_main(args: Args) -> anyhow::Result<()> {
     // Convert our workspace path to a PathBuf. We cannot use the value given directly as
     // it could contain a tilde, so we run `expanduser` on it _if_ we are on a Unix platform.
     // On Windows this isn't supported.
@@ -117,7 +116,7 @@ fn handle_main(args: Args) -> Result<(), Error> {
     #[cfg(unix)]
     {
         expanded_workspace_path = expanduser::expanduser(args.workspace.to_string_lossy())
-            .context("Error expanding git workspace path")?;
+            .with_context(|| "Error expanding git workspace path")?;
     }
 
     // If our workspace path doesn't exist then we need to create it, and call `canonicalize`
@@ -125,10 +124,12 @@ fn handle_main(args: Args) -> Result<(), Error> {
     let workspace_path = (if expanded_workspace_path.exists() {
         &expanded_workspace_path
     } else {
-        fs_extra::dir::create_all(&expanded_workspace_path, false).context(format!(
-            "Error creating workspace directory {}",
-            &expanded_workspace_path.display()
-        ))?;
+        fs_extra::dir::create_all(&expanded_workspace_path, false).with_context(|| {
+            format!(
+                "Error creating workspace directory {}",
+                &expanded_workspace_path.display()
+            )
+        })?;
         println!(
             "Created {} as it did not exist",
             &expanded_workspace_path.display()
@@ -137,10 +138,12 @@ fn handle_main(args: Args) -> Result<(), Error> {
         &expanded_workspace_path
     })
     .canonicalize()
-    .context(format!(
-        "Error canonicalizing workspace path {}",
-        &expanded_workspace_path.display()
-    ))?;
+    .with_context(|| {
+        format!(
+            "Error canonicalizing workspace path {}",
+            &expanded_workspace_path.display()
+        )
+    })?;
 
     // Run our sub command. Pretty self-explanatory.
     match args.command {
@@ -165,14 +168,14 @@ fn add_provider_to_config(
     workspace: &PathBuf,
     provider_source: ProviderSource,
     file: &PathBuf,
-) -> Result<(), Error> {
+) -> anyhow::Result<()> {
     if !provider_source.correctly_configured() {
-        bail!("Provider is not correctly configured")
+        return Err(anyhow!("Provider is not correctly configured"));
     }
     let path_to_config = workspace.join(file);
     // Load and parse our configuration files
     let config = Config::new(vec![path_to_config]);
-    let mut sources = config.read().context("Error reading config file")?;
+    let mut sources = config.read().with_context(|| "Error reading config file")?;
     // Ensure we don't add duplicates:
     if sources.iter().any(|s| s == &provider_source) {
         println!("Entry already exists, skipping");
@@ -182,16 +185,16 @@ fn add_provider_to_config(
         sources.push(provider_source);
         config
             .write(sources, &workspace.join(file))
-            .context("Error writing config file")?;
+            .with_context(|| "Error writing config file")?;
     }
     Ok(())
 }
 
 /// Update our workspace. This clones any new repositories and archives old ones.
-fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     // Load our lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read().context("Error reading lockfile")?;
+    let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
 
     println!("Updating {} repositories", repositories.len());
 
@@ -205,7 +208,8 @@ fn update(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         Ok(())
     })?;
     // Archive any repositories that have been deleted from the lockfile.
-    archive_repositories(workspace, repositories).context("Error archiving repositories")?;
+    archive_repositories(workspace, repositories)
+        .with_context(|| "Error archiving repositories")?;
 
     Ok(())
 }
@@ -216,7 +220,7 @@ fn execute_cmd(
     threads: usize,
     cmd: String,
     args: Vec<String>,
-) -> Result<(), Error> {
+) -> anyhow::Result<()> {
     // Read the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read()?;
@@ -243,7 +247,7 @@ fn execute_cmd(
 }
 
 /// Run `git fetch` on all our repositories
-fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
+fn fetch(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     let cmd = vec![
         "fetch",
         "--all",
@@ -255,22 +259,28 @@ fn fetch(workspace: &PathBuf, threads: usize) -> Result<(), Error> {
         workspace,
         threads,
         "git".to_string(),
-        cmd.iter().map(|s| s.to_string()).collect(),
+        cmd.iter().map(|s| (*s).to_string()).collect(),
     )?;
     Ok(())
 }
 
 /// Update our lockfile
-fn lock(workspace: &PathBuf) -> Result<(), Error> {
+fn lock(workspace: &PathBuf) -> anyhow::Result<()> {
     // Find all config files
-    let config_files = all_config_files(workspace)?;
+    let config_files = all_config_files(workspace).context("Error loading config files")?;
     // Read the configuration sources
     let config = Config::new(config_files);
-    let sources = config.read()?;
+    let sources = config
+        .read()
+        .with_context(|| "Error reading config files")?;
     // For each source, in sequence, fetch the repositories
     let mut all_repositories = vec![];
     for source in sources.iter() {
-        all_repositories.extend(source.fetch_repositories()?);
+        all_repositories.extend(
+            source
+                .fetch_repositories()
+                .with_context(|| format!("Error fetching repositories from {}", source))?,
+        );
     }
     // We may have duplicated repositories here. Make sure they are unique based on the full path.
     all_repositories.sort();
@@ -282,10 +292,10 @@ fn lock(workspace: &PathBuf) -> Result<(), Error> {
 }
 
 /// List the contents of our workspace
-fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
+fn list(workspace: &PathBuf, full: bool) -> anyhow::Result<()> {
     // Read and parse the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
-    let repositories = lockfile.read()?;
+    let repositories = lockfile.read().context("Error reading lockfile")?;
     let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));
     for repo in existing_repositories {
         if full {
@@ -300,9 +310,9 @@ fn list(workspace: &PathBuf, full: bool) -> Result<(), Error> {
 /// Take any number of repositories and apply `f` on each one.
 /// This method takes care of displaying progress bars and displaying
 /// any errors that may arise.
-fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> Result<(), Error>
+fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) -> anyhow::Result<()>
 where
-    F: Fn(&Repository, &ProgressBar) -> Result<(), Error> + std::marker::Sync,
+    F: Fn(&Repository, &ProgressBar) -> anyhow::Result<()> + std::marker::Sync,
 {
     // Create our progress bar. We use Arc here as we need to share the MutliProgress across
     // more than 1 thread (described below)
@@ -326,7 +336,7 @@ where
     // `MultiProgress` to ensure that messages are pumped and the progress bars are updated.
     // We need to do this in a thread as the `.map()` we do below also blocks.
     let progress_wait = progress.clone();
-    let waiting_thread: JoinHandle<std::result::Result<(), Error>> = thread::spawn(move || {
+    let waiting_thread: JoinHandle<anyhow::Result<()>> = thread::spawn(move || {
         progress_wait.join()?;
         Ok(())
     });
@@ -336,10 +346,10 @@ where
     let pool = rayon::ThreadPoolBuilder::new()
         .num_threads(threads)
         .build()
-        .context("Error creating the thread pool")?;
+        .with_context(|| "Error creating the thread pool")?;
 
     // pool.install means that `.par_iter()` will use the thread pool we've built above.
-    let errors: Vec<(&Repository, Error)> = pool.install(|| {
+    let errors: Vec<(&Repository, anyhow::Error)> = pool.install(|| {
         repositories
             .par_iter()
             // Update our progress bar with each iteration
@@ -383,17 +393,17 @@ where
         eprintln!("{} repositories failed:", errors.len());
         for (repo, error) in errors {
             eprintln!("{}:", repo.name());
-            for cause in error.iter_chain() {
-                eprintln!(" - {}", style(cause).red());
-            }
+            error.chain().skip(1).for_each(|cause| eprintln!("because: {}", cause));
         }
+
+        return Err(anyhow!("Some repositories failed"))
     }
 
     Ok(())
 }
 
 /// Find all projects that have been archived or deleted on our providers
-fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> Result<(), Error> {
+fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> anyhow::Result<()> {
     // The logic here is as follows:
     // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
     //    in our lockfile), we skip it entirely.
@@ -418,10 +428,12 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
 
     // If the archive directory does not exist then we create it
     if !archive_directory.exists() {
-        fs_extra::dir::create(&archive_directory, false).context(format!(
-            "Error creating archive directory {}",
-            archive_directory.display()
-        ))?;
+        fs_extra::dir::create(&archive_directory, false).with_context(|| {
+            format!(
+                "Error creating archive directory {}",
+                archive_directory.display()
+            )
+        })?;
     }
 
     // Make sure we add our archive directory to the set of repository paths. This ensures that
@@ -429,7 +441,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
     repository_paths.insert(
         archive_directory
             .canonicalize()
-            .context("Error canoncalizing archive directory")?,
+            .with_context(|| "Error canoncalizing archive directory")?,
     );
 
     // Create a vector of all repositories to archive, and WalkDir iterator
@@ -443,7 +455,7 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
         // Perhaps we shouldn't bail here?
         let entry = match it.next() {
             None => break,
-            Some(Err(err)) => bail!("Error iterating through directory: {}", err),
+            Some(Err(err)) => return Err(anyhow!("Error iterating through directory: {}", err)),
             Some(Ok(entry)) => entry,
         };
         // If the current path is in the set of repository paths then we skip processing it entirely.
@@ -471,13 +483,15 @@ fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> R
             println!("Archiving {}", relative_dir.display());
             // Create all the directories that are needed:
             fs_extra::dir::create_all(&to_dir.parent().unwrap(), false)
-                .context(format!("Error creating directory {}", to_dir.display()))?;
+                .with_context(|| format!("Error creating directory {}", to_dir.display()))?;
             // Move the directory to the archive directory:
-            std::fs::rename(&from_dir, &to_dir).context(format!(
-                "Error moving directory {} to {}",
-                from_dir.display(),
-                to_dir.display()
-            ))?;
+            std::fs::rename(&from_dir, &to_dir).with_context(|| {
+                format!(
+                    "Error moving directory {} to {}",
+                    from_dir.display(),
+                    to_dir.display()
+                )
+            })?;
         }
     }
 
