@@ -1,5 +1,5 @@
+use anyhow::{anyhow, Context};
 use console::{strip_ansi_codes, truncate_str};
-use failure::{Error, ResultExt};
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
@@ -38,7 +38,7 @@ impl Repository {
             upstream,
         }
     }
-    pub fn set_upstream(&self, root: &PathBuf) -> Result<(), Error> {
+    pub fn set_upstream(&self, root: &PathBuf) -> anyhow::Result<()> {
         let upstream = match &self.upstream {
             Some(upstream) => upstream,
             None => return Ok(()),
@@ -68,12 +68,12 @@ impl Repository {
         let output = child.output()?;
         if !output.status.success() {
             let stderr =
-                std::str::from_utf8(&output.stderr).context("Error decoding git output")?;
-            bail!(
+                std::str::from_utf8(&output.stderr).with_context(|| "Error decoding git output")?;
+            return Err(anyhow!(
                 "Failed to set upstream on repo {}: {}",
                 root.display(),
                 stderr.trim()
-            )
+            ));
         }
         Ok(())
     }
@@ -82,13 +82,14 @@ impl Repository {
         &self,
         command: &mut Command,
         progress_bar: &ProgressBar,
-    ) -> Result<(), Error> {
+    ) -> anyhow::Result<()> {
         progress_bar.set_message(format!("{}: starting", self.name()).as_str());
         let mut spawned = command
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
             .stderr(Stdio::piped())
-            .spawn()?;
+            .spawn()
+            .with_context(|| format!("Error starting command {:?}", command))?;
 
         let mut last_line = format!("{}: running...", self.name());
         progress_bar.set_message(&last_line);
@@ -101,19 +102,21 @@ impl Repository {
                     continue;
                 }
                 let line = std::str::from_utf8(&output).unwrap();
-                let plain_line = strip_ansi_codes(line).replace('\n', "");
+                let plain_line = strip_ansi_codes(line).replace('\n', " ");
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
                 progress_bar.set_message(&format!("{}: {}", self.name(), truncated_line));
                 last_line = plain_line;
             }
         }
-        let exit_code = spawned.wait()?;
+        let exit_code = spawned
+            .wait()
+            .context("Error waiting for process to finish")?;
         if !exit_code.success() {
-            bail!(
+            return Err(anyhow!(
                 "Git exited with code {}: {}",
                 exit_code.code().unwrap(),
                 last_line
-            )
+            ));
         }
         Ok(())
     }
@@ -122,19 +125,19 @@ impl Repository {
         &self,
         root: &PathBuf,
         progress_bar: &ProgressBar,
-        cmd: &String,
-        args: &Vec<String>,
-    ) -> Result<(), Error> {
+        cmd: &str,
+        args: &[String],
+    ) -> anyhow::Result<()> {
         let mut command = Command::new(cmd);
         let child = command.args(args).current_dir(root.join(&self.name()));
 
         self.run_with_progress(child, progress_bar)
-            .context(format!("Error running command in repo {}", self.name()))?;
+            .with_context(|| format!("Error running command in repo {}", self.name()))?;
 
         Ok(())
     }
 
-    pub fn clone(&self, root: &PathBuf, progress_bar: &ProgressBar) -> Result<(), Error> {
+    pub fn clone(&self, root: &PathBuf, progress_bar: &ProgressBar) -> anyhow::Result<()> {
         let mut command = Command::new("git");
 
         let child = command
@@ -145,22 +148,20 @@ impl Repository {
             .arg(root.join(&self.name()));
 
         self.run_with_progress(child, progress_bar)
-            .context(format!(
-                "Error cloning repo into {} from {}",
-                self.name(),
-                &self.url
-            ))?;
+            .with_context(|| {
+                format!("Error cloning repo into {} from {}", self.name(), &self.url)
+            })?;
 
         Ok(())
     }
     pub fn name(&self) -> &String {
         &self.path
     }
-    pub fn get_path(&self, root: &Path) -> Result<PathBuf, Error> {
+    pub fn get_path(&self, root: &Path) -> anyhow::Result<PathBuf> {
         let joined = root.join(&self.name());
         Ok(joined
             .canonicalize()
-            .context(format!("Cannot resolve {}", joined.display()))?)
+            .with_context(|| format!("Cannot resolve {}", joined.display()))?)
     }
     pub fn exists(&self, root: &PathBuf) -> bool {
         match self.get_path(&root) {

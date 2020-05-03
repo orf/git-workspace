@@ -1,13 +1,12 @@
 use crate::providers::Provider;
 use crate::repository::Repository;
+use anyhow::Context;
 use console::style;
-use failure::{Error, ResultExt};
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt;
 use structopt::StructOpt;
-
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
 
@@ -108,9 +107,9 @@ impl Provider for GithubProvider {
         true
     }
 
-    fn fetch_repositories(&self) -> Result<Vec<Repository>, Error> {
-        let github_token =
-            env::var("GITHUB_TOKEN").context("Missing GITHUB_TOKEN environment variable")?;
+    fn fetch_repositories(&self) -> anyhow::Result<Vec<Repository>> {
+        let github_token = env::var("GITHUB_TOKEN")
+            .with_context(|| "Missing GITHUB_TOKEN environment variable")?;
         let mut repositories = vec![];
 
         let mut after = None;
@@ -132,9 +131,9 @@ impl Provider for GithubProvider {
                 serde_json::from_value(res.into_json()?)?;
             let response_repositories = response_data
                 .data
-                .expect(format!("Invalid response from Gitlab for user {}", self.name).as_str())
+                .unwrap_or_else(|| panic!("Invalid response from Gitlab for user {}", self.name))
                 .repository_owner
-                .expect(format!("Invalid response from Gitlab for user {}", self.name).as_str())
+                .unwrap_or_else(|| panic!("Invalid response from Gitlab for user {}", self.name))
                 .repositories;
 
             repositories.extend(
