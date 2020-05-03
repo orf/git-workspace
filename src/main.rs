@@ -51,12 +51,12 @@ struct Args {
 enum Command {
     /// Update the workspace, removing and adding any repositories as needed.
     Update {
-        #[structopt(short = "t", long = "threads", default_value = "4")]
+        #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
     /// Fetch new commits for all repositories in the workspace
     Fetch {
-        #[structopt(short = "t", long = "threads", default_value = "4")]
+        #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
     /// List all repositories in the workspace
@@ -73,7 +73,7 @@ enum Command {
     /// The program will receive the given "args", and have it's working directory
     /// set to the repository directory.
     Run {
-        #[structopt(short = "t", long = "threads", default_value = "4")]
+        #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
         #[structopt(required = true)]
         command: String,
