@@ -21,7 +21,7 @@ structopt = "0.3.16"
 rayon = "1.4.0"
 graphql_client = "0.9.0"
 walkdir = "2.3.1"
-fs_extra = "1.1.0"
+fs_extra = "1.2.0"
 indicatif = { version = "0.15.0", features = ["with_rayon"] }
 console = { version = "0.12.0", default_features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
