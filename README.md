@@ -51,6 +51,37 @@ Don't do this, it's pretty slow: `cargo install git-workspace`
 
 Git is really annoying and hijacks the `--help` flag for subcommands. **So to get help use `git-workspace --help`, not `git workspace --help`**.
 
+```
+$ git-workspace --help
+git-workspace 0.7.0
+Tom Forbes <tom@tomforb.es>
+Manage and update personal and work git repos from multiple providers
+
+USAGE:
+    git-workspace --workspace <workspace> <SUBCOMMAND>
+
+FLAGS:
+    -h, --help
+            Prints help information
+
+    -V, --version
+            Prints version information
+
+
+OPTIONS:
+    -w, --workspace <workspace>
+             [env: GIT_WORKSPACE=...]
+
+
+SUBCOMMANDS:
+    add       Add a provider to the configuration
+    fetch     Fetch new commits for all repositories in the workspace
+    help      Prints this message or the help of the given subcommand(s)
+    list      List all repositories in the workspace
+    run       Run a git command in all repositories
+    update    Update the workspace, removing and adding any repositories as needed
+```
+
 ## Define your workspace
 
 A workspace is the directory that `git-workspace` will manage for you, filling it with projects cloned from your providers. To configure this just set a `GIT_WORKSPACE` environment variable that points to an empty directory. For example:
