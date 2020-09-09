@@ -225,8 +225,13 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
 fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
-
     println!("Updating {} repositories", repositories.len());
+
+    map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
+        r.switch_to_primary_branch(&workspace)
+    })?;
+
+    Ok(())
 }
 
 /// Execute a command on all our repositories
