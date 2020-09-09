@@ -61,6 +61,11 @@ enum Command {
         #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
+    /// Pull new commits on the primary branch for all repositories in the workspace
+    Pull {
+        #[structopt(short = "t", long = "threads", default_value = "8")]
+        threads: usize,
+    },
     /// List all repositories in the workspace
     ///
     /// This command will output the names of all known repositories in the workspace.
@@ -161,6 +166,9 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
             command,
             args,
         } => execute_cmd(&workspace_path, threads, command, args)?,
+        Command::Pull { threads } => {
+            pull_all_repositories(&workspace_path, threads)
+        }
     };
     Ok(())
 }
@@ -214,6 +222,13 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
         .with_context(|| "Error archiving repositories")?;
 
     Ok(())
+}
+
+fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
+
+    println!("Updating {} repositories", repositories.len());
 }
 
 /// Execute a command on all our repositories

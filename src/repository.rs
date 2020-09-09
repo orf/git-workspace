@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
+use git2::{Repository as Git2Repository, BranchType};
 
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
@@ -124,7 +125,7 @@ impl Repository {
     pub fn execute_cmd(
         &self,
         root: &PathBuf,
-        progress_bar: &ProgressBar,
+        progress_bar: &ProgressBar,Su
         cmd: &str,
         args: &[String],
     ) -> anyhow::Result<()> {
@@ -133,6 +134,13 @@ impl Repository {
 
         self.run_with_progress(child, progress_bar)
             .with_context(|| format!("Error running command in repo {}", self.name()))?;
+
+        Ok(())
+    }
+
+    pub fn switch_to_primary_branch(&self, root: &PathBuf) -> anyhow::Result<()> {
+        let repo = Repository::init(root.join(&self.name())).with_context(|| format!("Unable to init git repository for {}", self.name()))?;
+        let primary_branch = repo.find_branch(&self.branch, BranchType::Local).with_context(|| format!("Unable to find branch {}", self.branch))?;
 
         Ok(())
     }
