@@ -61,6 +61,11 @@ enum Command {
         #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
+    /// Pull new commits on the primary branch for all repositories in the workspace
+    SwitchAndPull {
+        #[structopt(short = "t", long = "threads", default_value = "8")]
+        threads: usize,
+    },
     /// List all repositories in the workspace
     ///
     /// This command will output the names of all known repositories in the workspace.
@@ -161,6 +166,7 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
             command,
             args,
         } => execute_cmd(&workspace_path, threads, command, args)?,
+        Command::SwitchAndPull { threads } => pull_all_repositories(&workspace_path, threads)?,
     };
     Ok(())
 }
@@ -212,6 +218,34 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     // Archive any repositories that have been deleted from the lockfile.
     archive_repositories(workspace, repositories)
         .with_context(|| "Error archiving repositories")?;
+
+    Ok(())
+}
+
+fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
+    let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
+    let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
+
+    println!(
+        "Switching to the primary branch and pulling {} repositories",
+        repositories.len()
+    );
+
+    map_repositories(&repositories, threads, |r, progress_bar| {
+        r.switch_to_primary_branch(&workspace)?;
+        let pull_args = match (&r.upstream, &r.branch) {
+            // This fucking sucks, but it's because my abstractions suck ass.
+            // I need to learn how to fix this.
+            (Some(_), Some(branch)) => vec![
+                "pull".to_string(),
+                "upstream".to_string(),
+                branch.to_string(),
+            ],
+            _ => vec!["pull".to_string()],
+        };
+        r.execute_cmd(&workspace, &progress_bar, "git", &pull_args)?;
+        Ok(())
+    })?;
 
     Ok(())
 }
@@ -410,7 +444,6 @@ where
             eprintln!("{}:", repo.name());
             error
                 .chain()
-                .skip(1)
                 .for_each(|cause| eprintln!("because: {}", cause));
         }
     }

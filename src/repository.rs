@@ -1,5 +1,7 @@
 use anyhow::{anyhow, Context};
 use console::{strip_ansi_codes, truncate_str};
+use git2::build::CheckoutBuilder;
+use git2::{Repository as Git2Repository, StatusOptions};
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
@@ -11,8 +13,8 @@ use std::process::{Command, Stdio};
 pub struct Repository {
     path: String,
     url: String,
-    upstream: Option<String>,
-    branch: Option<String>,
+    pub upstream: Option<String>,
+    pub branch: Option<String>,
 }
 
 impl Repository {
@@ -38,6 +40,7 @@ impl Repository {
             upstream,
         }
     }
+
     pub fn set_upstream(&self, root: &PathBuf) -> anyhow::Result<()> {
         let upstream = match &self.upstream {
             Some(upstream) => upstream,
@@ -134,6 +137,26 @@ impl Repository {
         self.run_with_progress(child, progress_bar)
             .with_context(|| format!("Error running command in repo {}", self.name()))?;
 
+        Ok(())
+    }
+
+    pub fn switch_to_primary_branch(&self, root: &PathBuf) -> anyhow::Result<()> {
+        let branch = match &self.branch {
+            None => return Ok(()),
+            Some(b) => b,
+        };
+        let repo = Git2Repository::init(root.join(&self.name()))?;
+        let status = repo.statuses(Some(&mut StatusOptions::default()))?;
+        if !status.is_empty() {
+            return Err(anyhow!(
+                "Repository is dirty, cannot switch to branch {}",
+                branch
+            ));
+        }
+        repo.set_head(&format!("refs/heads/{}", branch).to_string())
+            .with_context(|| format!("Cannot find branch {}", branch))?;
+        repo.checkout_head(Some(CheckoutBuilder::default().safe().force()))
+            .with_context(|| format!("Error checking out branch {}", branch))?;
         Ok(())
     }
 

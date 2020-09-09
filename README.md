@@ -61,25 +61,26 @@ USAGE:
     git-workspace --workspace <workspace> <SUBCOMMAND>
 
 FLAGS:
-    -h, --help
+    -h, --help       
             Prints help information
 
-    -V, --version
+    -V, --version    
             Prints version information
 
 
 OPTIONS:
-    -w, --workspace <workspace>
-             [env: GIT_WORKSPACE=...]
+    -w, --workspace <workspace>    
+             [env: GIT_WORKSPACE=/Users/tom/PycharmProjects/]
 
 
 SUBCOMMANDS:
-    add       Add a provider to the configuration
-    fetch     Fetch new commits for all repositories in the workspace
-    help      Prints this message or the help of the given subcommand(s)
-    list      List all repositories in the workspace
-    run       Run a git command in all repositories
-    update    Update the workspace, removing and adding any repositories as needed
+    add                Add a provider to the configuration
+    fetch              Fetch new commits for all repositories in the workspace
+    help               Prints this message or the help of the given subcommand(s)
+    list               List all repositories in the workspace
+    run                Run a git command in all repositories
+    switch-and-pull    Pull new commits on the primary branch for all repositories in the workspace
+    update             Update the workspace, removing and adding any repositories as needed
 ```
 
 ## Define your workspace
