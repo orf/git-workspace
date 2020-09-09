@@ -1,7 +1,7 @@
 use anyhow::{anyhow, Context};
 use console::{strip_ansi_codes, truncate_str};
 use git2::build::CheckoutBuilder;
-use git2::{BranchType, Repository as Git2Repository};
+use git2::{Repository as Git2Repository, StatusOptions};
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
@@ -13,8 +13,8 @@ use std::process::{Command, Stdio};
 pub struct Repository {
     path: String,
     url: String,
-    upstream: Option<String>,
-    branch: Option<String>,
+    pub upstream: Option<String>,
+    pub branch: Option<String>,
 }
 
 impl Repository {
@@ -40,6 +40,7 @@ impl Repository {
             upstream,
         }
     }
+
     pub fn set_upstream(&self, root: &PathBuf) -> anyhow::Result<()> {
         let upstream = match &self.upstream {
             Some(upstream) => upstream,
@@ -145,21 +146,17 @@ impl Repository {
             Some(b) => b,
         };
         let repo = Git2Repository::init(root.join(&self.name()))?;
-        let primary_branch = repo
-            .find_branch(branch, BranchType::Local)?;
-        let target_commit = repo
-            .reference_to_annotated_commit(&primary_branch.into_reference())?;
-        let (analysis, _) = repo
-            .merge_analysis(&[&target_commit]);
-        if analysis.is_fast_forward() {
-            repo.set_head(branch)?;
-            repo.checkout_head(Some(CheckoutBuilder::default().safe()))?
-        } else if analysis.is_normal() {
-            return Err("Cannot fast forward, merge required".into());
-        } else {
-            return Err(format!("Unknown merge analysis: {:?}", analysis).into());
+        let status = repo.statuses(Some(&mut StatusOptions::default()))?;
+        if !status.is_empty() {
+            return Err(anyhow!(
+                "Repository is dirty, cannot switch to branch {}",
+                branch
+            ));
         }
-
+        repo.set_head(&format!("refs/heads/{}", branch).to_string())
+            .with_context(|| format!("Cannot find branch {}", branch))?;
+        repo.checkout_head(Some(CheckoutBuilder::default().safe().force()))
+            .with_context(|| format!("Error checking out branch {}", branch))?;
         Ok(())
     }
 

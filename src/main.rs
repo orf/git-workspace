@@ -62,7 +62,7 @@ enum Command {
         threads: usize,
     },
     /// Pull new commits on the primary branch for all repositories in the workspace
-    Pull {
+    SwitchAndPull {
         #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
@@ -166,7 +166,7 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
             command,
             args,
         } => execute_cmd(&workspace_path, threads, command, args)?,
-        Command::Pull { threads } => pull_all_repositories(&workspace_path, threads),
+        Command::SwitchAndPull { threads } => pull_all_repositories(&workspace_path, threads)?,
     };
     Ok(())
 }
@@ -225,10 +225,26 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
 fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
-    println!("Updating {} repositories", repositories.len());
 
-    map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
-        r.switch_to_primary_branch(&workspace)
+    println!(
+        "Switching to the primary branch and pulling {} repositories",
+        repositories.len()
+    );
+
+    map_repositories(&repositories, threads, |r, progress_bar| {
+        r.switch_to_primary_branch(&workspace)?;
+        let pull_args = match (&r.upstream, &r.branch) {
+            // This fucking sucks, but it's because my abstractions suck ass.
+            // I need to learn how to fix this.
+            (Some(_), Some(branch)) => vec![
+                "pull".to_string(),
+                "upstream".to_string(),
+                branch.to_string(),
+            ],
+            _ => vec!["pull".to_string()],
+        };
+        r.execute_cmd(&workspace, &progress_bar, "git", &pull_args)?;
+        Ok(())
     })?;
 
     Ok(())
@@ -428,7 +444,6 @@ where
             eprintln!("{}:", repo.name());
             error
                 .chain()
-                .skip(1)
                 .for_each(|cause| eprintln!("because: {}", cause));
         }
     }
