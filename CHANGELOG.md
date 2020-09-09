@@ -1,5 +1,6 @@
 <!-- next-header -->
 ## [Unreleased] - ReleaseDate
+## [0.8.0] - 2020-09-09
 ## [0.7.0] - 2020-07-20
 ## [0.6.1] - 2020-05-12
 ## [0.6.0] - 2020-05-03
@@ -18,7 +19,8 @@
 - Removed cookie support from ureq.
 
 <!-- next-url -->
-[Unreleased]: https://github.com/orf/git-workspace/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/orf/git-workspace/compare/v0.8.0...HEAD
+[0.8.0]: https://github.com/orf/git-workspace/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/orf/git-workspace/compare/v0.6.1...v0.7.0
 [0.6.1]: https://github.com/orf/git-workspace/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/orf/git-workspace/compare/v0.5.1...v0.6.0
