@@ -1,11 +1,12 @@
 use anyhow::{anyhow, Context};
 use console::{strip_ansi_codes, truncate_str};
+use git2::build::CheckoutBuilder;
+use git2::{BranchType, Repository as Git2Repository};
 use indicatif::ProgressBar;
 use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
-use git2::{Repository as Git2Repository, BranchType};
 
 // Eq, Ord and friends are needed to order the list of repositories
 #[derive(Deserialize, Serialize, Debug, Clone, Eq, Ord, PartialEq, PartialOrd)]
@@ -125,7 +126,7 @@ impl Repository {
     pub fn execute_cmd(
         &self,
         root: &PathBuf,
-        progress_bar: &ProgressBar,Su
+        progress_bar: &ProgressBar,
         cmd: &str,
         args: &[String],
     ) -> anyhow::Result<()> {
@@ -139,8 +140,25 @@ impl Repository {
     }
 
     pub fn switch_to_primary_branch(&self, root: &PathBuf) -> anyhow::Result<()> {
-        let repo = Repository::init(root.join(&self.name())).with_context(|| format!("Unable to init git repository for {}", self.name()))?;
-        let primary_branch = repo.find_branch(&self.branch, BranchType::Local).with_context(|| format!("Unable to find branch {}", self.branch))?;
+        let branch = match &self.branch {
+            None => return Ok(()),
+            Some(b) => b,
+        };
+        let repo = Git2Repository::init(root.join(&self.name()))?;
+        let primary_branch = repo
+            .find_branch(branch, BranchType::Local)?;
+        let target_commit = repo
+            .reference_to_annotated_commit(&primary_branch.into_reference())?;
+        let (analysis, _) = repo
+            .merge_analysis(&[&target_commit]);
+        if analysis.is_fast_forward() {
+            repo.set_head(branch)?;
+            repo.checkout_head(Some(CheckoutBuilder::default().safe()))?
+        } else if analysis.is_normal() {
+            return Err("Cannot fast forward, merge required".into());
+        } else {
+            return Err(format!("Unknown merge analysis: {:?}", analysis).into());
+        }
 
         Ok(())
     }

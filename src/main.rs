@@ -166,9 +166,7 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
             command,
             args,
         } => execute_cmd(&workspace_path, threads, command, args)?,
-        Command::Pull { threads } => {
-            pull_all_repositories(&workspace_path, threads)
-        }
+        Command::Pull { threads } => pull_all_repositories(&workspace_path, threads),
     };
     Ok(())
 }
