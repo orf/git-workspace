@@ -28,7 +28,7 @@ atomic-counter = "1.0.1"
 ureq = { version = "1.4.1", features = ["json", "native-tls"], default_features = false }
 serde_json = "1.0.57"
 globset = "0.4.5"
-git2 = "0.13.11"
+git2 = "0.13.12"
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.1"
