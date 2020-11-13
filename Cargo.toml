@@ -27,7 +27,7 @@ console = { version = "0.13.0", default_features = false } # We don't care about
 atomic-counter = "1.0.1"
 ureq = { version = "1.4.1", features = ["json", "native-tls"], default_features = false }
 serde_json = "1.0.59"
-globset = "0.4.5"
+globset = "0.4.6"
 git2 = "0.13.12"
 
 [target."cfg(unix)".dependencies]
