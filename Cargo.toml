@@ -16,7 +16,7 @@ exclude = ["workspace/**", "images/**", ".github/**"]
 [dependencies]
 toml = "0.5.7"
 serde = { version = "1.0.117", features = ["derive"] }
-anyhow = "1.0.34"
+anyhow = "1.0.39"
 structopt = "0.3.20"
 rayon = "1.5.0"
 graphql_client = "0.9.0"
