@@ -131,9 +131,9 @@ impl Provider for GithubProvider {
                 serde_json::from_value(res.into_json()?)?;
             let response_repositories = response_data
                 .data
-                .unwrap_or_else(|| panic!("Invalid response from Gitlab for user {}", self.name))
+                .unwrap_or_else(|| panic!("Invalid response from GitHub for user {}", self.name))
                 .repository_owner
-                .unwrap_or_else(|| panic!("Invalid response from Gitlab for user {}", self.name))
+                .unwrap_or_else(|| panic!("Invalid response from GitHub for user {}", self.name))
                 .repositories;
 
             repositories.extend(
