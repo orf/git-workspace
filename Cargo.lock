@@ -326,9 +326,9 @@ checksum = "a357d28ed41a50f9c765dbfe56cbc04a64e53e5fc58ba79fbc34c10ef3df831f"
 
 [[package]]
 name = "expanduser"
-version = "1.2.1"
+version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51ebc8c8dda0a033d9371265314b0ce62a14688bfbd13bf3667d9977050d8894"
+checksum = "14e0b79235da57db6b6c2beed9af6e5de867d63a973ae3e91910ddc33ba40bc0"
 dependencies = [
  "dirs",
  "lazy_static",
