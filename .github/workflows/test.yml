@@ -76,16 +76,16 @@ jobs:
         with:
           command: run
           args: add github django
-      - name: git-workspace add gitlab user
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: add -f workspace-gitlab.toml gitlab tom6
-      - name: git-workspace add gitlab group
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: add -f workspace-gitlab.toml gitlab gitlab-org/frontend --env-name GITLAB_ALTERNATIVE_TOKEN
+#      - name: git-workspace add gitlab user
+#        uses: actions-rs/cargo@v1
+#        with:
+#          command: run
+#          args: add -f workspace-gitlab.toml gitlab tom6
+#      - name: git-workspace add gitlab group
+#        uses: actions-rs/cargo@v1
+#        with:
+#          command: run
+#          args: add -f workspace-gitlab.toml gitlab gitlab-org/frontend --env-name GITLAB_ALTERNATIVE_TOKEN
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:
@@ -101,10 +101,10 @@ jobs:
         with:
           command: run
           args: list
-      - name: Remove workspace
-        shell: bash
-        run: |
-          rm ${GIT_WORKSPACE}/workspace.toml ${GIT_WORKSPACE}/workspace-gitlab.toml
+#      - name: Remove workspace
+#        shell: bash
+#        run: |
+#          rm ${GIT_WORKSPACE}/workspace.toml ${GIT_WORKSPACE}/workspace-gitlab.toml
       - name: archive everything
         uses: actions-rs/cargo@v1
         with:
