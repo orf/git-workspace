@@ -31,7 +31,7 @@ globset = "0.4.6"
 git2 = "0.13.12"
 
 [target."cfg(unix)".dependencies]
-expanduser = "1.2.1"
+expanduser = "1.2.2"
 
 [profile.release]
 lto = true
