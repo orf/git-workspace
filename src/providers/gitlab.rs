@@ -90,7 +90,7 @@ impl fmt::Display for GitlabProvider {
         write!(
             f,
             "Gitlab user/group {} at {} in directory {}, using the token stored in {}",
-            style(&self.name.to_lowercase()).green(),
+            style(&self.name).green(),
             style(&self.url).green(),
             style(&self.path).green(),
             style(&self.env_var).green(),
@@ -133,7 +133,7 @@ impl Provider for GitlabProvider {
             .with_context(|| format!("Missing {} environment variable", self.env_var))?;
         let mut repositories = vec![];
         let mut after = Some("".to_string());
-        let name = self.name.to_string().to_lowercase();
+        let name = self.name.to_string();
 
         loop {
             let q = Repositories::build_query(repositories::Variables {
