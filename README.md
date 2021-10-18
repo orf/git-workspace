@@ -153,18 +153,30 @@ end
 
 ## Bash, with [fzf](https://github.com/junegunn/fzf)
 
-Contributed by a user:
+Contributed by a user (@kreyren:github.com):
 
 ```bash
+#!/bin/sh
+# shellcheck shell=sh # Written to comply with IEEE Std 1003.1-2017 for standard POSIX environment
+
+###! # WorkSPace (wsp)
+###! Switches to specified git-workspace project directory
+###! - Requires git and fzf
 wsp() {
-    if [[ "$#" == "0" ]]; then
-        fzf_arg=""
-    else
-        fzf_arg="-q"
-    fi
-    cd ${GIT_WORKSPACE}/$(git workspace list | fzf $fzf_arg "$@")
+    # Check for required non-standard commands
+    for command in ${FZF:-"fzf"} ${GIT:-"git"}; do
+        ${COMMAND:-"command"} -v "$command" || { ${PRINTF:-"printf"} "FATAL: %s\\n" "Command '$command' is not executable"; ${EXIT:-"exit"} 127 ;}
+    done
+    
+    # shellcheck disable=SC2086 # Harmless warning about missing double-quotes that are not expected to allow parsing multiple arguments
+    wsp_path="${1:-"${GTT_WORKSPACE:-"$PWD"}/$(${GIT:-"git"} workspace list | ${FZF:-"fzf"} ${fzf_arg:-"-q"} "$@")"}" # Path to the git workspace directory
+    
+    # Change directory
+    ${CD:-"cd"} "$wsp_path" || { printf "FATAL: %s\\n" "Unable to change directory to '$wsp_path'";}
 }
 ```
+
+Consider using [shfmt](https://github.com/patrickvane/shfmt) to optimize the file size.
 
 # Contributing :bug:
 
