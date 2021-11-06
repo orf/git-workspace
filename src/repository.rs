@@ -86,7 +86,7 @@ impl Repository {
         command: &mut Command,
         progress_bar: &ProgressBar,
     ) -> anyhow::Result<()> {
-        progress_bar.set_message(format!("{}: starting", self.name()).as_str());
+        progress_bar.set_message(format!("{}: starting", self.name()));
         let mut spawned = command
             .stdin(Stdio::null())
             .stdout(Stdio::piped())
@@ -95,7 +95,7 @@ impl Repository {
             .with_context(|| format!("Error starting command {:?}", command))?;
 
         let mut last_line = format!("{}: running...", self.name());
-        progress_bar.set_message(&last_line);
+        progress_bar.set_message(last_line.clone());
 
         if let Some(ref mut stderr) = spawned.stderr {
             let lines = BufReader::new(stderr).split(b'\r');
@@ -107,7 +107,7 @@ impl Repository {
                 let line = std::str::from_utf8(&output).unwrap();
                 let plain_line = strip_ansi_codes(line).replace('\n', " ");
                 let truncated_line = truncate_str(plain_line.trim(), 70, "...");
-                progress_bar.set_message(&format!("{}: {}", self.name(), truncated_line));
+                progress_bar.set_message(format!("{}: {}", self.name(), truncated_line));
                 last_line = plain_line;
             }
         }
