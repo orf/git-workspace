@@ -22,10 +22,10 @@ rayon = "1.5.0"
 graphql_client = "0.9.0"
 walkdir = "2.3.1"
 fs_extra = "1.2.0"
-indicatif = { version = "0.15.0", features = ["with_rayon"] }
-console = { version = "0.13.0", features = ["ansi-parsing"], default_features = false } # We don't care about unicode widths
+indicatif = { version = "0.16.2", features = ["with_rayon"] }
+console = { version = "0.15.0", features = ["ansi-parsing"], default_features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
-ureq = { version = "1.5.2", features = ["json", "native-tls"], default_features = false }
+ureq = { version = "1.5.5", features = ["json", "native-tls"], default_features = false }
 serde_json = "1.0.59"
 globset = "0.4.6"
 git2 = "0.13.12"
