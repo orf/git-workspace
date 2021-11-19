@@ -37,9 +37,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.34"
+version = "1.0.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bf8dcb5b4bbaa28653b647d8c77bd4ed40183b48882e130c1f1ffb73de069fd7"
+checksum = "38d9ff5d688f1c13395289f67db01d4826b46dd694e7580accdc3e8430f2d98e"
 
 [[package]]
 name = "arrayref"
