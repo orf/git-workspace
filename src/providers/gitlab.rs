@@ -1,4 +1,4 @@
-use crate::providers::{resp_to_json, Provider};
+use crate::providers::Provider;
 use crate::repository::Repository;
 use anyhow::{anyhow, Context};
 use console::style;
@@ -143,8 +143,8 @@ impl Provider for GitlabProvider {
             let res = ureq::post(format!("{}/api/graphql", self.url).as_str())
                 .set("Authorization", format!("Bearer {}", gitlab_token).as_str())
                 .set("Content-Type", "application/json")
-                .send_json(json!(&q));
-            let json = resp_to_json(res)?;
+                .send_json(json!(&q))?;
+            let json = res.into_json()?;
 
             let response_body: Response<repositories::ResponseData> = serde_json::from_value(json)?;
             let data = response_body.data.expect("Missing data");

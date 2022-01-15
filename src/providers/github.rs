@@ -126,7 +126,7 @@ impl Provider for GithubProvider {
             });
             let res = ureq::post("https://api.github.com/graphql")
                 .set("Authorization", format!("Bearer {}", github_token).as_str())
-                .send_json(json!(&q));
+                .send_json(json!(&q))?;
             let response_data: Response<repositories::ResponseData> =
                 serde_json::from_value(res.into_json()?)?;
             let response_repositories = response_data
