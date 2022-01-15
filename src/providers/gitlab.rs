@@ -158,7 +158,7 @@ impl Provider for GitlabProvider {
                     .expect("missing edges")
                     .into_iter()
                     // Some(T) -> T
-                    .filter_map(|x| x)
+                    .flatten()
                     // Extract the node, which is also Some(T)
                     .filter_map(|x| x.node)
                     .map(ProjectNode::from)
@@ -171,7 +171,7 @@ impl Provider for GitlabProvider {
                     .expect("missing edges")
                     .into_iter()
                     // Some(T) -> T
-                    .filter_map(|x| x)
+                    .flatten()
                     // Extract the node, which is also Some(T)
                     .filter_map(|x| x.node)
                     .map(ProjectNode::from)

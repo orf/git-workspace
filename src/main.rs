@@ -13,7 +13,7 @@ extern crate ureq;
 extern crate walkdir;
 
 use std::collections::HashSet;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Arc;
 use std::thread;
 use std::thread::JoinHandle;
@@ -173,9 +173,9 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
 
 /// Add a given ProviderSource to our configuration file.
 fn add_provider_to_config(
-    workspace: &PathBuf,
+    workspace: &Path,
     provider_source: ProviderSource,
-    file: &PathBuf,
+    file: &Path,
 ) -> anyhow::Result<()> {
     if !provider_source.correctly_configured() {
         return Err(anyhow!("Provider is not correctly configured"));
@@ -199,7 +199,7 @@ fn add_provider_to_config(
 }
 
 /// Update our workspace. This clones any new repositories and archives old ones.
-fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
+fn update(workspace: &Path, threads: usize) -> anyhow::Result<()> {
     // Load our lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
@@ -209,9 +209,9 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     map_repositories(&repositories, threads, |r, progress_bar| {
         // Only clone repositories that don't exist
         if !r.exists(workspace) {
-            r.clone(&workspace, &progress_bar)?;
+            r.clone(workspace, progress_bar)?;
             // Maybe this should always be run, but whatever. It's fine for now.
-            r.set_upstream(&workspace)?;
+            r.set_upstream(workspace)?;
         }
         Ok(())
     })?;
@@ -222,7 +222,7 @@ fn update(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
     Ok(())
 }
 
-fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
+fn pull_all_repositories(workspace: &Path, threads: usize) -> anyhow::Result<()> {
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().with_context(|| "Error reading lockfile")?;
 
@@ -232,7 +232,7 @@ fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<
     );
 
     map_repositories(&repositories, threads, |r, progress_bar| {
-        r.switch_to_primary_branch(&workspace)?;
+        r.switch_to_primary_branch(workspace)?;
         let pull_args = match (&r.upstream, &r.branch) {
             // This fucking sucks, but it's because my abstractions suck ass.
             // I need to learn how to fix this.
@@ -243,7 +243,7 @@ fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<
             ],
             _ => vec!["pull".to_string()],
         };
-        r.execute_cmd(&workspace, &progress_bar, "git", &pull_args)?;
+        r.execute_cmd(workspace, progress_bar, "git", &pull_args)?;
         Ok(())
     })?;
 
@@ -252,7 +252,7 @@ fn pull_all_repositories(workspace: &PathBuf, threads: usize) -> anyhow::Result<
 
 /// Execute a command on all our repositories
 fn execute_cmd(
-    workspace: &PathBuf,
+    workspace: &Path,
     threads: usize,
     cmd: String,
     args: Vec<String>,
@@ -277,13 +277,13 @@ fn execute_cmd(
 
     // Run fetch on them
     map_repositories(&repos_to_fetch, threads, |r, progress_bar| {
-        r.execute_cmd(&workspace, &progress_bar, &cmd, &args)
+        r.execute_cmd(workspace, progress_bar, &cmd, &args)
     })?;
     Ok(())
 }
 
 /// Run `git fetch` on all our repositories
-fn fetch(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
+fn fetch(workspace: &Path, threads: usize) -> anyhow::Result<()> {
     let cmd = vec![
         "fetch",
         "--all",
@@ -301,7 +301,7 @@ fn fetch(workspace: &PathBuf, threads: usize) -> anyhow::Result<()> {
 }
 
 /// Update our lockfile
-fn lock(workspace: &PathBuf) -> anyhow::Result<()> {
+fn lock(workspace: &Path) -> anyhow::Result<()> {
     // Find all config files
     let config_files = all_config_files(workspace).context("Error loading config files")?;
     // Read the configuration sources
@@ -341,11 +341,11 @@ fn lock(workspace: &PathBuf) -> anyhow::Result<()> {
 }
 
 /// List the contents of our workspace
-fn list(workspace: &PathBuf, full: bool) -> anyhow::Result<()> {
+fn list(workspace: &Path, full: bool) -> anyhow::Result<()> {
     // Read and parse the lockfile
     let lockfile = Lockfile::new(workspace.join("workspace-lock.toml"));
     let repositories = lockfile.read().context("Error reading lockfile")?;
-    let existing_repositories = repositories.iter().filter(|r| r.exists(&workspace));
+    let existing_repositories = repositories.iter().filter(|r| r.exists(workspace));
     for repo in existing_repositories {
         if full {
             println!("{}", repo.get_path(workspace).unwrap().display());
@@ -452,7 +452,7 @@ where
 }
 
 /// Find all projects that have been archived or deleted on our providers
-fn archive_repositories(workspace: &PathBuf, repositories: Vec<Repository>) -> anyhow::Result<()> {
+fn archive_repositories(workspace: &Path, repositories: Vec<Repository>) -> anyhow::Result<()> {
     // The logic here is as follows:
     // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
     //    in our lockfile), we skip it entirely.

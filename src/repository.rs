@@ -41,7 +41,7 @@ impl Repository {
         }
     }
 
-    pub fn set_upstream(&self, root: &PathBuf) -> anyhow::Result<()> {
+    pub fn set_upstream(&self, root: &Path) -> anyhow::Result<()> {
         let upstream = match &self.upstream {
             Some(upstream) => upstream,
             None => return Ok(()),
@@ -126,7 +126,7 @@ impl Repository {
 
     pub fn execute_cmd(
         &self,
-        root: &PathBuf,
+        root: &Path,
         progress_bar: &ProgressBar,
         cmd: &str,
         args: &[String],
@@ -140,7 +140,7 @@ impl Repository {
         Ok(())
     }
 
-    pub fn switch_to_primary_branch(&self, root: &PathBuf) -> anyhow::Result<()> {
+    pub fn switch_to_primary_branch(&self, root: &Path) -> anyhow::Result<()> {
         let branch = match &self.branch {
             None => return Ok(()),
             Some(b) => b,
@@ -153,14 +153,14 @@ impl Repository {
                 branch
             ));
         }
-        repo.set_head(&format!("refs/heads/{}", branch).to_string())
+        repo.set_head(&format!("refs/heads/{}", branch))
             .with_context(|| format!("Cannot find branch {}", branch))?;
         repo.checkout_head(Some(CheckoutBuilder::default().safe().force()))
             .with_context(|| format!("Error checking out branch {}", branch))?;
         Ok(())
     }
 
-    pub fn clone(&self, root: &PathBuf, progress_bar: &ProgressBar) -> anyhow::Result<()> {
+    pub fn clone(&self, root: &Path, progress_bar: &ProgressBar) -> anyhow::Result<()> {
         let mut command = Command::new("git");
 
         let child = command
@@ -182,12 +182,12 @@ impl Repository {
     }
     pub fn get_path(&self, root: &Path) -> anyhow::Result<PathBuf> {
         let joined = root.join(&self.name());
-        Ok(joined
+        joined
             .canonicalize()
-            .with_context(|| format!("Cannot resolve {}", joined.display()))?)
+            .with_context(|| format!("Cannot resolve {}", joined.display()))
     }
-    pub fn exists(&self, root: &PathBuf) -> bool {
-        match self.get_path(&root) {
+    pub fn exists(&self, root: &Path) -> bool {
+        match self.get_path(root) {
             Ok(path) => {
                 let git_dir = root.join(path).join(".git");
                 git_dir.exists() && git_dir.is_dir()

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::ffi::OsString;
 use std::fmt;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use structopt::StructOpt;
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -18,7 +18,7 @@ pub struct Config {
     files: Vec<PathBuf>,
 }
 
-pub fn all_config_files(workspace: &PathBuf) -> anyhow::Result<Vec<PathBuf>> {
+pub fn all_config_files(workspace: &Path) -> anyhow::Result<Vec<PathBuf>> {
     let matcher = globset::GlobBuilder::new("workspace*.toml")
         .literal_separator(true)
         .build()?
@@ -60,7 +60,7 @@ impl Config {
     pub fn write(
         &self,
         providers: Vec<ProviderSource>,
-        config_path: &PathBuf,
+        config_path: &Path,
     ) -> anyhow::Result<()> {
         let toml = toml::to_string(&ConfigContents { providers })?;
         fs::write(config_path, toml)
@@ -91,7 +91,7 @@ impl ProviderSource {
     }
 
     pub fn fetch_repositories(&self) -> anyhow::Result<Vec<Repository>> {
-        Ok(self.provider().fetch_repositories()?)
+        self.provider().fetch_repositories()
     }
 }
 
