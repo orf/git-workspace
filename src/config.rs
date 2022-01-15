@@ -57,11 +57,7 @@ impl Config {
         }
         Ok(all_providers)
     }
-    pub fn write(
-        &self,
-        providers: Vec<ProviderSource>,
-        config_path: &Path,
-    ) -> anyhow::Result<()> {
+    pub fn write(&self, providers: Vec<ProviderSource>, config_path: &Path) -> anyhow::Result<()> {
         let toml = toml::to_string(&ConfigContents { providers })?;
         fs::write(config_path, toml)
             .with_context(|| format!("Error writing to file {}", config_path.display()))?;
