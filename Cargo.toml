@@ -28,7 +28,7 @@ atomic-counter = "1.0.1"
 ureq = { version = "2.4.0", features = ["json"] }
 serde_json = "1.0.59"
 globset = "0.4.6"
-git2 = "0.13.12"
+git2 = "0.14.0"
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.1"
