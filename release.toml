@@ -1,6 +1,6 @@
 pre-release-commit-message = "chore({{crate_name}}): Release {{version}}"
-tag-message = "{{prefix}}v{{version}}"
-tag-name = "{{prefix}}v{{version}}"
+tag-message = "v{{version}}"
+tag-name = "v{{version}}"
 pre-release-replacements = [
   {file="CHANGELOG.md", search="Unreleased", replace="{{version}}"},
   {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}"},
