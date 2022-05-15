@@ -29,7 +29,7 @@ ureq = { version = "2.4.0", features = ["json"] }
 serde_json = "1.0.81"
 globset = "0.4.6"
 # Workaround for https://github.com/rust-lang/git2-rs/issues/838
-git2 = "<0.14.0"
+git2 = { version = "<0.14.0", default_features=false }
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.1"
