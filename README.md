@@ -20,6 +20,7 @@ Table of Contents
 
    * [Install :cd:](#install-cd)
       * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
+      * [Nix (MacOS   Linux)](#nix-macos--linux)
       * [Binaries (Windows)](#binaries-windows)
       * [Cargo](#cargo)
    * [Usage :saxophone:](#usage-saxophone)
@@ -37,6 +38,38 @@ Table of Contents
 ## Homebrew (MacOS + Linux)
 
 `brew tap orf/brew`, then `brew install git-workspace`
+
+## Nix (MacOS + Linux)
+
+### nix-shell
+```bash
+nix-shell -p git-workspace
+```
+
+### nix shell (Flakes)
+```bash
+nix shell nixpkgs#git-workspace
+```
+
+### home-manager (home.nix)
+
+```nix
+{
+  home.packages = with pkgs; [
+    git-workspace
+  ];
+}
+```
+
+### NixOS (configuration.nix)
+
+```nix
+{
+  environment.systemPackages = with pkgs; [
+    git-workspace
+  ];
+}
+```
 
 ## Binaries (Windows)
 
