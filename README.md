@@ -37,7 +37,7 @@ Table of Contents
 
 ## Homebrew (MacOS + Linux)
 
-`brew tap orf/brew`, then `brew install git-workspace`
+`brew install git-workspace`
 
 ## Nix (MacOS + Linux)
 
