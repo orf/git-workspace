@@ -184,6 +184,18 @@ function open-project -d "Open a project"
 end
 ```
 
+## Zsh, with [fzf](https://github.com/junegunn/fzf)
+
+```
+function project {
+	local filter="$@"
+	local chosen_project=$(git workspace list | fzf -q "$filter")
+	if [[ -n $chosen_project ]]; then
+		pushd "$GIT_WORKSPACE/$chosen_project"
+	fi
+}
+```
+
 ## Bash, with [fzf](https://github.com/junegunn/fzf)
 
 Contributed by a user (@kreyren:github.com):
@@ -210,6 +222,7 @@ wsp() {
 ```
 
 Consider using [shfmt](https://github.com/patrickvane/shfmt) to optimize the file size.
+
 
 # Contributing :bug:
 
