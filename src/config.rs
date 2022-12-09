@@ -23,7 +23,7 @@ pub fn all_config_files(workspace: &Path) -> anyhow::Result<Vec<PathBuf>> {
         .literal_separator(true)
         .build()?
         .compile_matcher();
-    let entries: Vec<OsString> = fs::read_dir(&workspace)
+    let entries: Vec<OsString> = fs::read_dir(workspace)
         .with_context(|| format!("Cannot list directory {}", workspace.display()))?
         .map(|res| res.map(|e| e.file_name()))
         .collect::<Result<Vec<_>, std::io::Error>>()?;
@@ -49,7 +49,7 @@ impl Config {
             if !path.exists() {
                 continue;
             }
-            let file_contents = fs::read_to_string(&path)
+            let file_contents = fs::read_to_string(path)
                 .with_context(|| format!("Cannot read file {}", path.display()))?;
             let contents: ConfigContents = toml::from_str(file_contents.as_str())
                 .with_context(|| format!("Error parsing TOML in file {}", path.display()))?;

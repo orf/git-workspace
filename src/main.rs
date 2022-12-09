@@ -15,8 +15,8 @@ extern crate walkdir;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
-use std::thread;
-use std::thread::JoinHandle;
+
+use std::time::Duration;
 
 use atomic_counter::{AtomicCounter, RelaxedCounter};
 use indicatif::{MultiProgress, ParallelProgressIterator, ProgressBar, ProgressStyle};
@@ -99,15 +99,6 @@ fn main() -> anyhow::Result<()> {
     // Parse our arguments to Args using structopt.
     let args = Args::from_args();
     handle_main(args)
-    // Call handle_main and collect any errors. If we have an Err object then we
-    // print out a message with a chain of contexts, which should be informative.
-    // if let Err(e) = handle_main(args) {
-    //     eprintln!("{}", style("There was an internal error!").red());
-    //     for cause in e.iter_chain() {
-    //         eprintln!("{}", style(cause).red());
-    //     }
-    //     process::exit(1);
-    // }
 }
 
 /// Our actual main function.
@@ -313,7 +304,7 @@ fn lock(workspace: &Path) -> anyhow::Result<()> {
     let total_bar = ProgressBar::new(sources.len() as u64);
     total_bar.set_style(
         ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})")
+            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})").expect("Invalid template")
             .progress_chars("#>-"),
     );
 
@@ -370,7 +361,7 @@ where
     let total_bar = progress.add(ProgressBar::new(repositories.len() as u64));
     total_bar.set_style(
         ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})")
+            .template("[{elapsed_precise}] {percent}% [{wide_bar:.cyan/blue}] {pos}/{len} (ETA: {eta_precise})").expect("Invalid template")
             .progress_chars("#>-"),
     );
 
@@ -380,15 +371,6 @@ where
     // Use a counter here if there is no tty, to show a stream of progress messages rather than
     // a dynamic progress bar.
     let counter = RelaxedCounter::new(1);
-
-    // Clone our Arc<MultiProgress> and spawn a thread. We need to call `.join()` on the
-    // `MultiProgress` to ensure that messages are pumped and the progress bars are updated.
-    // We need to do this in a thread as the `.map()` we do below also blocks.
-    let progress_wait = progress.clone();
-    let waiting_thread: JoinHandle<anyhow::Result<()>> = thread::spawn(move || {
-        progress_wait.join()?;
-        Ok(())
-    });
 
     // Create our thread pool. We do this rather than use `.par_iter()` on any iterable as it
     // allows us to customize the number of threads.
@@ -407,7 +389,7 @@ where
                 // Create a progress bar and configure some defaults
                 let progress_bar = progress.add(ProgressBar::new_spinner());
                 progress_bar.set_message("waiting...");
-                progress_bar.enable_steady_tick(500);
+                progress_bar.enable_steady_tick(Duration::from_millis(500));
                 // Increment our counter for use if the console is not a tty.
                 let idx = counter.inc();
                 if !is_attended {
@@ -431,11 +413,6 @@ where
             // Collect the results into a Vec
             .collect()
     });
-
-    // Join the progress thread. This will never join if the `progress_bar.finish_and_clear()`
-    // is not called on every progress bar, but that should never happen.
-    // We just ignore this error for now :(
-    waiting_thread.join().ok();
 
     // Print out each repository that failed to run.
     if !errors.is_empty() {
@@ -543,7 +520,7 @@ fn archive_repositories(workspace: &Path, repositories: Vec<Repository>) -> anyh
             fs_extra::dir::create_all(parent_dir, false)
                 .with_context(|| format!("Error creating directory {}", to_dir.display()))?;
             // Move the directory to the archive directory:
-            std::fs::rename(&from_dir, &to_dir).with_context(|| {
+            std::fs::rename(from_dir, &to_dir).with_context(|| {
                 format!(
                     "Error moving directory {} to {}",
                     from_dir.display(),

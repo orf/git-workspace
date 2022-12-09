@@ -50,7 +50,7 @@ impl Repository {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
-            .arg(root.join(&self.name()))
+            .arg(root.join(self.name()))
             .arg("remote")
             .arg("rm")
             .arg("upstream")
@@ -62,7 +62,7 @@ impl Repository {
         let mut command = Command::new("git");
         let child = command
             .arg("-C")
-            .arg(root.join(&self.name()))
+            .arg(root.join(self.name()))
             .arg("remote")
             .arg("add")
             .arg("upstream")
@@ -132,7 +132,7 @@ impl Repository {
         args: &[String],
     ) -> anyhow::Result<()> {
         let mut command = Command::new(cmd);
-        let child = command.args(args).current_dir(root.join(&self.name()));
+        let child = command.args(args).current_dir(root.join(self.name()));
 
         self.run_with_progress(child, progress_bar)
             .with_context(|| format!("Error running command in repo {}", self.name()))?;
@@ -145,7 +145,7 @@ impl Repository {
             None => return Ok(()),
             Some(b) => b,
         };
-        let repo = Git2Repository::init(root.join(&self.name()))?;
+        let repo = Git2Repository::init(root.join(self.name()))?;
         let status = repo.statuses(Some(&mut StatusOptions::default()))?;
         if !status.is_empty() {
             return Err(anyhow!(
@@ -168,7 +168,7 @@ impl Repository {
             .arg("--recurse-submodules")
             .arg("--progress")
             .arg(&self.url)
-            .arg(root.join(&self.name()));
+            .arg(root.join(self.name()));
 
         self.run_with_progress(child, progress_bar)
             .with_context(|| {
@@ -181,7 +181,7 @@ impl Repository {
         &self.path
     }
     pub fn get_path(&self, root: &Path) -> anyhow::Result<PathBuf> {
-        let joined = root.join(&self.name());
+        let joined = root.join(self.name());
         joined
             .canonicalize()
             .with_context(|| format!("Cannot resolve {}", joined.display()))
