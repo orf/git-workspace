@@ -295,6 +295,9 @@ fn fetch(workspace: &Path, threads: usize) -> anyhow::Result<()> {
 fn lock(workspace: &Path) -> anyhow::Result<()> {
     // Find all config files
     let config_files = all_config_files(workspace).context("Error loading config files")?;
+    if config_files.is_empty() {
+        anyhow::bail!("No configuration files found: Are you in the right workspace?")
+    }
     // Read the configuration sources
     let config = Config::new(config_files);
     let sources = config
