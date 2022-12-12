@@ -15,7 +15,7 @@ exclude = ["workspace/**", "images/**", ".github/**"]
 
 [dependencies]
 toml = "0.5.9"
-serde = { version = "1.0.149", features = ["derive"] }
+serde = { version = "1.0.150", features = ["derive"] }
 anyhow = "1.0.66"
 structopt = "0.3.26"
 rayon = "1.6.0"
