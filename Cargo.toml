@@ -27,7 +27,7 @@ console = { version = "0.15.2", features = ["ansi-parsing"], default_features = 
 atomic-counter = "1.0.1"
 ureq = { version = "2.5.0", features = ["json"] }
 serde_json = "1.0.89"
-globset = "0.4.9"
+globset = "0.4.10"
 # Workaround for https://github.com/rust-lang/git2-rs/issues/838
 git2 = { version = "0.15.0", default_features = false }
 
