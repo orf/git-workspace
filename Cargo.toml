@@ -19,7 +19,7 @@ serde = { version = "1.0.149", features = ["derive"] }
 anyhow = "1.0.66"
 structopt = "0.3.26"
 rayon = "1.6.0"
-graphql_client = "0.11.0"
+graphql_client = "0.12.0"
 walkdir = "2.3.2"
 fs_extra = "1.2.0"
 indicatif = { version = "0.17.2", features = ["rayon"] }
