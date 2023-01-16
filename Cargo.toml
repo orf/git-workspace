@@ -22,7 +22,7 @@ rayon = "1.6.0"
 graphql_client = "0.11.0"
 walkdir = "2.3.2"
 fs_extra = "1.2.0"
-indicatif = { version = "0.17.2", features = ["rayon"] }
+indicatif = { version = "0.17.3", features = ["rayon"] }
 console = { version = "0.15.2", features = ["ansi-parsing"], default_features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
 ureq = { version = "2.5.0", features = ["json"] }
