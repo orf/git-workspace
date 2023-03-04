@@ -1,4 +1,4 @@
-use crate::providers::Provider;
+use crate::providers::{create_exclude_regex_set, Provider};
 use crate::repository::Repository;
 use anyhow::Context;
 use console::style;
@@ -44,6 +44,12 @@ pub struct GithubProvider {
     #[serde(default = "default_forks")]
     /// Don't clone forked repositories
     skip_forks: bool,
+
+    #[structopt(long = "exclude")]
+    #[serde(default)]
+    /// Don't clone repositories that match these regular expressions. The repository name
+    /// includes the user or organisation name.
+    exclude: Vec<String>,
 }
 
 impl fmt::Display for GithubProvider {
@@ -114,6 +120,8 @@ impl Provider for GithubProvider {
 
         let mut after = None;
 
+        let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
+
         // include_forks needs to be None instead of true, as the graphql parameter has three
         // states: false - no forks, true - only forks, none - all repositories.
         let include_forks: Option<bool> = if self.skip_forks { Some(false) } else { None };
@@ -143,6 +151,7 @@ impl Provider for GithubProvider {
                     .iter()
                     .map(|r| r.as_ref().unwrap())
                     .filter(|r| !r.is_archived)
+                    .filter(|r| !exclude_regex_set.is_match(&r.name_with_owner))
                     .map(|repo| self.parse_repo(&self.path, repo)),
             );
 

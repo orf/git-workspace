@@ -75,11 +75,6 @@ url = "git@github.com:django/django-localflavor.git"
 branch = "master"
 
 [[repo]]
-path = "github/django/djangobench"
-url = "git@github.com:django/djangobench.git"
-branch = "master"
-
-[[repo]]
 path = "github/django/djangoproject.com"
 url = "git@github.com:django/djangoproject.com.git"
 branch = "main"
@@ -97,11 +92,6 @@ branch = "main"
 [[repo]]
 path = "gitlab/tom6/backend-coding-challenge"
 url = "git@gitlab.com:tom6/backend-coding-challenge.git"
-branch = "master"
-
-[[repo]]
-path = "gitlab/tom6/gitlab"
-url = "git@gitlab.com:tom6/gitlab.git"
 branch = "master"
 
 [[repo]]

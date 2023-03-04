@@ -1,4 +1,4 @@
-use crate::providers::Provider;
+use crate::providers::{create_exclude_regex_set, Provider};
 use crate::repository::Repository;
 use anyhow::{anyhow, Context};
 use console::style;
@@ -77,6 +77,12 @@ pub struct GitlabProvider {
     #[serde(default = "default_env_var")]
     /// Environment variable containing the auth token
     env_var: String,
+
+    #[structopt(long = "exclude")]
+    #[serde(default)]
+    /// Don't clone repositories that match these regular expressions. The repository name
+    /// includes the user or organisation name.
+    exclude: Vec<String>,
     // Currently does not work.
     // https://gitlab.com/gitlab-org/gitlab/issues/121595
     //    #[structopt(long = "skip-forks")]
@@ -135,6 +141,8 @@ impl Provider for GitlabProvider {
         let mut after = Some("".to_string());
         let name = self.name.to_string().to_lowercase();
 
+        let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
+
         loop {
             let q = Repositories::build_query(repositories::Variables {
                 name: name.clone(),
@@ -188,6 +196,7 @@ impl Provider for GitlabProvider {
                 temp_repositories
                     .into_iter()
                     .filter(|r| !r.archived)
+                    .filter(|r| !exclude_regex_set.is_match(&r.full_path))
                     .map(|r| {
                         Repository::new(
                             format!("{}/{}", self.path, r.full_path),

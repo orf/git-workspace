@@ -4,3 +4,7 @@ name = "django"
 path = "github"
 env_var = "GITHUB_TOKEN"
 skip_forks = false
+exclude = [
+    "djangobench$",
+    "dsf-.*"
+]

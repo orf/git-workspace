@@ -61,6 +61,8 @@ enum Command {
         #[structopt(short = "t", long = "threads", default_value = "8")]
         threads: usize,
     },
+    /// Fetch all repositories from configured providers and write the lockfile
+    Lock {},
     /// Pull new commits on the primary branch for all repositories in the workspace
     SwitchAndPull {
         #[structopt(short = "t", long = "threads", default_value = "8")]
@@ -149,6 +151,9 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
         Command::Update { threads } => {
             lock(&workspace_path)?;
             update(&workspace_path, threads)?
+        }
+        Command::Lock {} => {
+            lock(&workspace_path)?;
         }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add { file, command } => add_provider_to_config(&workspace_path, command, &file)?,
