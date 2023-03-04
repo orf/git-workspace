@@ -86,7 +86,7 @@ Git is really annoying and hijacks the `--help` flag for subcommands. **So to ge
 
 ```
 $ git-workspace --help
-git-workspace 0.7.0
+git-workspace 1.1.0
 Tom Forbes <tom@tomforb.es>
 Manage and update personal and work git repos from multiple providers
 
@@ -94,23 +94,25 @@ USAGE:
     git-workspace --workspace <workspace> <SUBCOMMAND>
 
 FLAGS:
-    -h, --help       
+    -h, --help
             Prints help information
 
-    -V, --version    
+    -V, --version
             Prints version information
 
 
 OPTIONS:
-    -w, --workspace <workspace>    
+    -w, --workspace <workspace>
              [env: GIT_WORKSPACE=/Users/tom/PycharmProjects/]
 
 
 SUBCOMMANDS:
     add                Add a provider to the configuration
+    archive            Archive repositories that don't exist in the workspace anymore
     fetch              Fetch new commits for all repositories in the workspace
     help               Prints this message or the help of the given subcommand(s)
     list               List all repositories in the workspace
+    lock               Fetch all repositories from configured providers and write the lockfile
     run                Run a git command in all repositories
     switch-and-pull    Pull new commits on the primary branch for all repositories in the workspace
     update             Update the workspace, removing and adding any repositories as needed
@@ -140,13 +142,18 @@ You can use `git workspace add` to quickly add entries to your `workspace.toml`:
 
    * `git workspace add github [USER OR ORG NAME]`
 
+* Exclude specific repositories:
+
+   * `git workspace add github [USER OR ORG NAME] --exclude="foo.*bar$" --exclude="(abc|def)"`
+
 * Clone a namespace or user from Gitlab: 
 
    * `git workspace add gitlab gitlab-ce/gitlab-services`
 
-* Clone from a self-hosted gitlab instance: 
+* Clone from a self-hosted gitlab/github instance: 
 
    * `git workspace add gitlab my-company-group --url=https://internal-gitlab.company.com`
+   * `git workspace add github user-or-org-name --url=https://internal-github.company.com/api/graphql`
    
 ### Multiple configs
 
