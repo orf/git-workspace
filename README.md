@@ -21,6 +21,7 @@ Table of Contents
    * [Install :cd:](#install-cd)
       * [Homebrew (MacOS   Linux)](#homebrew-macos--linux)
       * [Nix (MacOS   Linux)](#nix-macos--linux)
+      * [AUR (ArchLinux)](#aur-archlinux)
       * [Binaries (Windows)](#binaries-windows)
       * [Cargo](#cargo)
    * [Usage :saxophone:](#usage-saxophone)
@@ -70,6 +71,10 @@ nix shell nixpkgs#git-workspace
   ];
 }
 ```
+
+## AUR (ArchLinux)
+
+`paru -S git-workspace`
 
 ## Binaries (Windows)
 
