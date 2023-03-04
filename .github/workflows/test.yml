@@ -29,6 +29,7 @@ jobs:
       RUST_BACKTRACE: "1"
     steps:
       - name: Set workspace var
+        shell: bash
         run: |
           echo GIT_WORKSPACE=$RUNNER_TEMP/workspace-test-dir >> $GITHUB_ENV
 
