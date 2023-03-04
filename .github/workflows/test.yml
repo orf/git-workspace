@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: Set workspace var
         run: |
-          echo GIT_WORKSPACE=$RUNNER_TEMP/workspace-test-dir/ >> $GITHUB_ENV
+          echo GIT_WORKSPACE=$RUNNER_TEMP/workspace-test-dir >> $GITHUB_ENV
 
       - uses: actions/checkout@master
       - name: Switch SSH to https
@@ -60,7 +60,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add github django --exclude="/django.*"
+          args: add github django --exclude "/django.*"
 
       - name: git-workspace update
         uses: actions-rs/cargo@v1
