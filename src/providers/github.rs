@@ -1,6 +1,6 @@
 use crate::providers::{create_exclude_regex_set, Provider, APP_USER_AGENT};
 use crate::repository::Repository;
-use anyhow::Context;
+use anyhow::{bail, Context};
 use console::style;
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
@@ -166,14 +166,40 @@ impl Provider for GithubProvider {
             let res = agent
                 .post(&self.url)
                 .set("Authorization", format!("Bearer {}", github_token).as_str())
-                .send_json(json!(&q))?;
-            let response_data: Response<repositories::ResponseData> =
-                serde_json::from_value(res.into_json()?)?;
+                .send_json(json!(&q));
+
+            let res = match res {
+                Ok(response) => response,
+                Err(ureq::Error::Status(status, response)) => match response.into_string() {
+                    Ok(resp) => {
+                        bail!("Got status code {status}. Body: {resp}")
+                    }
+                    Err(e) => {
+                        bail!("Got status code {status}. Error reading body: {e}")
+                    }
+                },
+                Err(e) => return Err(e.into()),
+            };
+
+            let body = res.into_string()?;
+            let response_data: Response<repositories::ResponseData> = serde_json::from_str(&body)?;
+
+            if let Some(errors) = response_data.errors {
+                let total_errors = errors.len();
+                let combined_errors: Vec<_> = errors.into_iter().map(|e| e.message).collect();
+                let combined_message = combined_errors.join("\n");
+                bail!(
+                    "Received {} errors. Errors:\n{}",
+                    total_errors,
+                    combined_message
+                );
+            }
+
             let response_repositories = response_data
                 .data
-                .unwrap_or_else(|| panic!("Invalid response from GitHub for user {}", self.name))
+                .with_context(|| format!("Invalid response from GitHub: {}", body))?
                 .repository_owner
-                .unwrap_or_else(|| panic!("Invalid response from GitHub for user {}", self.name))
+                .with_context(|| format!("Invalid response from GitHub: {}", body))?
                 .repositories;
 
             repositories.extend(

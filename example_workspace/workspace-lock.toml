@@ -122,3 +122,132 @@ url = "git@gitlab.com:tom6/test-empty-project.git"
 path = "gitlab/tom6/test-lfs"
 url = "git@gitlab.com:tom6/test-lfs.git"
 branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/Awesome-Geospatial"
+url = "git@github.com:foobar/Awesome-Geospatial.git"
+upstream = "git@github.com:sacridini/Awesome-Geospatial.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/VictoriaMetrics"
+url = "git@github.com:foobar/VictoriaMetrics.git"
+upstream = "git@github.com:VictoriaMetrics/VictoriaMetrics.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/algc"
+url = "git@github.com:foobar/algc.git"
+upstream = "git@github.com:a1exwang/algc.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/algo"
+url = "git@github.com:foobar/algo.git"
+upstream = "git@github.com:hoanhan101/algo.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/centos-repo"
+url = "git@github.com:foobar/centos-repo.git"
+upstream = "git@github.com:cloudrouter/centos-repo.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/concurrent-persistent-datastructure"
+url = "git@github.com:foobar/concurrent-persistent-datastructure.git"
+upstream = "git@github.com:aajayssingh/concurrent-persistent-datastructure.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/docs.influxdata.com"
+url = "git@github.com:foobar/docs.influxdata.com.git"
+upstream = "git@github.com:influxdata/docs.influxdata.com-ARCHIVE.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/fast17"
+url = "git@github.com:foobar/fast17.git"
+upstream = "git@github.com:andyrudoff/fast17.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/fucking-algorithm"
+url = "git@github.com:foobar/fucking-algorithm.git"
+upstream = "git@github.com:labuladong/fucking-algorithm.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/go-profiler-notes"
+url = "git@github.com:foobar/go-profiler-notes.git"
+upstream = "git@github.com:DataDog/go-profiler-notes.git"
+branch = "main"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/influxdb"
+url = "git@github.com:foobar/influxdb.git"
+upstream = "git@github.com:influxdata/influxdb.git"
+branch = "1.7"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/influxdb1-client"
+url = "git@github.com:foobar/influxdb1-client.git"
+upstream = "git@github.com:influxdata/influxdb1-client.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/infobright"
+url = "git@github.com:foobar/infobright.git"
+upstream = "git@github.com:magiczqw/infobright.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/infobright-4.0.7"
+url = "git@github.com:foobar/infobright-4.0.7.git"
+upstream = "git@github.com:guanlisheng/infobright-4.0.7.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/infobright-core"
+url = "git@github.com:foobar/infobright-core.git"
+upstream = "git@github.com:EidosMedia/infobright-core.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/misc"
+url = "git@github.com:foobar/misc.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/mysql-server"
+url = "git@github.com:foobar/mysql-server.git"
+upstream = "git@github.com:mysql/mysql-server.git"
+branch = "c++17"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/optpls"
+url = "git@github.com:foobar/optpls.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/stonedb"
+url = "git@github.com:foobar/stonedb.git"
+upstream = "git@github.com:stoneatom/stonedb.git"
+branch = "stonedb-5.6"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/stx-btree"
+url = "git@github.com:foobar/stx-btree.git"
+upstream = "git@github.com:bingmann/stx-btree.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/tmp"
+url = "git@github.com:foobar/tmp.git"
+branch = "master"
+
+[[repo]]
+path = "omgdgsdgsdsgdgssdggds/foobar/tsbs"
+url = "git@github.com:foobar/tsbs.git"
+upstream = "git@github.com:timescale/tsbs.git"
+branch = "master"

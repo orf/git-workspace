@@ -1,6 +1,16 @@
+#[[provider]]
+#provider = "gitlab"
+#name = "tom6"
+#url = "https://gitlab.com"
+#path = "gitlab"
+#env_var = "GITLAB_TOKEN"
+#exclude = []
+
 [[provider]]
-provider = "gitlab"
-name = "tom6"
-url = "https://gitlab.com"
-path = "gitlab"
-env_var = "GITLAB_TOKEN"
+provider = "github"
+name = "omgdgsdgsdsgdgssdggds"
+path = "github"
+env_var = "GITHUB_TOKEN"
+skip_forks = false
+exclude = []
+url = "https://api.github.com/graphql"
