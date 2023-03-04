@@ -7,6 +7,7 @@ jobs:
     name: Rust project
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         include:
@@ -20,7 +21,7 @@ jobs:
             bin: git-workspace.exe
             name: git-workspace-Windows-x86_64.zip
     env:
-      GIT_WORKSPACE: ${{github.workspace}}/workspace-test-dir/
+      GIT_WORKSPACE: ${{runner.temp}}/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITLAB_ALTERNATIVE_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
