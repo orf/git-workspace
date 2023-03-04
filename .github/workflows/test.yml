@@ -82,7 +82,7 @@ jobs:
 
       - name: Remove workspace
         shell: bash
-        run: rm ${GIT_WORKSPACE}/workspace.toml
+        run: echo > ${GIT_WORKSPACE}/workspace.toml
 
       - name: git-workspace archive
         uses: actions-rs/cargo@v1
