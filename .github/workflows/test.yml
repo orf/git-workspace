@@ -125,6 +125,8 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v3
 
+      - uses: Swatinem/rust-cache@v2
+
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
         with:
