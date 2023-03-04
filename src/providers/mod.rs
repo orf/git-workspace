@@ -7,6 +7,8 @@ pub use github::GithubProvider;
 pub use gitlab::GitlabProvider;
 use std::fmt;
 
+pub static APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
+
 pub trait Provider: fmt::Display {
     /// Returns true if the provider should work, otherwise prints an error and return false
     fn correctly_configured(&self) -> bool;

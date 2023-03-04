@@ -1,4 +1,4 @@
-use crate::providers::{create_exclude_regex_set, Provider};
+use crate::providers::{create_exclude_regex_set, Provider, APP_USER_AGENT};
 use crate::repository::Repository;
 use anyhow::{anyhow, Context};
 use console::style;
@@ -143,12 +143,18 @@ impl Provider for GitlabProvider {
 
         let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
 
+        let agent = ureq::AgentBuilder::new()
+            .https_only(true)
+            .user_agent(APP_USER_AGENT)
+            .build();
+
         loop {
             let q = Repositories::build_query(repositories::Variables {
                 name: name.clone(),
                 after,
             });
-            let res = ureq::post(format!("{}/api/graphql", self.url).as_str())
+            let res = agent
+                .post(format!("{}/api/graphql", self.url).as_str())
                 .set("Authorization", format!("Bearer {}", gitlab_token).as_str())
                 .set("Content-Type", "application/json")
                 .send_json(json!(&q))?;

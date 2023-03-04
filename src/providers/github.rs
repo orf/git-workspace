@@ -1,4 +1,4 @@
-use crate::providers::{create_exclude_regex_set, Provider};
+use crate::providers::{create_exclude_regex_set, Provider, APP_USER_AGENT};
 use crate::repository::Repository;
 use anyhow::Context;
 use console::style;
@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use std::fmt;
 use structopt::StructOpt;
+
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
 
@@ -24,6 +25,12 @@ fn default_env_var() -> String {
 
 const fn default_forks() -> bool {
     false
+}
+
+static DEFAULT_GITHUB_URL: &str = "https://api.github.com/graphql";
+
+fn public_github_url() -> String {
+    DEFAULT_GITHUB_URL.to_string()
 }
 
 #[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
@@ -50,6 +57,12 @@ pub struct GithubProvider {
     /// Don't clone repositories that match these regular expressions. The repository name
     /// includes the user or organisation name.
     exclude: Vec<String>,
+
+    #[serde(default = "public_github_url")]
+    #[structopt(long = "url", default_value = DEFAULT_GITHUB_URL)]
+    /// Github instance URL, if using Github Enterprise this should be
+    /// http(s)://HOSTNAME/api/graphql
+    pub url: String,
 }
 
 impl fmt::Display for GithubProvider {
@@ -97,9 +110,22 @@ impl Provider for GithubProvider {
                 ))
                 .red()
             );
-            println!("Create a personal access token here:");
-            println!("https://github.com/settings/tokens");
-            println!("Set a {} environment variable with the value", self.env_var);
+            if self.url == public_github_url() {
+                println!(
+                    "Create a personal access token here: {}",
+                    style("https://github.com/settings/tokens").green()
+                );
+            } else {
+                println!(
+                    "Create a personal access token in your {}.",
+                    style("Github Enterprise server").green()
+                );
+            }
+
+            println!(
+                "Then set a {} environment variable with the value",
+                style(&self.env_var).green()
+            );
             return false;
         }
         if self.name.ends_with('/') {
@@ -126,13 +152,19 @@ impl Provider for GithubProvider {
         // states: false - no forks, true - only forks, none - all repositories.
         let include_forks: Option<bool> = if self.skip_forks { Some(false) } else { None };
 
+        let agent = ureq::AgentBuilder::new()
+            .https_only(true)
+            .user_agent(APP_USER_AGENT)
+            .build();
+
         loop {
             let q = Repositories::build_query(repositories::Variables {
                 login: self.name.to_lowercase(),
                 include_forks,
                 after,
             });
-            let res = ureq::post("https://api.github.com/graphql")
+            let res = agent
+                .post(&self.url)
                 .set("Authorization", format!("Bearer {}", github_token).as_str())
                 .send_json(json!(&q))?;
             let response_data: Response<repositories::ResponseData> =
