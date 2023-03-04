@@ -21,7 +21,7 @@ jobs:
             bin: git-workspace.exe
             name: git-workspace-Windows-x86_64.zip
     env:
-      GIT_WORKSPACE: ${{runner.temp}}/workspace-test-dir/
+      GIT_WORKSPACE: $RUNNER_TEMP/workspace-test-dir/
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITLAB_ALTERNATIVE_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
