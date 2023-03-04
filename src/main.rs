@@ -25,6 +25,7 @@ use structopt::StructOpt;
 use walkdir::WalkDir;
 
 use anyhow::{anyhow, Context};
+use console::style;
 
 use crate::config::{all_config_files, Config, ProviderSource};
 use crate::lockfile::Lockfile;
@@ -34,6 +35,7 @@ mod config;
 mod lockfile;
 mod providers;
 mod repository;
+mod utils;
 
 #[derive(StructOpt)]
 #[structopt(name = "git-workspace", author, about)]
@@ -75,6 +77,12 @@ enum Command {
     List {
         #[structopt(long = "full")]
         full: bool,
+    },
+    /// Archive repositories that don't exist in the workspace anymore.
+    Archive {
+        /// Disable confirmation prompt
+        #[structopt(long = "force")]
+        force: bool,
     },
     /// Run a git command in all repositories
     ///
@@ -155,6 +163,36 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
         Command::Lock {} => {
             lock(&workspace_path)?;
         }
+        Command::Archive { force } => {
+            // Archive any repositories that have been deleted from the lockfile.
+            lock(&workspace_path)?;
+
+            let lockfile = Lockfile::new(workspace_path.join("workspace-lock.toml"));
+            let repositories = lockfile.read().context("Error reading lockfile")?;
+            let repos_to_archive = get_all_repositories_to_archive(&workspace_path, repositories)?;
+
+            if !force {
+                for (from_path, to_path) in &repos_to_archive {
+                    let relative_from_path = from_path.strip_prefix(&workspace_path).unwrap();
+                    let relative_to_path = to_path.strip_prefix(&workspace_path).unwrap();
+                    println!(
+                        "Move {} to {}",
+                        style(relative_from_path.display()).yellow(),
+                        style(relative_to_path.display()).green()
+                    );
+                }
+                println!(
+                    "Will archive {} projects",
+                    style(repos_to_archive.len()).red()
+                );
+                if repos_to_archive.is_empty() || !utils::confirm("Proceed?", false, " ", true) {
+                    return Ok(());
+                }
+            }
+            if !repos_to_archive.is_empty() {
+                archive_repositories(repos_to_archive)?;
+            }
+        }
         Command::Fetch { threads } => fetch(&workspace_path, threads)?,
         Command::Add { file, command } => add_provider_to_config(&workspace_path, command, &file)?,
         Command::Run {
@@ -211,9 +249,18 @@ fn update(workspace: &Path, threads: usize) -> anyhow::Result<()> {
         }
         Ok(())
     })?;
-    // Archive any repositories that have been deleted from the lockfile.
-    archive_repositories(workspace, repositories)
-        .with_context(|| "Error archiving repositories")?;
+
+    let repos_to_archive = get_all_repositories_to_archive(workspace, repositories)?;
+    if !repos_to_archive.is_empty() {
+        println!(
+            "There are {} repositories that can be archived",
+            repos_to_archive.len()
+        );
+        println!(
+            "Run {} to archive them",
+            style("`git workspace archive`").yellow()
+        );
+    }
 
     Ok(())
 }
@@ -436,8 +483,44 @@ where
     Ok(())
 }
 
+fn archive_repositories(to_archive: Vec<(PathBuf, PathBuf)>) -> anyhow::Result<()> {
+    println!("Archiving {} repositories", to_archive.len());
+    for (from_dir, to_dir) in to_archive.into_iter() {
+        let parent_dir = &to_dir.parent().with_context(|| {
+            format!("Failed to get the parent directory of {}", to_dir.display())
+        })?;
+        // Create all the directories that are needed:
+        fs_extra::dir::create_all(parent_dir, false)
+            .with_context(|| format!("Error creating directory {}", to_dir.display()))?;
+
+        // Move the directory to the archive directory:
+        match std::fs::rename(&from_dir, &to_dir) {
+            Ok(_) => {
+                println!(
+                    "Moved {} to {}",
+                    style(from_dir.display()).yellow(),
+                    style(to_dir.display()).green()
+                );
+            }
+            Err(e) => {
+                eprintln!(
+                    "{} {e}\n  Target: {}\n  Dest:   {}\nPlease remove existing directory before retrying",
+                    style("Error moving directory!").red(),
+                    style(from_dir.display()).yellow(),
+                    style(to_dir.display()).green()
+                );
+            }
+        };
+    }
+
+    Ok(())
+}
+
 /// Find all projects that have been archived or deleted on our providers
-fn archive_repositories(workspace: &Path, repositories: Vec<Repository>) -> anyhow::Result<()> {
+fn get_all_repositories_to_archive(
+    workspace: &Path,
+    repositories: Vec<Repository>,
+) -> anyhow::Result<Vec<(PathBuf, PathBuf)>> {
     // The logic here is as follows:
     // 1. Iterate through all directories. If it's a "safe" directory (one that contains a project
     //    in our lockfile), we skip it entirely.
@@ -478,7 +561,6 @@ fn archive_repositories(workspace: &Path, repositories: Vec<Repository>) -> anyh
             .with_context(|| "Error canoncalizing archive directory")?,
     );
 
-    // Create a vector of all repositories to archive, and WalkDir iterator
     let mut to_archive = Vec::new();
     let mut it = WalkDir::new(workspace).into_iter();
 
@@ -500,43 +582,23 @@ fn archive_repositories(workspace: &Path, repositories: Vec<Repository>) -> anyh
         // If the entry has a .git directory inside it then we add it to the `to_archive` list
         // and skip the current directory.
         if entry.path().join(".git").is_dir() {
-            to_archive.push(entry.path().to_path_buf());
+            let path = entry.path();
+            // Find the relative path of the directory from the workspace. So if you have something
+            // like `workspace/github/repo-name`, it will be `github/repo-name`.
+            let relative_dir = path.strip_prefix(workspace).with_context(|| {
+                format!(
+                    "Failed to strip the prefix '{}' from {}",
+                    workspace.display(),
+                    path.display()
+                )
+            })?;
+            // Join the relative directory (`github/repo-name`) with the archive directory.
+            let to_dir = archive_directory.join(relative_dir);
+            to_archive.push((path.to_path_buf(), to_dir));
             it.skip_current_dir();
             continue;
         }
     }
 
-    if !to_archive.is_empty() {
-        println!("Archiving {} repositories", to_archive.len());
-        for from_dir in to_archive.iter() {
-            // Find the relative path of the directory from the workspace. So if you have something
-            // like `workspace/github/repo-name`, it will be `github/repo-name`.
-            let relative_dir = from_dir.strip_prefix(workspace).with_context(|| {
-                format!(
-                    "Failed to strip the prefix '{}' from {}",
-                    workspace.display(),
-                    from_dir.display()
-                )
-            })?;
-            // Join the relative directory (`github/repo-name`) with the archive directory.
-            let to_dir = archive_directory.join(relative_dir);
-            println!("Archiving {}", relative_dir.display());
-            let parent_dir = &to_dir.parent().with_context(|| {
-                format!("Failed to get the parent directory of {}", to_dir.display())
-            })?;
-            // Create all the directories that are needed:
-            fs_extra::dir::create_all(parent_dir, false)
-                .with_context(|| format!("Error creating directory {}", to_dir.display()))?;
-            // Move the directory to the archive directory:
-            std::fs::rename(from_dir, &to_dir).with_context(|| {
-                format!(
-                    "Error moving directory {} to {}",
-                    from_dir.display(),
-                    to_dir.display()
-                )
-            })?;
-        }
-    }
-
-    Ok(())
+    Ok(to_archive)
 }

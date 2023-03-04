@@ -1,4 +1,4 @@
-on: [push]
+on: [ push ]
 
 name: CI
 
@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
         include:
           - os: ubuntu-latest
             bin: git-workspace
@@ -51,50 +51,53 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
+
       - name: git workspace add orf
         uses: actions-rs/cargo@v1
         with:
           command: run
           args: add github orf --skip-forks
+
       - name: git workspace add github org
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: add github django
-#      - name: git-workspace add gitlab user
-#        uses: actions-rs/cargo@v1
-#        with:
-#          command: run
-#          args: add -f workspace-gitlab.toml gitlab tom6
-#      - name: git-workspace add gitlab group
-#        uses: actions-rs/cargo@v1
-#        with:
-#          command: run
-#          args: add -f workspace-gitlab.toml gitlab gitlab-org/frontend --env-name GITLAB_ALTERNATIVE_TOKEN
+          args: add github django --exclude="django$"
+
       - name: git-workspace update
         uses: actions-rs/cargo@v1
         with:
           command: run
           args: update
+
       - name: git-workspace fetch
         uses: actions-rs/cargo@v1
         with:
           command: run
           args: fetch
+
       - name: git-workspace list
         uses: actions-rs/cargo@v1
         with:
           command: run
           args: list
-#      - name: Remove workspace
-#        shell: bash
-#        run: |
-#          rm ${GIT_WORKSPACE}/workspace.toml ${GIT_WORKSPACE}/workspace-gitlab.toml
+
+      - name: Remove workspace
+        shell: bash
+        run: rm ${GIT_WORKSPACE}/workspace.toml ${GIT_WORKSPACE}/workspace.toml
+
+      - name: git-workspace archive
+        uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: archive --force
+
       - name: archive everything
         uses: actions-rs/cargo@v1
         with:
           command: run
-          args: update
+          args: archive
+
       - name: Build release
         if: startsWith(github.ref, 'refs/tags/')
         uses: actions-rs/cargo@v1
