@@ -372,12 +372,12 @@ fn lock(workspace: &Path) -> anyhow::Result<()> {
     // For each source, in sequence, fetch the repositories
     let results = sources
         .par_iter()
-        .progress_with(total_bar)
         .map(|source| {
             source
                 .fetch_repositories()
                 .with_context(|| format!("Error fetching repositories from {}", source))
         })
+        .progress_with(total_bar)
         .collect::<anyhow::Result<Vec<_>>>()?;
     let mut all_repositories: Vec<Repository> = results.into_iter().flatten().collect();
     // let all_repositories: Vec<Repository> = all_repository_results.iter().collect::<anyhow::Result<Vec<Repository>>>()?;
@@ -443,7 +443,6 @@ where
         repositories
             .par_iter()
             // Update our progress bar with each iteration
-            .progress_with(total_bar)
             .map(|repo| {
                 // Create a progress bar and configure some defaults
                 let progress_bar = progress.add(ProgressBar::new_spinner());
@@ -467,6 +466,7 @@ where
                 progress_bar.finish_and_clear();
                 result
             })
+            .progress_with(total_bar)
             // We only care about errors here, so filter them out.
             .filter_map(Result::err)
             // Collect the results into a Vec
