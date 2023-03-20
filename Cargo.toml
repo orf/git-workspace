@@ -20,7 +20,7 @@ anyhow = "1.0.66"
 structopt = "0.3.26"
 rayon = "1.6.0"
 graphql_client = "0.12.0"
-walkdir = "2.3.2"
+walkdir = "2.3.3"
 fs_extra = "1.2.0"
 indicatif = { version = "0.17.2", features = ["rayon"] }
 console = { version = "0.15.2", features = ["ansi-parsing"], default_features = false } # We don't care about unicode widths
