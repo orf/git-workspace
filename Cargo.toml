@@ -28,8 +28,7 @@ atomic-counter = "1.0.1"
 ureq = { version = "2.5.0", features = ["json"] }
 serde_json = "1.0.94"
 globset = "0.4.9"
-# Workaround for https://github.com/rust-lang/git2-rs/issues/838
-git2 = { version = "0.18.0", default_features = false }
+git2 = { version = "0.18.0" }
 regex = "1.7.1"
 
 [target."cfg(unix)".dependencies]

@@ -355,6 +355,8 @@ dependencies = [
  "libc",
  "libgit2-sys",
  "log",
+ "openssl-probe",
+ "openssl-sys",
  "url",
 ]
 
@@ -537,8 +539,24 @@ checksum = "f2a2bb3680b094add03bb3732ec520ece34da31a8cd2d633d1389d0f0fb60d0c"
 dependencies = [
  "cc",
  "libc",
+ "libssh2-sys",
  "libz-sys",
+ "openssl-sys",
  "pkg-config",
+]
+
+[[package]]
+name = "libssh2-sys"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2dc8a030b787e2119a731f1951d6a773e2280c660f8ec4b0f5e1505a386e71ee"
+dependencies = [
+ "cc",
+ "libc",
+ "libz-sys",
+ "openssl-sys",
+ "pkg-config",
+ "vcpkg",
 ]
 
 [[package]]
@@ -594,6 +612,24 @@ name = "once_cell"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
+
+[[package]]
+name = "openssl-probe"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ff011a302c396a5197692431fc1948019154afc178baf7d8e37367442a4601cf"
+
+[[package]]
+name = "openssl-sys"
+version = "0.9.93"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "db4d56a4c0478783083cfafcc42493dd4a981d41669da64b4572a2a089b51b1d"
+dependencies = [
+ "cc",
+ "libc",
+ "pkg-config",
+ "vcpkg",
+]
 
 [[package]]
 name = "percent-encoding"
