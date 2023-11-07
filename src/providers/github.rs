@@ -144,9 +144,7 @@ impl Provider for GithubProvider {
             .with_context(|| "Missing GITHUB_TOKEN environment variable")?;
 
         let auth_header = match github_token.as_str() {
-            "none" => {
-                "none".to_string()
-            },
+            "none" => "none".to_string(),
             token => {
                 format!("Bearer {}", token)
             }

@@ -331,7 +331,7 @@ fn execute_cmd(
 
 /// Run `git fetch` on all our repositories
 fn fetch(workspace: &Path, threads: usize) -> anyhow::Result<()> {
-    let cmd = vec![
+    let cmd = [
         "fetch",
         "--all",
         "--prune",
