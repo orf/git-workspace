@@ -142,6 +142,16 @@ impl Provider for GithubProvider {
     fn fetch_repositories(&self) -> anyhow::Result<Vec<Repository>> {
         let github_token = env::var("GITHUB_TOKEN")
             .with_context(|| "Missing GITHUB_TOKEN environment variable")?;
+
+        let auth_header = match github_token.as_str() {
+            "none" => {
+                "none".to_string()
+            },
+            token => {
+                format!("Bearer {}", token)
+            }
+        };
+
         let mut repositories = vec![];
 
         let mut after = None;
@@ -165,7 +175,7 @@ impl Provider for GithubProvider {
             });
             let res = agent
                 .post(&self.url)
-                .set("Authorization", format!("Bearer {}", github_token).as_str())
+                .set("Authorization", &auth_header)
                 .send_json(json!(&q));
 
             let res = match res {
