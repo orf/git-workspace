@@ -78,7 +78,7 @@ nix shell nixpkgs#git-workspace
 
 ## Binaries (Windows)
 
-Download the latest release from [the github releases page](https://github.com/orf/git-workspace/releases). Extract it 
+Download the latest release from [the github releases page](https://github.com/orf/git-workspace/releases). Extract it
 and move it to a directory on your `PATH`.
 
 ## Cargo
@@ -147,19 +147,23 @@ You can use `git workspace add` to quickly add entries to your `workspace.toml`:
 
    * `git workspace add github [USER OR ORG NAME]`
 
-* Exclude specific repositories:
+* Include and exclude specific repositories:
 
-   * `git workspace add github [USER OR ORG NAME] --exclude="foo.*bar$" --exclude="(abc|def)"`
+   * `git workspace add github [USER OR ORG NAME] --include="a.*$" --include="b.*$" --exclude="aa.*$"  --exclude="bb.*$"`
 
-* Clone a namespace or user from Gitlab: 
+   * Both `--include` and `--exclude` can be specified multiple times.
+   * By default all repositories are included.
+   * All `include` filters are evaluated before the `exclude` filters.
+
+* Clone a namespace or user from Gitlab:
 
    * `git workspace add gitlab gitlab-ce/gitlab-services`
 
-* Clone from a self-hosted gitlab/github instance: 
+* Clone from a self-hosted gitlab/github instance:
 
    * `git workspace add gitlab my-company-group --url=https://internal-gitlab.company.com`
    * `git workspace add github user-or-org-name --url=https://internal-github.company.com/api/graphql`
-   
+
 ### Multiple configs
 
 Git workspace will read from any `workspace*.toml` file under your `$GIT_WORKSPACE` directory.
@@ -224,10 +228,10 @@ wsp() {
     for command in ${FZF:-"fzf"} ${GIT:-"git"}; do
         ${COMMAND:-"command"} -v "$command" || { ${PRINTF:-"printf"} "FATAL: %s\\n" "Command '$command' is not executable"; ${EXIT:-"exit"} 127 ;}
     done
-    
+
     # shellcheck disable=SC2086 # Harmless warning about missing double-quotes that are not expected to allow parsing multiple arguments
     wsp_path="${1:-"${GTT_WORKSPACE:-"$PWD"}/$(${GIT:-"git"} workspace list | ${FZF:-"fzf"} ${fzf_arg:-"-q"} "$@")"}" # Path to the git workspace directory
-    
+
     # Change directory
     ${CD:-"cd"} "$wsp_path" || { printf "FATAL: %s\\n" "Unable to change directory to '$wsp_path'";}
 }
