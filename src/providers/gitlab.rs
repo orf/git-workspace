@@ -1,4 +1,6 @@
-use crate::providers::{create_exclude_regex_set, Provider, APP_USER_AGENT};
+use crate::providers::{
+    create_exclude_regex_set, create_include_regex_set, Provider, APP_USER_AGENT,
+};
 use crate::repository::Repository;
 use anyhow::{anyhow, Context};
 use console::style;
@@ -78,6 +80,12 @@ pub struct GitlabProvider {
     /// Environment variable containing the auth token
     env_var: String,
 
+    #[structopt(long = "include")]
+    #[serde(default)]
+    /// Only clone repositories that match these regular expressions. The repository name
+    /// includes the user or organisation name.
+    include: Vec<String>,
+
     #[structopt(long = "exclude")]
     #[serde(default)]
     /// Don't clone repositories that match these regular expressions. The repository name
@@ -141,6 +149,7 @@ impl Provider for GitlabProvider {
         let mut after = Some("".to_string());
         let name = self.name.to_string().to_lowercase();
 
+        let include_regex_set = create_include_regex_set(&self.include)?;
         let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
 
         let agent = ureq::AgentBuilder::new()
@@ -202,6 +211,7 @@ impl Provider for GitlabProvider {
                 temp_repositories
                     .into_iter()
                     .filter(|r| !r.archived)
+                    .filter(|r| include_regex_set.is_match(&r.full_path))
                     .filter(|r| !exclude_regex_set.is_match(&r.full_path))
                     .map(|r| {
                         Repository::new(
