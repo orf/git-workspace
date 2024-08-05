@@ -1,3 +1,4 @@
+name: Homebrew
 on:
   push:
     tags:

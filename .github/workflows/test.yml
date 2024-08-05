@@ -34,7 +34,12 @@ jobs:
       GCM_INTERACTIVE: never
       GIT_TERMINAL_PROMPT: 0
       RUST_BACKTRACE: "1"
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
+
       - name: Set workspace var
         shell: bash
         run: |
@@ -56,8 +61,6 @@ jobs:
         with:
           toolchain: stable
           override: true
-
-      - uses: Swatinem/rust-cache@v2
 
       - name: Build
         uses: actions-rs/cargo@v1
@@ -129,11 +132,15 @@ jobs:
   checks:
     name: Checks
     runs-on: ubuntu-latest
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
     steps:
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
+
       - name: Checkout sources
         uses: actions/checkout@v3
-
-      - uses: Swatinem/rust-cache@v2
 
       - name: Install stable toolchain
         uses: actions-rs/toolchain@v1
