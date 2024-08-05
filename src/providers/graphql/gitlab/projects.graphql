@@ -6,6 +6,7 @@ query Repositories($name: ID!, $after: String) {
                     archived,
                     fullPath,
                     sshUrlToRepo,
+                    httpUrlToRepo,
                     repository {
                         rootRef
                     }
@@ -24,6 +25,7 @@ query Repositories($name: ID!, $after: String) {
                     archived,
                     fullPath,
                     sshUrlToRepo,
+                    httpUrlToRepo,
                     repository {
                         rootRef
                     }

@@ -10,6 +10,7 @@ use structopt::StructOpt;
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
+type URI = String;
 
 #[derive(GraphQLQuery)]
 #[graphql(
@@ -21,10 +22,6 @@ pub struct Repositories;
 
 fn default_env_var() -> String {
     String::from("GITHUB_TOKEN")
-}
-
-const fn default_forks() -> bool {
-    false
 }
 
 static DEFAULT_GITHUB_URL: &str = "https://api.github.com/graphql";
@@ -48,9 +45,14 @@ pub struct GithubProvider {
     env_var: String,
 
     #[structopt(long = "skip-forks")]
-    #[serde(default = "default_forks")]
+    #[serde(default)]
     /// Don't clone forked repositories
     skip_forks: bool,
+
+    #[structopt(long = "auth-http")]
+    #[serde(default)]
+    /// Use HTTP authentication instead of SSH
+    auth_http: bool,
 
     #[structopt(long = "exclude")]
     #[serde(default)]
@@ -91,7 +93,11 @@ impl GithubProvider {
 
         Repository::new(
             format!("{}/{}", path, repo.name_with_owner.clone()),
-            repo.ssh_url.clone(),
+            if self.auth_http {
+                repo.url.clone()
+            } else {
+                repo.ssh_url.clone()
+            },
             default_branch,
             upstream,
         )

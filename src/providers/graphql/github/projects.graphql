@@ -8,12 +8,14 @@ query Repositories($login: String!, $after: String, $includeForks: Boolean) {
             }
             nodes {
                 nameWithOwner,
+                url
                 sshUrl,
                 isArchived,
                 defaultBranchRef {
                     name
                 },
                 parent {
+                    url
                     sshUrl,
                 }
             }

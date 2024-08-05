@@ -25,6 +25,7 @@ struct ProjectNode {
     archived: bool,
     full_path: String,
     ssh_url: String,
+    http_url: String,
     root_ref: Option<String>,
 }
 
@@ -34,6 +35,7 @@ impl From<repositories::RepositoriesGroupProjectsEdgesNode> for ProjectNode {
             archived: item.archived.unwrap(),
             root_ref: item.repository.and_then(|r| r.root_ref),
             ssh_url: item.ssh_url_to_repo.expect("Unknown SSH URL"),
+            http_url: item.http_url_to_repo.expect("Unknown HTTP URL"),
             full_path: item.full_path,
         }
     }
@@ -45,6 +47,7 @@ impl From<repositories::RepositoriesNamespaceProjectsEdgesNode> for ProjectNode 
             archived: item.archived.unwrap(),
             root_ref: item.repository.and_then(|r| r.root_ref),
             ssh_url: item.ssh_url_to_repo.expect("Unknown SSH URL"),
+            http_url: item.http_url_to_repo.expect("Unknown HTTP URL"),
             full_path: item.full_path,
         }
     }
@@ -77,6 +80,11 @@ pub struct GitlabProvider {
     #[serde(default = "default_env_var")]
     /// Environment variable containing the auth token
     env_var: String,
+
+    #[structopt(long = "auth-http")]
+    #[serde(default)]
+    /// Use HTTP authentication instead of SSH
+    auth_http: bool,
 
     #[structopt(long = "exclude")]
     #[serde(default)]
@@ -206,7 +214,11 @@ impl Provider for GitlabProvider {
                     .map(|r| {
                         Repository::new(
                             format!("{}/{}", self.path, r.full_path),
-                            r.ssh_url,
+                            if self.auth_http {
+                                r.http_url
+                            } else {
+                                r.ssh_url
+                            },
                             r.root_ref,
                             None,
                         )
