@@ -25,7 +25,7 @@ console = { version = "0.15.8", features = [
     "ansi-parsing",
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
-ureq = { version = "2.10.0", features = ["json", "native-certs", "brotli"] }
+ureq = { version = "2.10.1", features = ["json", "native-certs", "brotli"] }
 serde_json = "1.0.121"
 globset = "0.4.14"
 git2 = { version = "0.19.0" }
