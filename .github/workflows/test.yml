@@ -36,7 +36,7 @@ jobs:
       RUST_BACKTRACE: "1"
       SCCACHE_GHA_ENABLED: "true"
       RUSTC_WRAPPER: "sccache"
-      release_profile: "lto"
+      release_profile: "release"
     steps:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
