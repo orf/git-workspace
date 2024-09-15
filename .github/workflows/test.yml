@@ -44,7 +44,8 @@ jobs:
       - name: Set workspace var
         shell: bash
         run: |
-          echo GIT_WORKSPACE=$RUNNER_TEMP/workspace-test-dir >> $GITHUB_ENV
+          mkdir -p "$RUNNER_TEMP/workspace-test-dir/"
+          echo GIT_WORKSPACE=$RUNNER_TEMP/workspace-test-dir/ >> $GITHUB_ENV
 
       - uses: actions/checkout@master
       - name: Switch SSH to https
