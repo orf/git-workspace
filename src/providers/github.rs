@@ -10,6 +10,7 @@ use structopt::StructOpt;
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
+#[allow(clippy::upper_case_acronyms)]
 type URI = String;
 
 #[derive(GraphQLQuery)]
