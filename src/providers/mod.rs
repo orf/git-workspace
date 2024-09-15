@@ -22,3 +22,12 @@ pub fn create_exclude_regex_set(items: &Vec<String>) -> anyhow::Result<regex::Re
         Ok(regex::RegexSet::new(items).context("Error parsing exclude regular expressions")?)
     }
 }
+
+pub fn create_include_regex_set(items: &Vec<String>) -> anyhow::Result<regex::RegexSet> {
+    if items.is_empty() {
+        let all = vec![".*"];
+        Ok(regex::RegexSet::new(all).context("Error parsing include regular expressions")?)
+    } else {
+        Ok(regex::RegexSet::new(items).context("Error parsing include regular expressions")?)
+    }
+}
