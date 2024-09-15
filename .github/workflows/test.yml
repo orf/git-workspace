@@ -36,6 +36,7 @@ jobs:
       RUST_BACKTRACE: "1"
       SCCACHE_GHA_ENABLED: "true"
       RUSTC_WRAPPER: "sccache"
+      release_profile: "lto"
     steps:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
@@ -56,63 +57,44 @@ jobs:
           then
             git config --global credential.helper wincred
           fi
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
 
-      - name: Build
-        uses: actions-rs/cargo@v1
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.5
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          command: build
+          cache-on-failure: 'false'
+
+      - run: cargo build
 
       - name: git workspace add github org
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: add github django --exclude "/django.*"
+        run: cargo run -- add github django --exclude "/django.*"
 
       - name: git-workspace update
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: update
+        run: cargo run -- update
 
       - name: git-workspace fetch
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: fetch
+        run: cargo run -- fetch
 
       - name: git-workspace list
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: list
+        run: cargo run -- list
 
       - name: Remove workspace
         shell: bash
         run: echo > ${GIT_WORKSPACE}/workspace.toml
 
       - name: git-workspace archive
-        uses: actions-rs/cargo@v1
-        with:
-          command: run
-          args: archive --force
+        run: cargo run -- archive --force
 
       - name: Build release
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish-tag
+        run: cargo build --profile=${{env.release_profile}}
       - name: Package
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish-tag
         shell: bash
         run: |
-          strip target/release/${{ matrix.bin }}
-          cd target/release
+          strip target/${{env.release_profile}}/${{ matrix.bin }}
+          cd target/${{env.release_profile}}
           if [[ "${{ matrix.os }}" == "windows-latest" ]]
           then
           7z a ../../${{ matrix.name }} ${{ matrix.bin }}
@@ -120,44 +102,41 @@ jobs:
           tar czvf ../../${{ matrix.name }} ${{ matrix.bin }}
           fi
           cd -
-      - name: Publish
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Archive binaries
+        uses: actions/upload-artifact@v4
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish-tag
         with:
-          draft: false
-          files: 'git-workspace*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: build-${{ matrix.name }}
+          path: ${{ matrix.name }}
 
   checks:
     name: Checks
     runs-on: ubuntu-latest
     env:
+      RUST_BACKTRACE: "1"
       SCCACHE_GHA_ENABLED: "true"
       RUSTC_WRAPPER: "sccache"
     steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.publish-tag || null }}
+
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.5
 
-      - name: Checkout sources
-        uses: actions/checkout@v4
-
-      - name: Install stable toolchain
-        uses: actions-rs/toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          toolchain: stable
-          override: true
-          components: rustfmt, clippy
+          cache-on-failure: 'false'
 
       - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
         if: success() || failure()
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo fmt --all -- --check
 
       - name: Run cargo check
-        uses: actions-rs/cargo@v1
         if: success() || failure()
-        with:
-          command: check
+        run: cargo check
+
+      - if: success() || failure()
+        run: cargo clippy --all-targets --all-features -- -D warnings
+
