@@ -14,7 +14,7 @@ exclude = ["workspace/**", "images/**", ".github/**"]
 [dependencies]
 toml = "0.8.19"
 serde = { version = "1.0.210", features = ["derive"] }
-anyhow = "1.0.89"
+anyhow = "1.0.90"
 structopt = "0.3.26"
 rayon = "1.10.0"
 graphql_client = "0.14.0"
@@ -26,7 +26,7 @@ console = { version = "0.15.8", features = [
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
 ureq = { version = "2.10.1", features = ["json", "native-certs", "brotli"] }
-serde_json = "1.0.128"
+serde_json = "1.0.129"
 globset = "0.4.15"
 git2 = { version = "0.19.0" }
 regex = "1.11.0"
