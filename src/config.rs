@@ -6,7 +6,6 @@ use std::ffi::OsString;
 use std::fmt;
 use std::fs;
 use std::path::{Path, PathBuf};
-use structopt::StructOpt;
 
 #[derive(Deserialize, Serialize, Debug)]
 struct ConfigContents {
@@ -68,7 +67,7 @@ impl Config {
 #[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd)]
 #[serde(tag = "provider")]
 #[serde(rename_all = "lowercase")]
-#[derive(StructOpt)]
+#[derive(clap::Subcommand)]
 pub enum ProviderSource {
     Gitlab(GitlabProvider),
     Github(GithubProvider),

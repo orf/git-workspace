@@ -6,9 +6,10 @@ use anyhow::{anyhow, Context};
 use console::style;
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::env;
 use std::fmt;
-use structopt::StructOpt;
+
 // GraphQL queries we use to fetch user and group repositories.
 // Right now, annoyingly, Gitlab has a bug around GraphQL pagination:
 // https://gitlab.com/gitlab-org/gitlab/issues/33419
@@ -65,44 +66,44 @@ fn default_env_var() -> String {
     String::from("GITHUB_TOKEN")
 }
 
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
 #[serde(rename_all = "lowercase")]
-#[structopt(about = "Add a Gitlab user or group by name")]
+#[command(about = "Add a Gitlab user or group by name")]
 pub struct GitlabProvider {
     /// The name of the gitlab group or namespace to add. Can include slashes.
     pub name: String,
     #[serde(default = "public_gitlab_url")]
-    #[structopt(long = "url", default_value = DEFAULT_GITLAB_URL)]
+    #[arg(long = "url", default_value = DEFAULT_GITLAB_URL)]
     /// Gitlab instance URL
     pub url: String,
-    #[structopt(long = "path", default_value = "gitlab")]
+    #[arg(long = "path", default_value = "gitlab")]
     /// Clone repos to a specific path
     path: String,
-    #[structopt(long = "env-name", short = "e", default_value = "GITLAB_TOKEN")]
+    #[arg(long = "env-name", short = 'e', default_value = "GITLAB_TOKEN")]
     #[serde(default = "default_env_var")]
     /// Environment variable containing the auth token
     env_var: String,
 
-    #[structopt(long = "include")]
+    #[arg(long = "include")]
     #[serde(default)]
     /// Only clone repositories that match these regular expressions. The repository name
     /// includes the user or organisation name.
     include: Vec<String>,
 
-    #[structopt(long = "auth-http")]
+    #[arg(long = "auth-http")]
     #[serde(default)]
     /// Use HTTP authentication instead of SSH
     auth_http: bool,
 
-    #[structopt(long = "exclude")]
+    #[arg(long = "exclude")]
     #[serde(default)]
     /// Don't clone repositories that match these regular expressions. The repository name
     /// includes the user or organisation name.
     exclude: Vec<String>,
     // Currently does not work.
     // https://gitlab.com/gitlab-org/gitlab/issues/121595
-    //    #[structopt(long = "skip-forks")]
-    //    #[structopt(about = "Don't clone forked repositories")]
+    //    #[arg(long = "skip-forks")]
+    //    #[arg(about = "Don't clone forked repositories")]
     //    #[serde(default = "default_forks")]
     //    skip_forks: bool,
 }

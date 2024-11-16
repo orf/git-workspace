@@ -6,9 +6,9 @@ use anyhow::{bail, Context};
 use console::style;
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use std::env;
 use std::fmt;
-use structopt::StructOpt;
 
 // See https://github.com/graphql-rust/graphql-client/blob/master/graphql_client/tests/custom_scalars.rs#L6
 type GitSSHRemote = String;
@@ -33,44 +33,44 @@ fn public_github_url() -> String {
     DEFAULT_GITHUB_URL.to_string()
 }
 
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, StructOpt)]
+#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
 #[serde(rename_all = "lowercase")]
-#[structopt(about = "Add a Github user or organization by name")]
+#[command(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {
     /// The name of the user or organisation to add.
     pub name: String,
-    #[structopt(long = "path", default_value = "github")]
+    #[arg(long = "path", default_value = "github")]
     /// Clone repositories to a specific base path
     path: String,
-    #[structopt(long = "env-name", short = "e", default_value = "GITHUB_TOKEN")]
+    #[arg(long = "env-name", short = 'e', default_value = "GITHUB_TOKEN")]
     #[serde(default = "default_env_var")]
     /// Environment variable containing the auth token
     env_var: String,
 
-    #[structopt(long = "skip-forks")]
+    #[arg(long = "skip-forks")]
     #[serde(default)]
     /// Don't clone forked repositories
     skip_forks: bool,
 
-    #[structopt(long = "include")]
+    #[arg(long = "include")]
     #[serde(default)]
     /// Only clone repositories that match these regular expressions. The repository name
     /// includes the user or organisation name.
     include: Vec<String>,
 
-    #[structopt(long = "auth-http")]
+    #[arg(long = "auth-http")]
     #[serde(default)]
     /// Use HTTP authentication instead of SSH
     auth_http: bool,
 
-    #[structopt(long = "exclude")]
+    #[arg(long = "exclude")]
     #[serde(default)]
     /// Don't clone repositories that match these regular expressions. The repository name
     /// includes the user or organisation name.
     exclude: Vec<String>,
 
     #[serde(default = "public_github_url")]
-    #[structopt(long = "url", default_value = DEFAULT_GITHUB_URL)]
+    #[arg(long = "url", default_value = DEFAULT_GITHUB_URL)]
     /// Github instance URL, if using Github Enterprise this should be
     /// http(s)://HOSTNAME/api/graphql
     pub url: String,

@@ -1,20 +1,6 @@
-extern crate atomic_counter;
-extern crate console;
-#[cfg(unix)]
-extern crate expanduser;
-extern crate fs_extra;
-extern crate graphql_client;
-extern crate indicatif;
-extern crate serde;
-#[macro_use]
-extern crate serde_json;
-extern crate structopt;
-extern crate ureq;
-extern crate walkdir;
-
+use clap::Parser;
 use config::ProviderSource;
 use std::path::PathBuf;
-use structopt::StructOpt;
 
 use anyhow::Context;
 
@@ -29,37 +15,32 @@ use commands::{
     add_provider_to_config, archive, execute_cmd, fetch, list, lock, pull_all_repositories, update,
 };
 
-#[derive(StructOpt)]
-#[structopt(name = "git-workspace", author, about)]
+#[derive(clap::Parser)]
+#[command(name = "git-workspace", author, about)]
 struct Args {
-    #[structopt(
-        short = "w",
-        long = "workspace",
-        parse(from_os_str),
-        env = "GIT_WORKSPACE"
-    )]
+    #[arg(short = 'w', long = "workspace", env = "GIT_WORKSPACE")]
     workspace: PathBuf,
-    #[structopt(subcommand)]
+    #[command(subcommand)]
     command: Command,
 }
 
-#[derive(StructOpt)]
+#[derive(clap::Parser)]
 enum Command {
     /// Update the workspace, removing and adding any repositories as needed.
     Update {
-        #[structopt(short = "t", long = "threads", default_value = "8")]
+        #[arg(short = 't', long = "threads", default_value = "8")]
         threads: usize,
     },
     /// Fetch new commits for all repositories in the workspace
     Fetch {
-        #[structopt(short = "t", long = "threads", default_value = "8")]
+        #[arg(short = 't', long = "threads", default_value = "8")]
         threads: usize,
     },
     /// Fetch all repositories from configured providers and write the lockfile
     Lock {},
     /// Pull new commits on the primary branch for all repositories in the workspace
     SwitchAndPull {
-        #[structopt(short = "t", long = "threads", default_value = "8")]
+        #[arg(short = 't', long = "threads", default_value = "8")]
         threads: usize,
     },
     /// List all repositories in the workspace
@@ -67,13 +48,13 @@ enum Command {
     /// This command will output the names of all known repositories in the workspace.
     /// Passing --full will output absolute paths.
     List {
-        #[structopt(long = "full")]
+        #[arg(long = "full")]
         full: bool,
     },
     /// Archive repositories that don't exist in the workspace anymore.
     Archive {
         /// Disable confirmation prompt
-        #[structopt(long = "force")]
+        #[arg(long = "force")]
         force: bool,
     },
     /// Run a git command in all repositories
@@ -82,24 +63,24 @@ enum Command {
     /// The program will receive the given "args", and have it's working directory
     /// set to the repository directory.
     Run {
-        #[structopt(short = "t", long = "threads", default_value = "8")]
+        #[arg(short = 't', long = "threads", default_value = "8")]
         threads: usize,
-        #[structopt(required = true)]
+        #[arg(required = true)]
         command: String,
         args: Vec<String>,
     },
     /// Add a provider to the configuration
     Add {
-        #[structopt(short = "file", long = "file", default_value = "workspace.toml")]
+        #[arg(long = "file", default_value = "workspace.toml")]
         file: PathBuf,
-        #[structopt(subcommand)]
+        #[command(subcommand)]
         command: ProviderSource,
     },
 }
 
 fn main() -> anyhow::Result<()> {
-    // Parse our arguments to Args using structopt.
-    let args = Args::from_args();
+    // Parse our arguments to Args using clap.
+    let args = Args::parse();
     handle_main(args)
 }
 

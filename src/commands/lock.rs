@@ -1,8 +1,8 @@
 use crate::config::{all_config_files, Config};
-use crate::indicatif::ParallelProgressIterator;
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use anyhow::Context;
+use indicatif::ParallelProgressIterator;
 use indicatif::{ProgressBar, ProgressStyle};
 use rayon::prelude::*;
 use std::path::Path;
