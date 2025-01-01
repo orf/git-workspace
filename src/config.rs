@@ -1,4 +1,4 @@
-use crate::providers::{GithubProvider, GitlabProvider, Provider};
+use crate::providers::{GiteaProvider, GithubProvider, GitlabProvider, Provider};
 use crate::repository::Repository;
 use anyhow::Context;
 use serde::{Deserialize, Serialize};
@@ -80,6 +80,7 @@ impl Config {
 #[serde(rename_all = "lowercase")]
 #[derive(clap::Subcommand)]
 pub enum ProviderSource {
+    Gitea(GiteaProvider),
     Gitlab(GitlabProvider),
     Github(GithubProvider),
 }
@@ -87,6 +88,7 @@ pub enum ProviderSource {
 impl ProviderSource {
     pub fn provider(&self) -> &dyn Provider {
         match self {
+            Self::Gitea(config) => config,
             Self::Gitlab(config) => config,
             Self::Github(config) => config,
         }
