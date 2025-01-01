@@ -1,19 +1,10 @@
-use clap::Parser;
-use config::ProviderSource;
-use std::path::PathBuf;
-
 use anyhow::Context;
-
-mod commands;
-mod config;
-mod lockfile;
-mod providers;
-mod repository;
-mod utils;
-
-use commands::{
+use clap::Parser;
+use git_workspace::commands::{
     add_provider_to_config, archive, execute_cmd, fetch, list, lock, pull_all_repositories, update,
 };
+use git_workspace::config::ProviderSource;
+use std::path::PathBuf;
 
 #[derive(clap::Parser)]
 #[command(name = "git-workspace", author, about)]
