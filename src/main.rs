@@ -1,9 +1,9 @@
-use anyhow::Context;
 use clap::Parser;
 use git_workspace::commands::{
     add_provider_to_config, archive, execute_cmd, fetch, list, lock, pull_all_repositories, update,
 };
 use git_workspace::config::ProviderSource;
+use git_workspace::utils::{ensure_workspace_dir_exists, expand_workspace_path};
 use std::path::PathBuf;
 
 #[derive(clap::Parser)]
@@ -76,45 +76,8 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn handle_main(args: Args) -> anyhow::Result<()> {
-    // Convert our workspace path to a PathBuf. We cannot use the value given directly as
-    // it could contain a tilde, so we run `expanduser` on it _if_ we are on a Unix platform.
-    // On Windows this isn't supported.
-    let expanded_workspace_path;
-    #[cfg(not(unix))]
-    {
-        expanded_workspace_path = PathBuf::from(args.workspace);
-    }
-    #[cfg(unix)]
-    {
-        expanded_workspace_path = expanduser::expanduser(args.workspace.to_string_lossy())
-            .with_context(|| "Error expanding git workspace path")?;
-    }
-
-    // If our workspace path doesn't exist then we need to create it, and call `canonicalize`
-    // on the result. This fails if the path does not exist.
-    let workspace_path = (if expanded_workspace_path.exists() {
-        &expanded_workspace_path
-    } else {
-        fs_extra::dir::create_all(&expanded_workspace_path, false).with_context(|| {
-            format!(
-                "Error creating workspace directory {}",
-                &expanded_workspace_path.display()
-            )
-        })?;
-        println!(
-            "Created {} as it did not exist",
-            &expanded_workspace_path.display()
-        );
-
-        &expanded_workspace_path
-    })
-    .canonicalize()
-    .with_context(|| {
-        format!(
-            "Error canonicalizing workspace path {}",
-            &expanded_workspace_path.display()
-        )
-    })?;
+    let workspace_path = expand_workspace_path(&args.workspace)?;
+    let workspace_path = ensure_workspace_dir_exists(&workspace_path)?;
 
     // Run our sub command. Pretty self-explanatory.
     match args.command {
