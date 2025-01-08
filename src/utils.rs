@@ -10,7 +10,7 @@ fn get_prompt_input(prompt_text: &str) -> String {
     io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
-    return input.trim_end_matches('\n').to_string();
+    input.trim_end_matches('\n').to_string()
 }
 
 pub fn confirm(text: &str, default: bool, prompt_suffix: &str, show_default: bool) -> bool {
