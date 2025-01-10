@@ -30,7 +30,7 @@ jobs:
     env:
       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
       GITLAB_ALTERNATIVE_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_ALTERNATIVE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       GCM_INTERACTIVE: never
       GIT_TERMINAL_PROMPT: 0
       RUST_BACKTRACE: "1"
@@ -69,7 +69,7 @@ jobs:
       - run: cargo build
 
       - name: git workspace add github org
-        run: cargo run -- add github django --exclude "/django.*"
+        run: cargo run -- add github django --exclude "/django.*" --env-name GITHUB_ALTERNATIVE_TOKEN
 
       - name: git-workspace update
         run: cargo run -- update

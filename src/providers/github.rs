@@ -155,8 +155,8 @@ impl Provider for GithubProvider {
     }
 
     fn fetch_repositories(&self) -> anyhow::Result<Vec<Repository>> {
-        let github_token = env::var("GITHUB_TOKEN")
-            .with_context(|| "Missing GITHUB_TOKEN environment variable")?;
+        let github_token = env::var(&self.env_var)
+            .with_context(|| format!("Missing {} environment variable", self.env_var))?;
 
         let auth_header = match github_token.as_str() {
             "none" => "none".to_string(),
