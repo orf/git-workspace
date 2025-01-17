@@ -80,7 +80,6 @@ pub fn ensure_workspace_dir_exists(path: &PathBuf) -> anyhow::Result<PathBuf> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use std::env;
 
     #[test]
     fn test_build_prompt_text() {
@@ -122,14 +121,14 @@ mod tests {
     #[cfg(unix)]
     fn test_expand_workspace_path_on_unix_platform() {
         let custom_home = "/custom/home";
-        env::set_var("HOME", custom_home);
+        std::env::set_var("HOME", custom_home);
 
         let path = PathBuf::from("~/test/path");
         let result = expand_workspace_path(&path).unwrap();
         let expected_path = PathBuf::from(format!("{}/test/path", custom_home));
 
         assert_eq!(result, expected_path);
-        env::remove_var("HOME"); // Clean up
+        std::env::remove_var("HOME"); // Clean up
     }
 
     #[test]

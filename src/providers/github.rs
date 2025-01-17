@@ -115,7 +115,6 @@ impl GithubProvider {
 
 impl Provider for GithubProvider {
     fn correctly_configured(&self) -> bool {
-        println!("EMV: {:?}", &self.env_var);
         let token = env::var(&self.env_var);
         if token.is_err() {
             println!(
