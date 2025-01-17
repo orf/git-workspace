@@ -6,7 +6,7 @@
 
 If your company has a large number of repositories and your work involves jumping between a lot of them then `git-workspace` can save you some time by:
 
-* Easily synchronizing your projects directory with **Github**, **Gitlab.com** or **Gitlab self-hosted** :wrench:
+* Easily synchronizing your projects directory with **Github**, **Gitlab.com**, **Gitlab self-hosted** or **Gitea** :wrench:
 * Keep projects consistently named and under the correct path :file_folder:
 * Automatically set upstreams for forks :zap:
 * Move deleted repositories to an archive directory :floppy_disk:
@@ -163,6 +163,8 @@ You can use `git workspace add` to quickly add entries to your `workspace.toml`:
 
    * `git workspace add gitlab my-company-group --url=https://internal-gitlab.company.com`
    * `git workspace add github user-or-org-name --url=https://internal-github.company.com/api/graphql`
+
+* 
 
 ### Multiple configs
 

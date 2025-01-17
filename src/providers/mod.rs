@@ -1,8 +1,10 @@
+mod gitea;
 mod github;
 mod gitlab;
 
 use crate::repository::Repository;
 use anyhow::Context;
+pub use gitea::GiteaProvider;
 pub use github::GithubProvider;
 pub use gitlab::GitlabProvider;
 use std::fmt;

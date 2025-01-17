@@ -66,7 +66,7 @@ fn default_env_var() -> String {
     String::from("GITHUB_TOKEN")
 }
 
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
+#[derive(Deserialize, Serialize, Default, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
 #[serde(rename_all = "lowercase")]
 #[command(about = "Add a Gitlab user or group by name")]
 pub struct GitlabProvider {

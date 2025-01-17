@@ -33,7 +33,7 @@ fn public_github_url() -> String {
     DEFAULT_GITHUB_URL.to_string()
 }
 
-#[derive(Deserialize, Serialize, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
+#[derive(Deserialize, Serialize, Default, Debug, Eq, Ord, PartialEq, PartialOrd, clap::Parser)]
 #[serde(rename_all = "lowercase")]
 #[command(about = "Add a Github user or organization by name")]
 pub struct GithubProvider {

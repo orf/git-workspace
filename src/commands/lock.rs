@@ -1,4 +1,4 @@
-use crate::config::{all_config_files, Config};
+use crate::config::Config;
 use crate::lockfile::Lockfile;
 use crate::repository::Repository;
 use anyhow::Context;
@@ -9,13 +9,9 @@ use std::path::Path;
 
 /// Update our lockfile
 pub fn lock(workspace: &Path) -> anyhow::Result<()> {
-    // Find all config files
-    let config_files = all_config_files(workspace).context("Error loading config files")?;
-    if config_files.is_empty() {
-        anyhow::bail!("No configuration files found: Are you in the right workspace?")
-    }
+    let config = Config::from_workspace(workspace)?;
+
     // Read the configuration sources
-    let config = Config::new(config_files);
     let sources = config
         .read()
         .with_context(|| "Error reading config files")?;

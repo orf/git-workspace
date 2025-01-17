@@ -1,4 +1,4 @@
-use crate::lock;
+use super::lock;
 use crate::lockfile::Lockfile;
 use crate::utils;
 use anyhow::Context;
