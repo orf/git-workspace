@@ -34,7 +34,7 @@ pub fn map_repositories<F>(repositories: &[Repository], threads: usize, f: F) ->
 where
     F: Fn(&Repository, &ProgressBar) -> anyhow::Result<()> + std::marker::Sync,
 {
-    // Create our progress bar. We use Arc here as we need to share the MutliProgress across
+    // Create our progress bar. We use Arc here as we need to share the MultiProgress across
     // more than 1 thread (described below)
     let progress = Arc::new(MultiProgress::new());
     // Create our total progress bar used with `.progress_iter()`.
