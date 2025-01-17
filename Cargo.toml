@@ -10,6 +10,7 @@ license = "MIT"
 categories = ["development-tools"]
 keywords = ["cli", "git"]
 exclude = ["workspace/**", "images/**", ".github/**"]
+rust-version = "1.74.1"
 
 [dependencies]
 toml = "0.8.19"
