@@ -18,6 +18,18 @@ pub fn gitea_container() -> &'static GiteaContainer {
     GITEA_CONTAINER.get_or_init(GiteaContainer::start)
 }
 
+// Remove gitea container at end of tests
+// Comment out this function for debugging to keep container running after tests
+#[ctor::dtor]
+fn cleanup() {
+    let container = &GITEA_CONTAINER as *const _ as *mut OnceLock<GiteaContainer>;
+    // Safety: We have exclusive access to GITEA_CONTAINER during cleanup/destruction
+    if let Some(container) = unsafe { (*container).take() } {
+        println!("Remove Gitea container...\n");
+        drop(container);
+    }
+}
+
 fn update_command(workspace_path: &Path) {
     lock(workspace_path).unwrap();
     update(workspace_path, 8).unwrap();

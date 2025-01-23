@@ -23,7 +23,6 @@ pub struct GiteaContainer {
     pub private_key: String,
     token: String,
     tls_cert: String,
-    // tmp_dir: TempDir,
     http_client: Client,
 }
 
