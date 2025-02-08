@@ -7,7 +7,7 @@ use git_workspace::utils::{ensure_workspace_dir_exists, expand_workspace_path};
 use std::path::PathBuf;
 
 #[derive(clap::Parser)]
-#[command(name = "git-workspace", author, about)]
+#[command(name = "git-workspace", author, about, version)]
 struct Args {
     #[arg(short = 'w', long = "workspace", env = "GIT_WORKSPACE")]
     workspace: PathBuf,
