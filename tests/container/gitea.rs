@@ -69,16 +69,16 @@ impl GiteaCommit {
 impl GiteaContainer {
     fn generate_test_ssh_key() -> (String, String) {
         let private_key = PrivateKey::random(&mut rand::thread_rng(), Ed25519)
-            .unwrap_or_else(|_| panic!("Failed to generate key"));
+            .unwrap_or_else(|e| panic!("Failed to generate key: {}", e));
         let public_key = private_key.public_key();
 
         // Convert to OpenSSH format strings
         let private_key_str = private_key
             .to_openssh(LineEnding::LF)
-            .unwrap_or_else(|_| panic!("Failed to serialize private key"));
+            .unwrap_or_else(|e| panic!("Failed to serialize private key: {}", e));
         let public_key_str = public_key
             .to_openssh()
-            .unwrap_or_else(|_| panic!("Failed to serialize public key"));
+            .unwrap_or_else(|e| panic!("Failed to serialize public key: {}", e));
 
         (private_key_str.to_string(), public_key_str.to_string())
     }
@@ -103,7 +103,7 @@ impl GiteaContainer {
             .with_mapped_port(443, GITEA_HTTP_PORT)
             .with_mapped_port(22, GITEA_SSH_PORT)
             .start()
-            .unwrap_or_else(|_| panic!("to start the container"));
+            .unwrap_or_else(|e| panic!("Failed to start Gitea container: {}", e));
         let url = "https://localhost".to_string();
 
         // Generate token
@@ -122,7 +122,7 @@ impl GiteaContainer {
         let mut token = String::new();
         gitea
             .exec(command)
-            .unwrap_or_else(|_| panic!("to generate access token"))
+            .unwrap_or_else(|e| panic!("to generate access token: {}", e))
             .stdout()
             .read_to_string(&mut token)
             .unwrap();
@@ -196,9 +196,9 @@ impl GiteaContainer {
                 username: org.to_string(),
             })
             .send()
-            .unwrap_or_else(|_| panic!("expect to add org {}", org))
+            .unwrap_or_else(|e| panic!("expect to add org {}: {}", org, e))
             .error_for_status()
-            .unwrap_or_else(|_| panic!("expect 2xx http response for creating {} org", org));
+            .unwrap_or_else(|e| panic!("expect 2xx http response for creating {} org: {}", org, e));
     }
 
     /// Sets up the test environment for Gitea integration tests
@@ -270,12 +270,13 @@ impl GiteaContainer {
                     name: repo.as_ref().to_string(),
                 })
                 .send()
-                .unwrap_or_else(|_| panic!("expect to add repo {}", repo.as_ref()))
+                .unwrap_or_else(|e| panic!("expect to add repo {}: {}", repo.as_ref(), e))
                 .error_for_status()
-                .unwrap_or_else(|_| {
+                .unwrap_or_else(|e| {
                     panic!(
-                        "expect 2xx http response for creating {} repo",
-                        repo.as_ref()
+                        "expect 2xx http response for creating {} repo: {}",
+                        repo.as_ref(),
+                        e,
                     )
                 });
         }
@@ -293,12 +294,13 @@ impl GiteaContainer {
                 .delete(&url)
                 .bearer_auth(&self.token)
                 .send()
-                .unwrap_or_else(|_| panic!("expect to delete repo {}", repo.as_ref()))
+                .unwrap_or_else(|e| panic!("expect to delete repo {}: {}", repo.as_ref(), e))
                 .error_for_status()
-                .unwrap_or_else(|_| {
+                .unwrap_or_else(|e| {
                     panic!(
-                        "expect 2xx http response for deleting {} repo",
-                        repo.as_ref()
+                        "expect 2xx http response for deleting {} repo: {}",
+                        repo.as_ref(),
+                        e,
                     )
                 });
         }
@@ -315,12 +317,12 @@ impl GiteaContainer {
             .bearer_auth(&self.token)
             .json(body)
             .send()
-            .unwrap_or_else(|_| panic!("expect to create new commit for repo {}", repo))
+            .unwrap_or_else(|e| panic!("expect to create new commit for repo {}: {}", repo, e))
             .error_for_status()
-            .unwrap_or_else(|_| {
+            .unwrap_or_else(|e| {
                 panic!(
-                    "expect 2xx http response when creating new commit on {} repo",
-                    repo
+                    "expect 2xx http response when creating new commit on {} repo: {}",
+                    repo, e,
                 )
             });
     }
