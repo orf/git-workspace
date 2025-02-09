@@ -97,11 +97,16 @@ impl GiteaContainer {
     pub fn start() -> Self {
         let (private_key, public_key) = Self::generate_test_ssh_key();
         let (username, password) = ("42".to_string(), "42".to_string());
+        let ssh_port = if std::env::var("CI").is_ok() {
+            2222
+        } else {
+            22
+        };
         let gitea = Gitea::default()
             .with_admin_account(&username, &password, Some(public_key))
             .with_tls(true)
             .with_mapped_port(443, GITEA_HTTP_PORT)
-            .with_mapped_port(22, GITEA_SSH_PORT)
+            .with_mapped_port(ssh_port, GITEA_SSH_PORT)
             .start()
             .unwrap_or_else(|e| panic!("Failed to start Gitea container: {}", e));
         let url = "https://localhost".to_string();
