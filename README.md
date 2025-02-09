@@ -246,4 +246,12 @@ Consider using [shfmt](https://github.com/patrickvane/shfmt) to optimize the fil
 
 This is my first 'proper' Rust project. If you're experienced with Rust you might puke at the code, but any feedback to help me improve would be greatly appreciated!
 
-If you want to contribute then just go for it. `cargo install` should get you ready to go. Be warned: there are currently no tests :bomb:. I run integration tests with Github Actions, but that's about it. It's on my to-do list, I promise :tm:.
+If you want to contribute then just go for it. `cargo install` should get you ready to go.
+
+To run the test suite:
+
+- Run unit tests with `cargo test --lib`
+- Run integration tests with `cargo test --test '*'` 
+- Run both unit and integration tests with `cargo test`
+
+Test coverage reports are automatically generated and uploaded to Codecov for all pull requests.
