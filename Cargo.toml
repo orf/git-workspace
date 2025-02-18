@@ -13,35 +13,35 @@ exclude = ["workspace/**", "images/**", ".github/**"]
 rust-version = "1.74.1"
 
 [dependencies]
-toml = "0.8.19"
+toml = "0.8.20"
 serde = { version = "1.0.217", features = ["derive"] }
 anyhow = "1.0.95"
 rayon = "1.10.0"
 graphql_client = "0.14.0"
 walkdir = "2.5.0"
 fs_extra = "1.3.0"
-indicatif = { version = "0.17.9", features = ["rayon"] }
+indicatif = { version = "0.17.11", features = ["rayon"] }
 console = { version = "0.15.10", features = [
     "ansi-parsing",
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
 ureq = { version = "2.12.1", features = ["json", "native-certs", "brotli"] }
-serde_json = "1.0.137"
+serde_json = "1.0.138"
 globset = "0.4.15"
 git2 = { version = "0.20.0" }
 regex = "1.11.1"
-clap = { version = "4.5.27", features = ["derive", "env"] }
+clap = { version = "4.5.30", features = ["derive", "env"] }
 
 [dev-dependencies]
 rstest = "0.24.0"
-tempfile = "3.14.0"
-testcontainers = { version = "0.23.1", features = ["blocking"] }
-testcontainers-modules = { version = "0.11.4", features = ["gitea"] }
+tempfile = "3.17.1"
+testcontainers = { version = "0.23.2", features = ["blocking"] }
+testcontainers-modules = { version = "0.11.6", features = ["gitea"] }
 reqwest = { version = "0.12.12", features = ["blocking", "brotli", "json"] }
 ssh-key = { version = "0.6.7", features = ["ed25519"] }
-rand = "0.8.5"
+rand = "0.9.0"
 base64 = "0.22.1"
-ctor = "0.2.9"
+ctor = "0.3.4"
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.2"
