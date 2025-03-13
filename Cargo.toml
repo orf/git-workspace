@@ -31,6 +31,7 @@ globset = "0.4.15"
 git2 = { version = "0.20.0" }
 regex = "1.11.1"
 clap = { version = "4.5.27", features = ["derive", "env"] }
+clap_complete = "4.5.46"
 
 [dev-dependencies]
 rstest = "0.24.0"
