@@ -1,5 +1,6 @@
 pub mod add_provider;
 pub mod archive;
+pub mod completion;
 pub mod fetch;
 pub mod list;
 pub mod lock;
@@ -9,6 +10,7 @@ pub mod update;
 
 pub use add_provider::add_provider_to_config;
 pub use archive::archive;
+pub use completion::completion;
 pub use fetch::fetch;
 pub use list::list;
 pub use lock::lock;

@@ -1,6 +1,7 @@
-use clap::Parser;
+use clap::{CommandFactory, Parser, ValueHint};
 use git_workspace::commands::{
-    add_provider_to_config, archive, execute_cmd, fetch, list, lock, pull_all_repositories, update,
+    add_provider_to_config, archive, completion, execute_cmd, fetch, list, lock,
+    pull_all_repositories, update,
 };
 use git_workspace::config::ProviderSource;
 use git_workspace::utils::{ensure_workspace_dir_exists, expand_workspace_path};
@@ -67,6 +68,11 @@ enum Command {
         #[command(subcommand)]
         command: ProviderSource,
     },
+    /// Generate shell completions
+    Completion {
+        /// The shell to generate the completion script for
+        shell: clap_complete::Shell,
+    },
 }
 
 fn main() -> anyhow::Result<()> {
@@ -98,6 +104,7 @@ fn handle_main(args: Args) -> anyhow::Result<()> {
             args,
         } => execute_cmd(&workspace_path, threads, command, args)?,
         Command::SwitchAndPull { threads } => pull_all_repositories(&workspace_path, threads)?,
+        Command::Completion { shell } => completion(shell, &mut Args::command())?,
     };
     Ok(())
 }
