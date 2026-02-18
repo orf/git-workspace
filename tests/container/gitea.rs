@@ -1,6 +1,6 @@
 use base64::{engine::general_purpose, Engine};
 use git_workspace::providers::APP_USER_AGENT;
-use rand::{distributions::Alphanumeric, Rng};
+use rand::{distr::Alphanumeric, RngExt};
 use reqwest::blocking::{Client, ClientBuilder};
 use reqwest::Certificate;
 use serde::Serialize;
@@ -68,7 +68,7 @@ impl GiteaCommit {
 /// - https://gitea.com/api/swagger#/
 impl GiteaContainer {
     fn generate_test_ssh_key() -> (String, String) {
-        let private_key = PrivateKey::random(&mut rand::thread_rng(), Ed25519)
+        let private_key = PrivateKey::random(&mut ssh_key::rand_core::OsRng, Ed25519)
             .unwrap_or_else(|_| panic!("Failed to generate key"));
         let public_key = private_key.public_key();
 
@@ -221,7 +221,7 @@ impl GiteaContainer {
     pub fn setup(&self) -> (TempDir, String) {
         let tmp_dir = TempDir::new().unwrap();
 
-        let org_name: String = rand::thread_rng()
+        let org_name: String = rand::rng()
             .sample_iter(Alphanumeric)
             .take(8) // Adjust length as needed
             .map(char::from)
