@@ -13,11 +13,11 @@ exclude = ["workspace/**", "images/**", ".github/**"]
 rust-version = "1.74.1"
 
 [dependencies]
-toml = "0.8.19"
+toml = "1.0"
 serde = { version = "1.0.217", features = ["derive"] }
 anyhow = "1.0.95"
 rayon = "1.10.0"
-graphql_client = "0.14.0"
+graphql_client = "0.16.0"
 walkdir = "2.5.0"
 fs_extra = "1.3.0"
 indicatif = { version = "0.17.9", features = ["rayon"] }
@@ -34,15 +34,15 @@ clap = { version = "4.5.27", features = ["derive", "env"] }
 clap_complete = "4.5.46"
 
 [dev-dependencies]
-rstest = "0.24.0"
+rstest = "0.26.1"
 tempfile = "3.14.0"
 testcontainers = { version = "0.23.1", features = ["blocking"] }
 testcontainers-modules = { version = "0.11.4", features = ["gitea"] }
-reqwest = { version = "0.12.12", features = ["blocking", "brotli", "json"] }
+reqwest = { version = "0.13.2", features = ["blocking", "brotli", "json"] }
 ssh-key = { version = "0.6.7", features = ["ed25519"] }
-rand = "0.8.5"
+rand = "0.10.0"
 base64 = "0.22.1"
-ctor = "0.2.9"
+ctor = "0.6.3"
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.2"
