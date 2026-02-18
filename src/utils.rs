@@ -10,10 +10,9 @@ fn build_prompt_text(
     show_default: bool,
     default: Option<&str>,
 ) -> String {
-    let prompt_text = if default.is_some() && show_default {
-        format!("{} [{}]", text, default.unwrap())
-    } else {
-        text.to_string()
+    let prompt_text = match (default, show_default) {
+        (Some(default), true) => format!("{} [{}]", text, default),
+        _ => text.to_string(),
     };
     prompt_text + suffix
 }

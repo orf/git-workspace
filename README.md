@@ -133,7 +133,9 @@ A workspace is the directory that `git-workspace` will manage for you, filling i
 
 Both Github and Gitlab require personal access tokens to access their GraphQL endpoints. Create an access token here:
 
-* Github: https://github.com/settings/tokens (Just the `repo` scope)
+* GitHub: https://github.com/settings/tokens (Just the `repo` scope)
+
+* GitHub fine-grained tokens: https://github.com/settings/personal-access-tokens/new (Just the `Contents` and `Metadata` scopes, with read-only permissions)
 
 * Gitlab: https://gitlab.com/profile/personal_access_tokens (Just the `api` scope)
 

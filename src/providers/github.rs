@@ -187,22 +187,47 @@ impl Provider for GithubProvider {
                 include_forks,
                 after,
             });
-            let res = agent
-                .post(&self.url)
-                .set("Authorization", &auth_header)
-                .send_json(json!(&q));
-
-            let res = match res {
-                Ok(response) => response,
-                Err(ureq::Error::Status(status, response)) => match response.into_string() {
-                    Ok(resp) => {
-                        bail!("Got status code {status}. Body: {resp}")
+            let res = {
+                let max_retries = 3;
+                let mut last_err = None;
+                let mut response = None;
+                for attempt in 0..max_retries {
+                    let result = agent
+                        .post(&self.url)
+                        .set("Authorization", &auth_header)
+                        .send_json(json!(&q));
+                    match result {
+                        Ok(resp) => {
+                            response = Some(resp);
+                            break;
+                        }
+                        Err(e) => {
+                            last_err = Some(e);
+                            if attempt < max_retries - 1 {
+                                std::thread::sleep(std::time::Duration::from_secs(1));
+                            }
+                        }
                     }
-                    Err(e) => {
-                        bail!("Got status code {status}. Error reading body: {e}")
+                }
+                match response {
+                    Some(resp) => resp,
+                    None => {
+                        let err = last_err.unwrap();
+                        match err {
+                            ureq::Error::Status(status, response) => {
+                                match response.into_string() {
+                                    Ok(resp) => {
+                                        bail!("Got status code {status}. Body: {resp}")
+                                    }
+                                    Err(e) => {
+                                        bail!("Got status code {status}. Error reading body: {e}")
+                                    }
+                                }
+                            }
+                            e => return Err(e.into()),
+                        }
                     }
-                },
-                Err(e) => return Err(e.into()),
+                }
             };
 
             let body = res.into_string()?;
@@ -210,7 +235,19 @@ impl Provider for GithubProvider {
 
             if let Some(errors) = response_data.errors {
                 let total_errors = errors.len();
-                let combined_errors: Vec<_> = errors.into_iter().map(|e| e.message).collect();
+                let combined_errors: Vec<_> = errors
+                    .into_iter()
+                    .map(|e| {
+                        let mut message_str = e.message;
+                        if let Some(path) = e.path {
+                            let path_strings: Vec<String> =
+                                path.iter().map(|p| p.to_string()).collect();
+                            message_str
+                                .push_str(format!(" ({})", path_strings.join(".")).as_str());
+                        }
+                        message_str
+                    })
+                    .collect();
                 let combined_message = combined_errors.join("\n");
                 bail!(
                     "Received {} errors. Errors:\n{}",

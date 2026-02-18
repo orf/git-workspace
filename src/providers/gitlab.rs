@@ -183,8 +183,8 @@ impl Provider for GitlabProvider {
 
             let temp_repositories: Vec<ProjectNode>;
             // This is annoying but I'm still not sure how to unify it.
-            if data.group.is_some() {
-                let group_data = data.group.expect("Missing group").projects;
+            if let Some(group) = data.group {
+                let group_data = group.projects;
                 temp_repositories = group_data
                     .edges
                     .expect("missing edges")
@@ -196,8 +196,8 @@ impl Provider for GitlabProvider {
                     .map(ProjectNode::from)
                     .collect();
                 after = group_data.page_info.end_cursor;
-            } else if data.namespace.is_some() {
-                let namespace_data = data.namespace.expect("Missing namespace").projects;
+            } else if let Some(namespace) = data.namespace {
+                let namespace_data = namespace.projects;
                 temp_repositories = namespace_data
                     .edges
                     .expect("missing edges")

@@ -1,4 +1,4 @@
-use clap::{CommandFactory, Parser, ValueHint};
+use clap::{CommandFactory, Parser};
 use git_workspace::commands::{
     add_provider_to_config, archive, completion, execute_cmd, fetch, list, lock,
     pull_all_repositories, update,
