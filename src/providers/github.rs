@@ -214,16 +214,14 @@ impl Provider for GithubProvider {
                     None => {
                         let err = last_err.unwrap();
                         match err {
-                            ureq::Error::Status(status, response) => {
-                                match response.into_string() {
-                                    Ok(resp) => {
-                                        bail!("Got status code {status}. Body: {resp}")
-                                    }
-                                    Err(e) => {
-                                        bail!("Got status code {status}. Error reading body: {e}")
-                                    }
+                            ureq::Error::Status(status, response) => match response.into_string() {
+                                Ok(resp) => {
+                                    bail!("Got status code {status}. Body: {resp}")
                                 }
-                            }
+                                Err(e) => {
+                                    bail!("Got status code {status}. Error reading body: {e}")
+                                }
+                            },
                             e => return Err(e.into()),
                         }
                     }
@@ -242,8 +240,7 @@ impl Provider for GithubProvider {
                         if let Some(path) = e.path {
                             let path_strings: Vec<String> =
                                 path.iter().map(|p| p.to_string()).collect();
-                            message_str
-                                .push_str(format!(" ({})", path_strings.join(".")).as_str());
+                            message_str.push_str(format!(" ({})", path_strings.join(".")).as_str());
                         }
                         message_str
                     })
