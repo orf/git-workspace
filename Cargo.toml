@@ -20,8 +20,8 @@ rayon = "1.10.0"
 graphql_client = "0.16.0"
 walkdir = "2.5.0"
 fs_extra = "1.3.0"
-indicatif = { version = "0.17.9", features = ["rayon"] }
-console = { version = "0.15.10", features = [
+indicatif = { version = "0.18.4", features = ["rayon"] }
+console = { version = "0.16.2", features = [
     "ansi-parsing",
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
