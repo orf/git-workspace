@@ -20,8 +20,8 @@ rayon = "1.10.0"
 graphql_client = "0.16.0"
 walkdir = "2.5.0"
 fs_extra = "1.3.0"
-indicatif = { version = "0.17.9", features = ["rayon"] }
-console = { version = "0.15.10", features = [
+indicatif = { version = "0.18.4", features = ["rayon"] }
+console = { version = "0.16.2", features = [
     "ansi-parsing",
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
@@ -36,8 +36,8 @@ clap_complete = "4.5.46"
 [dev-dependencies]
 rstest = "0.26.1"
 tempfile = "3.14.0"
-testcontainers = { version = "0.23.1", features = ["blocking"] }
-testcontainers-modules = { version = "0.11.4", features = ["gitea"] }
+testcontainers = { version = "0.24.0", features = ["blocking"] }
+testcontainers-modules = { version = "0.12.1", features = ["gitea"] }
 reqwest = { version = "0.13.2", features = ["blocking", "brotli", "json"] }
 ssh-key = { version = "0.6.7", features = ["ed25519", "rand_core", "getrandom"] }
 rand = "0.10.0"
