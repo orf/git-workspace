@@ -56,6 +56,18 @@ impl From<repositories::RepositoriesNamespaceProjectsEdgesNode> for ProjectNode 
     }
 }
 
+impl From<repositories::RepositoriesGroupSharedProjectsEdgesNode> for ProjectNode {
+    fn from(item: repositories::RepositoriesGroupSharedProjectsEdgesNode) -> Self {
+        Self {
+            archived: item.archived.unwrap(),
+            root_ref: item.repository.and_then(|r| r.root_ref),
+            ssh_url: item.ssh_url_to_repo.expect("Unknown SSH URL"),
+            http_url: item.http_url_to_repo.expect("Unknown HTTP URL"),
+            full_path: item.full_path,
+        }
+    }
+}
+
 static DEFAULT_GITLAB_URL: &str = "https://gitlab.com";
 
 fn public_gitlab_url() -> String {
@@ -184,18 +196,46 @@ impl Provider for GitlabProvider {
             let temp_repositories: Vec<ProjectNode>;
             // This is annoying but I'm still not sure how to unify it.
             if let Some(group) = data.group {
-                let group_data = group.projects;
-                temp_repositories = group_data
-                    .edges
-                    .expect("missing edges")
-                    .into_iter()
-                    // Some(T) -> T
-                    .flatten()
-                    // Extract the node, which is also Some(T)
-                    .filter_map(|x| x.node)
-                    .map(ProjectNode::from)
-                    .collect();
-                after = group_data.page_info.end_cursor;
+                let group_project_data = group.projects;
+                let shared_project_data = group.shared_projects;
+
+                let mut repos: Vec<ProjectNode> = Vec::new();
+
+                // Projects
+                if let Some(edges) = group_project_data.edges {
+                    repos.extend(
+                        edges
+                            .into_iter()
+                            // Some(T) -> T
+                            .flatten()
+                            // Extract the node, which is also Some(T)
+                            .filter_map(|x| x.node)
+                            .map(ProjectNode::from)
+                    );
+                }
+                after = group_project_data.page_info.end_cursor;
+
+                // Shared projects
+                if let Some(shared) = shared_project_data {
+                    if let Some(edges) = shared.edges {
+                        repos.extend(
+                            edges
+                                .into_iter()
+                                // Some(T) -> T
+                                .flatten()
+                                // Extract the node, which is also Some(T)
+                                .filter_map(|x| x.node)
+                                .map(ProjectNode::from)
+                        );
+                    }
+
+                    if after.is_none() {
+                        after = shared.page_info.end_cursor;
+                    }
+                }
+
+                temp_repositories = repos;
+
             } else if let Some(namespace) = data.namespace {
                 let namespace_data = namespace.projects;
                 temp_repositories = namespace_data
