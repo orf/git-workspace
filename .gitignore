@@ -10,3 +10,4 @@
 example_workspace/*
 !example_workspace/*.toml
 !example_workspace/.gitkeep
+.claude/
