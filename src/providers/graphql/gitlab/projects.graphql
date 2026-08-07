@@ -36,5 +36,22 @@ query Repositories($name: ID!, $after: String) {
                 endCursor,
             }
         }
+        sharedProjects(after: $after) {
+            edges {
+                node {
+                    archived,
+                    fullPath,
+                    sshUrlToRepo,
+                    httpUrlToRepo,
+                    repository {
+                        rootRef
+                    }
+                }
+            },
+            pageInfo {
+                hasNextPage,
+                endCursor,
+            }
+        }
     }
 }
