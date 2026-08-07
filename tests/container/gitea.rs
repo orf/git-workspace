@@ -243,7 +243,7 @@ impl GiteaContainer {
 
         println!(
             "\nCreate org {} and tmp workspace directory {}",
-            &org_name,
+            org_name,
             tmp_dir.path().display(),
         );
 

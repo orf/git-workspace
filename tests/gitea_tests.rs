@@ -53,8 +53,8 @@ fn test_update_command(gitea_container: &GiteaContainer) {
     // Check if repo1/2 exists
     let repo1 = format!("{}/repo1/.git/config", org_name);
     let repo2 = format!("{}/repo2/.git/config", org_name);
-    assert!(workspace.join(&repo1).exists(), "{} does not exist", &repo1);
-    assert!(workspace.join(&repo2).exists(), "{} does not exist", &repo2);
+    assert!(workspace.join(&repo1).exists(), "{} does not exist", repo1);
+    assert!(workspace.join(&repo2).exists(), "{} does not exist", repo2);
 
     // Test with new repo add on Gitea server
     gitea_container.add_repos(&org_name, ["repo3"]);
@@ -62,7 +62,7 @@ fn test_update_command(gitea_container: &GiteaContainer) {
 
     // Check if repo3 exists
     let repo3 = format!("{}/repo3/.git/config", org_name);
-    assert!(workspace.join(&repo3).exists(), "{} does not exist", &repo3);
+    assert!(workspace.join(&repo3).exists(), "{} does not exist", repo3);
 
     // Test with removed local repo2
     let repo2_path = workspace.join(format!("{}/repo2", org_name));
@@ -71,7 +71,7 @@ fn test_update_command(gitea_container: &GiteaContainer) {
     update_command(workspace);
 
     // Check if repo2 still exists
-    assert!(workspace.join(&repo2).exists(), "{} does not exist", &repo2);
+    assert!(workspace.join(&repo2).exists(), "{} does not exist", repo2);
 
     gitea_container.reset(tmp_dir);
 }
