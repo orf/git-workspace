@@ -1,0 +1,9 @@
+schema: schema.json
+extensions:
+  endpoints:
+    Gitlab:
+      url: https://gitlab.com/api/graphql
+      headers:
+        user-agent: JS GraphQL
+        Authorization: Bearer ${GITLAB_TOKEN}
+      introspect: true
