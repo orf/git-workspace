@@ -36,13 +36,13 @@ clap_complete = "4.6.0"
 [dev-dependencies]
 rstest = "0.26.1"
 tempfile = "3.27.0"
-testcontainers = { version = "0.24.0", features = ["blocking"] }
-testcontainers-modules = { version = "0.12.1", features = ["gitea"] }
+testcontainers = { version = "0.27.0", features = ["blocking"] }
+testcontainers-modules = { version = "0.15.0", features = ["gitea"] }
 reqwest = { version = "0.13.2", features = ["blocking", "brotli", "json"] }
 ssh-key = { version = "0.6.7", features = ["ed25519", "rand_core", "getrandom"] }
 rand = "0.10.0"
 base64 = "0.23.1"
-ctor = "1"
+dtor = "1"
 
 [target."cfg(unix)".dependencies]
 expanduser = "1.2.2"

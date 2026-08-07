@@ -20,7 +20,7 @@ pub fn gitea_container() -> &'static GiteaContainer {
 
 // Remove gitea container at end of tests
 // Comment out this function for debugging to keep container running after tests
-#[ctor::dtor]
+#[dtor::dtor(unsafe)]
 fn cleanup() {
     let container = &GITEA_CONTAINER as *const _ as *mut OnceLock<GiteaContainer>;
     // Safety: We have exclusive access to GITEA_CONTAINER during cleanup/destruction
