@@ -141,6 +141,28 @@ Both Github and Gitlab require personal access tokens to access their GraphQL en
 
 Export these tokens as `GITHUB_TOKEN` and `GITLAB_TOKEN` in your shell.
 
+### Using the Github CLI instead of a token
+
+If you already use the [Github CLI](https://cli.github.com), `git-workspace` can ask it
+for a token instead of reading one from the environment:
+
+```
+git workspace add github [USER OR ORG NAME] --auth-type gh-cli
+```
+
+This runs `gh auth token` whenever repositories are fetched, so you only need to have run
+`gh auth login` once. Self-hosted instances work too: the hostname is taken from `--url`
+and passed to `gh --hostname`.
+
+In `workspace.toml` this is the `auth_type` key, which defaults to `env-var`:
+
+```toml
+[[provider]]
+provider = "github"
+name = "my-org"
+auth_type = "gh-cli"
+```
+
 ## Adding providers
 
 You can use `git workspace add` to quickly add entries to your `workspace.toml`:
