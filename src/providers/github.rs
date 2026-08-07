@@ -1,6 +1,4 @@
-use crate::providers::{
-    build_agent, create_exclude_regex_set, create_include_regex_set, Provider,
-};
+use crate::providers::{build_agent, create_exclude_regex_set, create_include_regex_set, Provider};
 use crate::repository::Repository;
 use anyhow::{anyhow, bail, Context};
 use console::style;
