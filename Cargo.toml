@@ -10,7 +10,7 @@ license = "MIT"
 categories = ["development-tools"]
 keywords = ["cli", "git"]
 exclude = ["workspace/**", "images/**", ".github/**"]
-rust-version = "1.74.1"
+rust-version = "1.85"
 
 [dependencies]
 toml = "1.0"
@@ -25,7 +25,8 @@ console = { version = "0.16.3", features = [
     "ansi-parsing",
 ], default-features = false } # We don't care about unicode widths
 atomic-counter = "1.0.1"
-ureq = { version = "2.12.1", features = ["json", "native-certs", "brotli"] }
+ureq = { version = "3.3.0", features = ["json", "brotli"] }
+rustls-native-certs = "0.8.4"
 serde_json = "1.0.137"
 globset = "0.4.15"
 git2 = { version = "0.21.0" }

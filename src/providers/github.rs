@@ -1,8 +1,8 @@
 use crate::providers::{
-    create_exclude_regex_set, create_include_regex_set, Provider, APP_USER_AGENT,
+    build_agent, create_exclude_regex_set, create_include_regex_set, Provider,
 };
 use crate::repository::Repository;
-use anyhow::{bail, Context};
+use anyhow::{anyhow, bail, Context};
 use console::style;
 use graphql_client::{GraphQLQuery, Response};
 use serde::{Deserialize, Serialize};
@@ -176,10 +176,7 @@ impl Provider for GithubProvider {
         // states: false - no forks, true - only forks, none - all repositories.
         let include_forks: Option<bool> = if self.skip_forks { Some(false) } else { None };
 
-        let agent = ureq::AgentBuilder::new()
-            .https_only(true)
-            .user_agent(APP_USER_AGENT)
-            .build();
+        let agent = build_agent()?;
 
         loop {
             let q = Repositories::build_query(repositories::Variables {
@@ -192,43 +189,42 @@ impl Provider for GithubProvider {
                 let mut last_err = None;
                 let mut response = None;
                 for attempt in 0..max_retries {
+                    // Handle the status ourselves so that a failure response can be reported
+                    // along with its body, which explains *why* GitHub rejected the query.
                     let result = agent
                         .post(&self.url)
-                        .set("Authorization", &auth_header)
+                        .config()
+                        .http_status_as_error(false)
+                        .build()
+                        .header("Authorization", &auth_header)
                         .send_json(json!(&q));
                     match result {
-                        Ok(resp) => {
+                        Ok(resp) if resp.status().is_success() => {
                             response = Some(resp);
                             break;
                         }
-                        Err(e) => {
-                            last_err = Some(e);
-                            if attempt < max_retries - 1 {
-                                std::thread::sleep(std::time::Duration::from_secs(1));
-                            }
+                        Ok(mut resp) => {
+                            let status = resp.status().as_u16();
+                            last_err = Some(match resp.body_mut().read_to_string() {
+                                Ok(body) => anyhow!("Got status code {status}. Body: {body}"),
+                                Err(e) => {
+                                    anyhow!("Got status code {status}. Error reading body: {e}")
+                                }
+                            });
                         }
+                        Err(e) => last_err = Some(e.into()),
+                    }
+                    if attempt < max_retries - 1 {
+                        std::thread::sleep(std::time::Duration::from_secs(1));
                     }
                 }
                 match response {
                     Some(resp) => resp,
-                    None => {
-                        let err = last_err.unwrap();
-                        match err {
-                            ureq::Error::Status(status, response) => match response.into_string() {
-                                Ok(resp) => {
-                                    bail!("Got status code {status}. Body: {resp}")
-                                }
-                                Err(e) => {
-                                    bail!("Got status code {status}. Error reading body: {e}")
-                                }
-                            },
-                            e => return Err(e.into()),
-                        }
-                    }
+                    None => return Err(last_err.unwrap()),
                 }
             };
 
-            let body = res.into_string()?;
+            let body = res.into_body().read_to_string()?;
             let response_data: Response<repositories::ResponseData> = serde_json::from_str(&body)?;
 
             if let Some(errors) = response_data.errors {

@@ -1,5 +1,5 @@
 use crate::providers::{
-    create_exclude_regex_set, create_include_regex_set, Provider, APP_USER_AGENT,
+    build_agent, create_exclude_regex_set, create_include_regex_set, Provider,
 };
 use crate::repository::Repository;
 use anyhow::{anyhow, Context};
@@ -161,10 +161,7 @@ impl Provider for GitlabProvider {
         let include_regex_set = create_include_regex_set(&self.include)?;
         let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
 
-        let agent = ureq::AgentBuilder::new()
-            .https_only(true)
-            .user_agent(APP_USER_AGENT)
-            .build();
+        let agent = build_agent()?;
 
         loop {
             let q = Repositories::build_query(repositories::Variables {
@@ -173,10 +170,9 @@ impl Provider for GitlabProvider {
             });
             let res = agent
                 .post(format!("{}/api/graphql", self.url).as_str())
-                .set("Authorization", format!("Bearer {}", gitlab_token).as_str())
-                .set("Content-Type", "application/json")
+                .header("Authorization", format!("Bearer {}", gitlab_token).as_str())
                 .send_json(json!(&q))?;
-            let json = res.into_json()?;
+            let json: serde_json::Value = res.into_body().read_json()?;
 
             let response_body: Response<repositories::ResponseData> = serde_json::from_value(json)?;
             let data = response_body.data.expect("Missing data");

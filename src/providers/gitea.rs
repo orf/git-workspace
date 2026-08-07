@@ -1,5 +1,5 @@
 use crate::providers::{
-    create_exclude_regex_set, create_include_regex_set, Provider, APP_USER_AGENT,
+    build_agent, create_exclude_regex_set, create_include_regex_set, Provider,
 };
 use crate::repository::Repository;
 use anyhow::Context;
@@ -120,10 +120,7 @@ impl Provider for GiteaProvider {
         let include_regex_set = create_include_regex_set(&self.include)?;
         let exclude_regex_set = create_exclude_regex_set(&self.exclude)?;
 
-        let agent = ureq::AgentBuilder::new()
-            .https_only(true)
-            .user_agent(APP_USER_AGENT)
-            .build();
+        let agent = build_agent()?;
 
         let mut page = 1;
         let mut repositories = Vec::new();
@@ -134,12 +131,12 @@ impl Provider for GiteaProvider {
                 self.url, self.name, page
             );
 
-            let response = agent
+            let mut response = agent
                 .get(&url)
-                .set("Authorization", &format!("token {}", gitea_token))
+                .header("Authorization", &format!("token {}", gitea_token))
                 .call()?;
 
-            let repos: Vec<GiteaRepository> = response.into_json()?;
+            let repos: Vec<GiteaRepository> = response.body_mut().read_json()?;
             if repos.is_empty() {
                 break;
             }
