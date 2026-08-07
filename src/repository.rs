@@ -172,7 +172,7 @@ impl Repository {
 
         self.run_with_progress(child, progress_bar)
             .with_context(|| {
-                format!("Error cloning repo into {} from {}", self.name(), &self.url)
+                format!("Error cloning repo into {} from {}", self.name(), self.url)
             })?;
 
         Ok(())

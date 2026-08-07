@@ -70,10 +70,10 @@ pub fn expand_workspace_path(path: &Path) -> anyhow::Result<PathBuf> {
 pub fn ensure_workspace_dir_exists(path: &PathBuf) -> anyhow::Result<PathBuf> {
     if !path.exists() {
         fs_extra::dir::create_all(path, false)
-            .with_context(|| format!("Error creating workspace directory {}", &path.display()))?;
+            .with_context(|| format!("Error creating workspace directory {}", path.display()))?;
     }
     path.canonicalize()
-        .with_context(|| format!("Error canonicalizing workspace path {}", &path.display()))
+        .with_context(|| format!("Error canonicalizing workspace path {}", path.display()))
 }
 
 #[cfg(test)]
