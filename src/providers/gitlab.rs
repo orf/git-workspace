@@ -204,7 +204,7 @@ impl Provider for GitlabProvider {
                             .flatten()
                             // Extract the node, which is also Some(T)
                             .filter_map(|x| x.node)
-                            .map(ProjectNode::from)
+                            .map(ProjectNode::from),
                     );
                 }
                 after = group_project_data.page_info.end_cursor;
@@ -219,7 +219,7 @@ impl Provider for GitlabProvider {
                                 .flatten()
                                 // Extract the node, which is also Some(T)
                                 .filter_map(|x| x.node)
-                                .map(ProjectNode::from)
+                                .map(ProjectNode::from),
                         );
                     }
 
@@ -229,7 +229,6 @@ impl Provider for GitlabProvider {
                 }
 
                 temp_repositories = repos;
-
             } else if let Some(namespace) = data.namespace {
                 let namespace_data = namespace.projects;
                 temp_repositories = namespace_data
