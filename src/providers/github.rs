@@ -321,6 +321,9 @@ impl Provider for GithubProvider {
             let body = res.into_body().read_to_string()?;
             let response_data: Response<repositories::ResponseData> = serde_json::from_str(&body)?;
 
+            // A GraphQL error only nulls `data` outright when no nullable parent
+            // could contain it, so a populated `data` still has a usable page.
+            let has_data = response_data.data.is_some();
             if let Some(errors) = response_data.errors {
                 let total_errors = errors.len();
                 let combined_errors: Vec<_> = errors
@@ -336,9 +339,18 @@ impl Provider for GithubProvider {
                     })
                     .collect();
                 let combined_message = combined_errors.join("\n");
-                bail!(
-                    "Received {} errors. Errors:\n{}",
+                if !has_data {
+                    bail!(
+                        "Received {} errors. Errors:\n{}",
+                        total_errors,
+                        combined_message
+                    );
+                }
+                eprintln!(
+                    "{} {} unreadable field(s) skipped for {}:\n{}",
+                    style("warning:").yellow(),
                     total_errors,
+                    style(self.name.to_lowercase()).green(),
                     combined_message
                 );
             }
@@ -353,9 +365,11 @@ impl Provider for GithubProvider {
             repositories.extend(
                 response_repositories
                     .nodes
-                    .unwrap()
+                    .unwrap_or_default()
                     .iter()
-                    .map(|r| r.as_ref().unwrap())
+                    // Skip repositories that have access limits on the token
+                    // (e.g. forked from SAML enforced orgs).
+                    .flatten()
                     .filter(|r| !r.is_archived)
                     .filter(|r| include_regex_set.is_match(&r.name_with_owner))
                     .filter(|r| !exclude_regex_set.is_match(&r.name_with_owner))
